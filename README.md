@@ -7,6 +7,8 @@
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue)](https://www.typescriptlang.org/)
 [![Bundle Size](https://img.shields.io/bundlephobia/minzip/swr-catalyst)](https://bundlephobia.com/package/swr-catalyst)
+[![npm version](https://badge.fury.io/js/swr-catalyst.svg)](https://www.npmjs.com/package/swr-catalyst)
+[![npm downloads](https://img.shields.io/npm/dm/swr-catalyst.svg)](https://www.npmjs.com/package/swr-catalyst)
 
 [Features](#features) • [Installation](#installation) • [Quick Start](#quick-start) • [API Reference](#api-reference)
 
