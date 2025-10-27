@@ -1,1 +1,1 @@
-export { deepEqual } from "./deepEqual"
+export { deepEqual } from "./deepEqual";
