@@ -1,0 +1,56 @@
+{
+  "name": "swr-catalyst",
+  "version": "0.1.0",
+  "description": "A lightweight, declarative library to simplify data mutations with SWR.",
+  "author": "Pedro Barbosa (https://github.com/pedroab0)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pedroab0/swr-catalyst"
+  },
+  "keywords": [
+    "swr",
+    "react",
+    "hooks",
+    "mutation",
+    "data fetching",
+    "cache",
+    "stale-while-revalidate"
+  ],
+  "type": "module",
+  "main": "./dist/swr-catalyst.umd.js",
+  "module": "./dist/swr-catalyst.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/swr-catalyst.js",
+      "require": "./dist/swr-catalyst.umd.js"
+    }
+  },
+  "scripts": {
+    "build": "vite build",
+    "test": "vitest",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "swr": "^2.0.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.3.0",
+    "@testing-library/react": "^16.3.0",
+    "@types/node": "^24.9.1",
+    "jsdom": "^27.0.1",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "swr": "^2.3.6",
+    "typescript": "^5.9.3",
+    "ultracite": "^6.0.1",
+    "vite": "^7.1.12",
+    "vite-plugin-dts": "^4.5.4",
+    "vitest": "^4.0.1"
+  }
+}
