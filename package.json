@@ -1,6 +1,6 @@
 {
   "name": "swr-catalyst",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A lightweight, declarative library to simplify data mutations with SWR.",
   "author": "Pedro Barbosa (https://github.com/pedroab0)",
   "license": "MIT",
