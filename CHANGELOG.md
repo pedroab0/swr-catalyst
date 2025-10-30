@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.1] - 2025-10-30
+
+### Added
+
+- GitHub Actions workflow for automated publishing to npm and GitHub Packages
+- CI/CD pipeline that runs tests before publishing
+
 ## [0.1.0] - 2025-10-27
 
 Initial release.
@@ -19,4 +26,5 @@ Initial release.
 - Full TypeScript support with generics
 - Comprehensive JSDoc documentation
 
+[0.1.1]: https://github.com/pedroab0/swr-catalyst/releases/tag/v0.1.1
 [0.1.0]: https://github.com/pedroab0/swr-catalyst/releases/tag/v0.1.0
