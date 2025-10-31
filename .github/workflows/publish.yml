@@ -32,7 +32,13 @@ jobs:
           registry-url: 'https://npm.pkg.github.com'
           scope: '@pedroab0'
       - run: npm ci
-      - run: npm pkg set name="@pedroab0/swr-catalyst"
-      - run: npm publish
+      - name: Configure for GitHub Packages
+        run: |
+          npm pkg set name="@pedroab0/swr-catalyst"
+          echo "Checking .npmrc location: $NPM_CONFIG_USERCONFIG"
+          cat $NPM_CONFIG_USERCONFIG
+          echo "Modified package.json name:"
+          npm pkg get name
+      - run: npm publish --verbose
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
