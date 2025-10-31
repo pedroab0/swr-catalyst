@@ -33,6 +33,9 @@ jobs:
           node-version: '20.x'
           registry-url: 'https://npm.pkg.github.com'
       - run: npm ci
-      - run: npm publish
+      - run: |
+          echo "//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}" > ~/.npmrc
+          npm pkg set name="@pedroab0/swr-catalyst"
+          npm publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
