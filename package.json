@@ -6,7 +6,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/pedroab0/swr-catalyst"
+    "url": "git+https://github.com/pedroab0/swr-catalyst.git"
   },
   "keywords": [
     "swr",
