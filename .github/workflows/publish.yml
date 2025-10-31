@@ -15,8 +15,9 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: |
-          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
-          npm publish
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
+          cat .npmrc
+          npm publish --verbose
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
