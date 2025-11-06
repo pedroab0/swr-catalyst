@@ -5,39 +5,72 @@ on:
     types: [created]
 
 jobs:
-  publish-npm:
+  test-and-build:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/setup-node@v4.1.0
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4.4.3
+        with:
+          name: dist
+          path: dist/
+          retention-days: 1
+
+  publish-npm:
+    needs: test-and-build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: read
       packages: write
+      id-token: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/setup-node@v4.1.0
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
-      - run: npm ci
-      - run: npm test
-      - run: npm publish
+          cache: 'npm'
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: dist
+          path: dist/
+      - run: npm publish --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   publish-gpr:
+    needs: test-and-build
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: read
       packages: write
+      id-token: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/setup-node@v4.1.0
         with:
           node-version: '20.x'
           registry-url: 'https://npm.pkg.github.com'
           scope: '@pedroab0'
-      - run: npm ci
+          cache: 'npm'
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: dist
+          path: dist/
       - name: Configure for GitHub Packages
         run: npm pkg set name="@pedroab0/swr-catalyst"
-      - run: npm test
-      - run: npm publish
+      - run: npm publish --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
