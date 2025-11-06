@@ -18,7 +18,7 @@
     "stale-while-revalidate"
   ],
   "type": "module",
-  "main": "./dist/swr-catalyst.umd.js",
+  "main": "./dist/swr-catalyst.umd.cjs",
   "module": "./dist/swr-catalyst.js",
   "types": "./dist/index.d.ts",
   "files": [
@@ -27,12 +27,17 @@
   "exports": {
     ".": {
       "import": "./dist/swr-catalyst.js",
-      "require": "./dist/swr-catalyst.umd.js"
+      "require": "./dist/swr-catalyst.umd.cjs"
     }
   },
   "scripts": {
     "build": "vite build",
     "test": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "typecheck": "tsc --noEmit",
+    "size": "size-limit",
     "prepublishOnly": "npm run build"
   },
   "peerDependencies": {
@@ -41,11 +46,14 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.3.0",
+    "@size-limit/preset-small-lib": "^11.1.6",
     "@testing-library/react": "^16.3.0",
     "@types/node": "^24.9.1",
+    "@vitest/coverage-v8": "^4.0.1",
     "jsdom": "^27.0.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "size-limit": "^11.1.6",
     "swr": "^2.3.6",
     "typescript": "^5.9.3",
     "ultracite": "^6.0.1",
