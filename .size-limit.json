@@ -1,0 +1,92 @@
+[
+  {
+    "name": "ESM Bundle (Full Library)",
+    "path": "dist/swr-catalyst.js",
+    "import": "*",
+    "limit": "5 KB",
+    "gzip": true
+  },
+  {
+    "name": "UMD Bundle (Full Library)",
+    "path": "dist/swr-catalyst.umd.cjs",
+    "limit": "5 KB",
+    "gzip": true
+  },
+  {
+    "name": "Hook - useSWRCreate",
+    "path": "dist/swr-catalyst.js",
+    "import": "{ useSWRCreate }",
+    "limit": "2 KB",
+    "gzip": true
+  },
+  {
+    "name": "Hook - useSWRUpdate",
+    "path": "dist/swr-catalyst.js",
+    "import": "{ useSWRUpdate }",
+    "limit": "2 KB",
+    "gzip": true
+  },
+  {
+    "name": "Hook - useSWRDelete",
+    "path": "dist/swr-catalyst.js",
+    "import": "{ useSWRDelete }",
+    "limit": "2 KB",
+    "gzip": true
+  },
+  {
+    "name": "Utility - extractSWRKey",
+    "path": "dist/swr-catalyst.js",
+    "import": "{ extractSWRKey }",
+    "limit": "300 B",
+    "gzip": true
+  },
+  {
+    "name": "Utility - mutateByGroup",
+    "path": "dist/swr-catalyst.js",
+    "import": "{ mutateByGroup }",
+    "limit": "1 KB",
+    "gzip": true
+  },
+  {
+    "name": "Utility - mutateById",
+    "path": "dist/swr-catalyst.js",
+    "import": "{ mutateById }",
+    "limit": "1 KB",
+    "gzip": true
+  },
+  {
+    "name": "Utility - resetCache",
+    "path": "dist/swr-catalyst.js",
+    "import": "{ resetCache }",
+    "limit": "1 KB",
+    "gzip": true
+  },
+  {
+    "name": "Utility - swrGetCache",
+    "path": "dist/swr-catalyst.js",
+    "import": "{ swrGetCache }",
+    "limit": "100 B",
+    "gzip": true
+  },
+  {
+    "name": "Utility - swrMutate",
+    "path": "dist/swr-catalyst.js",
+    "import": "{ swrMutate }",
+    "limit": "100 B",
+    "gzip": true
+  },
+  {
+    "name": "Utility - to (error handler)",
+    "path": "dist/swr-catalyst.js",
+    "import": "{ to }",
+    "limit": "100 B",
+    "gzip": true
+  },
+  {
+    "name": "Error - MutationError",
+    "path": "dist/swr-catalyst.js",
+    "import": "{ MutationError }",
+    "limit": "500 B",
+    "gzip": true
+  }
+]
