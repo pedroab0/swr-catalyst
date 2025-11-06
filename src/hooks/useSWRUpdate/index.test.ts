@@ -143,4 +143,152 @@ describe("useSWRUpdate", () => {
 
     expect(returnedData).toEqual(updatedData);
   });
+
+  it("should not update state if component unmounts before trigger", async () => {
+    const updateFn = vi.fn().mockResolvedValue({ id: 1 });
+
+    const { result, unmount } = renderHook(() =>
+      useSWRUpdate(testKey, updateFn)
+    );
+
+    unmount();
+
+    await act(async () => {
+      await result.current.trigger(1, {});
+    });
+
+    expect(updateFn).not.toHaveBeenCalled();
+  });
+
+  it("should return data even if component unmounts during mutation", async () => {
+    const updatedData = { id: 1, title: "Updated" };
+    const updateFn = vi.fn().mockResolvedValue(updatedData);
+
+    const { result, unmount } = renderHook(() =>
+      useSWRUpdate(testKey, updateFn)
+    );
+
+    let returnedData: unknown;
+    const triggerPromise = act(async () => {
+      const promise = result.current.trigger(1, { title: "Updated" });
+      unmount();
+      returnedData = await promise;
+    });
+
+    await triggerPromise;
+    expect(returnedData).toEqual(updatedData);
+  });
+
+  it("should handle optimistic update with undefined cache", async () => {
+    const updateFn = vi.fn().mockResolvedValue({ id: 1 });
+
+    cacheGet.mockReturnValue(undefined);
+
+    const { result } = renderHook(() =>
+      useSWRUpdate(testKey, updateFn, {
+        optimisticUpdate: (_, { id, data }) => [{ id, ...data }],
+      })
+    );
+
+    await act(async () => {
+      await result.current.trigger(1, { title: "New" });
+    });
+
+    expect(mutate).toHaveBeenCalled();
+  });
+
+  it("should not rollback if originalData is undefined", async () => {
+    const error = new Error("Update failed");
+    const updateFn = vi.fn().mockRejectedValue(error);
+
+    cacheGet.mockReturnValue(undefined);
+
+    const { result } = renderHook(() =>
+      useSWRUpdate(testKey, updateFn, {
+        optimisticUpdate: (_, { id, data }) => [{ id, ...data }],
+        rollbackOnError: true,
+      })
+    );
+
+    await act(async () => {
+      try {
+        await result.current.trigger(1, { title: "Updated" });
+      } catch (_e) {
+        // ignore
+      }
+    });
+
+    expect(result.current.error).toBeTruthy();
+  });
+
+  it("should handle string id parameter", async () => {
+    const updateFn = vi.fn().mockResolvedValue({ id: "abc", title: "Updated" });
+
+    const { result } = renderHook(() => useSWRUpdate(testKey, updateFn));
+
+    await act(async () => {
+      await result.current.trigger("abc", { title: "Updated" });
+    });
+
+    expect(updateFn).toHaveBeenCalledWith("abc", { title: "Updated" });
+  });
+
+  it("should not rollback when rollbackOnError is false", async () => {
+    const error = new Error("Update failed");
+    const updateFn = vi.fn().mockRejectedValue(error);
+
+    cacheGet.mockReturnValue({ data: [{ id: 1, title: "Old" }] });
+
+    const { result } = renderHook(() =>
+      useSWRUpdate(testKey, updateFn, {
+        optimisticUpdate: (current: any[] | undefined, { id, data }: any) =>
+          (current || []).map((item) =>
+            item.id === id ? { ...item, ...data } : item
+          ),
+        rollbackOnError: false,
+      })
+    );
+
+    await act(async () => {
+      try {
+        await result.current.trigger(1, { title: "Updated" });
+      } catch (_e) {
+        // ignore
+      }
+    });
+
+    expect(mutate).toHaveBeenCalledTimes(1);
+  });
+
+  it("should handle error without optimistic update", async () => {
+    const error = new Error("Update failed");
+    const updateFn = vi.fn().mockRejectedValue(error);
+
+    const { result } = renderHook(() => useSWRUpdate(testKey, updateFn));
+
+    await act(async () => {
+      try {
+        await result.current.trigger(1, { title: "Updated" });
+      } catch (_e) {
+        // ignore
+      }
+    });
+
+    expect(result.current.error).toBeTruthy();
+    expect(mutate).not.toHaveBeenCalledWith(testKey, expect.anything(), false);
+  });
+
+  it("should update without optimistic update", async () => {
+    const updatedData = { id: 1, title: "Updated" };
+    const updateFn = vi.fn().mockResolvedValue(updatedData);
+
+    const { result } = renderHook(() => useSWRUpdate(testKey, updateFn));
+
+    await act(async () => {
+      await result.current.trigger(1, { title: "Updated" });
+    });
+
+    expect(mutate).toHaveBeenCalledTimes(1);
+    expect(result.current.error).toBeNull();
+  });
 });

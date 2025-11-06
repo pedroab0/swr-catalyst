@@ -191,4 +191,119 @@ describe("useSWRCreate", () => {
 
     expect(returnedData).toEqual(createdData);
   });
+
+  it("should not update state if component unmounts before trigger", async () => {
+    const createFn = vi.fn().mockResolvedValue({ id: 1 });
+    const testKey: SWRKey = { id: "test-key", data: "/api/test" };
+
+    const { result, unmount } = renderHook(() =>
+      useSWRCreate(testKey, createFn)
+    );
+
+    unmount();
+
+    await act(async () => {
+      await result.current.trigger({});
+    });
+
+    expect(createFn).not.toHaveBeenCalled();
+  });
+
+  it("should return data even if component unmounts during mutation", async () => {
+    const createdData = { id: 1, title: "Created" };
+    const createFn = vi.fn().mockResolvedValue(createdData);
+    const testKey: SWRKey = { id: "test-key", data: "/api/test" };
+
+    const { result, unmount } = renderHook(() =>
+      useSWRCreate(testKey, createFn)
+    );
+
+    let returnedData: unknown;
+    const triggerPromise = act(async () => {
+      const promise = result.current.trigger({ title: "New" });
+      unmount();
+      returnedData = await promise;
+    });
+
+    await triggerPromise;
+    expect(returnedData).toEqual(createdData);
+  });
+
+  it("should handle optimistic update with undefined cache", async () => {
+    const createFn = vi.fn().mockResolvedValue({ id: 1 });
+    const testKey: SWRKey = { id: "test-key", data: "/api/test" };
+
+    cacheGet.mockReturnValue(undefined);
+
+    const { result } = renderHook(() =>
+      useSWRCreate(testKey, createFn, {
+        optimisticUpdate: (_, newData) => [newData],
+      })
+    );
+
+    await act(async () => {
+      await result.current.trigger({ title: "New" });
+    });
+
+    expect(mutate).toHaveBeenCalled();
+  });
+
+  it("should not rollback if originalData is undefined", async () => {
+    const error = new Error("API Error");
+    const createFn = vi.fn().mockRejectedValue(error);
+    const testKey: SWRKey = { id: "test-key", data: "/api/test" };
+
+    cacheGet.mockReturnValue(undefined);
+
+    const { result } = renderHook(() =>
+      useSWRCreate(testKey, createFn, {
+        optimisticUpdate: (_, newData) => [newData],
+        rollbackOnError: true,
+      })
+    );
+
+    await act(async () => {
+      try {
+        await result.current.trigger({ title: "New" });
+      } catch (_e) {
+        // ignore
+      }
+    });
+
+    expect(result.current.error).toBeTruthy();
+  });
+
+  it("should handle error without optimistic update", async () => {
+    const error = new Error("API Error");
+    const createFn = vi.fn().mockRejectedValue(error);
+    const testKey: SWRKey = { id: "test-key", data: "/api/test" };
+
+    const { result } = renderHook(() => useSWRCreate(testKey, createFn));
+
+    await act(async () => {
+      try {
+        await result.current.trigger({ title: "New" });
+      } catch (_e) {
+        // ignore
+      }
+    });
+
+    expect(result.current.error).toBeTruthy();
+    expect(mutate).not.toHaveBeenCalledWith(testKey, expect.anything(), false);
+  });
+
+  it("should create without optimistic update", async () => {
+    const createdData = { id: 1, title: "Created" };
+    const createFn = vi.fn().mockResolvedValue(createdData);
+    const testKey: SWRKey = { id: "test-key", data: "/api/test" };
+
+    const { result } = renderHook(() => useSWRCreate(testKey, createFn));
+
+    await act(async () => {
+      await result.current.trigger({ title: "New" });
+    });
+
+    expect(mutate).toHaveBeenCalledTimes(1);
+    expect(result.current.error).toBeNull();
+  });
 });
