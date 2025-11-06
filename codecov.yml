@@ -1,0 +1,54 @@
+coverage:
+  status:
+    project:
+      default:
+        target: 80%
+        threshold: 2%
+        if_ci_failed: error
+    patch:
+      default:
+        target: 80%
+        threshold: 5%
+        if_ci_failed: error
+
+  precision: 2
+  round: down
+  range: 70...100
+
+comment:
+  layout: "header, diff, flags, components, footer"
+  behavior: default
+  require_changes: false
+  require_base: false
+  require_head: true
+
+ignore:
+  - "src/**/*.test.ts"
+  - "src/**/*.test.tsx"
+  - "src/**/*.spec.ts"
+  - "src/**/*.spec.tsx"
+  - "src/index.ts"
+  - "dist/**"
+  - "node_modules/**"
+  - "**/*.d.ts"
+
+component_management:
+  default_rules:
+    statuses:
+      - type: project
+        target: 80%
+      - type: patch
+        target: 80%
+  individual_components:
+    - component_id: hooks
+      name: Hooks
+      paths:
+        - src/hooks/**
+    - component_id: utils
+      name: Utilities
+      paths:
+        - src/utils/**
+    - component_id: errors
+      name: Error Classes
+      paths:
+        - src/errors/**
