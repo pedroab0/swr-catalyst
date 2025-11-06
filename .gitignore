@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+# Test coverage
+coverage
+.nyc_output
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -26,7 +30,7 @@ dist-ssr
 # AI
 /GEMINI.MD
 /ai
-/aidocs
+/.aidocs
 /.claude
 /.windsurf
 /.cursor
