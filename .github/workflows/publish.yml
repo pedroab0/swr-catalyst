@@ -10,7 +10,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v5.0.0
-      - uses: actions/setup-node@v4.1.0
+      - uses: actions/setup-node@v6.0.0
         with:
           node-version: '20.x'
           cache: 'npm'
@@ -18,7 +18,7 @@ jobs:
       - run: npm run test:coverage
       - run: npm run build
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4.4.3
+        uses: actions/upload-artifact@v5.0.0
         with:
           name: dist
           path: dist/
@@ -34,14 +34,14 @@ jobs:
       id-token: write
     steps:
       - uses: actions/checkout@v5.0.0
-      - uses: actions/setup-node@v4.1.0
+      - uses: actions/setup-node@v6.0.0
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
       - run: npm ci
       - name: Download build artifacts
-        uses: actions/download-artifact@v4.1.8
+        uses: actions/download-artifact@v6.0.0
         with:
           name: dist
           path: dist/
@@ -59,7 +59,7 @@ jobs:
       id-token: write
     steps:
       - uses: actions/checkout@v5.0.0
-      - uses: actions/setup-node@v4.1.0
+      - uses: actions/setup-node@v6.0.0
         with:
           node-version: '20.x'
           registry-url: 'https://npm.pkg.github.com'
@@ -67,7 +67,7 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - name: Download build artifacts
-        uses: actions/download-artifact@v4.1.8
+        uses: actions/download-artifact@v6.0.0
         with:
           name: dist
           path: dist/
