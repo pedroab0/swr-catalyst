@@ -73,6 +73,6 @@ jobs:
           path: dist/
       - name: Configure for GitHub Packages
         run: npm pkg set name="@pedroab0/swr-catalyst"
-      - run: npm publish --provenance
+      - run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
