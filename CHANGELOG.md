@@ -2,7 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.2.0]
+## [0.2.1] - 2025-11-06
+
+### Changed
+
+- Updated GitHub Actions to latest versions (checkout@v5, setup-node@v6, upload-artifact@v5, download-artifact@v6, codecov-action@v5.5.1)
+- Updated development dependencies to latest versions (Biome 2.3.4, Vitest 4.0.7, Vite 7.2.1, ultracite 6.3.2, and others)
+- Removed Node.js 18.x from CI test matrix (EOL as of April 2025)
+- Added Node.js engine requirement (>=20.0.0) to package.json
+
+### Fixed
+
+- Fixed CI test command to use `npm run test:coverage` instead of `npm test` to prevent watch mode hanging
+- Fixed publish workflow test command to properly run tests with coverage
+- Fixed Biome configuration to use full paths for ultracite extends instead of npm package resolution
+- Added missing `npm ci` step before publish commands in publish workflow
+- Fixed all linting errors (16 total): added error messages to Error constructors and extracted magic numbers to constants
+
+## [0.2.0] - 2025-11-06
 
 ### Added
 
@@ -57,7 +74,9 @@ Initial release.
 - Full TypeScript support with generics
 - Comprehensive JSDoc documentation
 
-[Unreleased]: https://github.com/pedroab0/swr-catalyst/compare/v0.1.2...HEAD
+[Unreleased]: https://github.com/pedroab0/swr-catalyst/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/pedroab0/swr-catalyst/compare/v0.2.0...v0.2.1
+[0.2.0]: https://github.com/pedroab0/swr-catalyst/compare/v0.1.2...v0.2.0
 [0.1.2]: https://github.com/pedroab0/swr-catalyst/releases/tag/v0.1.2
 [0.1.1]: https://github.com/pedroab0/swr-catalyst/releases/tag/v0.1.1
 [0.1.0]: https://github.com/pedroab0/swr-catalyst/releases/tag/v0.1.0
