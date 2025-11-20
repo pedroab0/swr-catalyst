@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+
+- CodeScene code health badge to README
+
+### Changed
+
+- Dependabot versioning strategy set to `increase` for npm package ecosystem
+- Reorganized Dependabot grouped updates to exclude React and SWR from minor/patch group
+
+### Fixed
+
+- Codecov workflow now uploads test results alongside coverage data, configured to run even if previous steps are cancelled
+
 ## [0.2.2] - 2025-11-06
 
 ### Fixed
