@@ -48,19 +48,19 @@
     "swr": "^2.0.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.3.7",
+    "@biomejs/biome": "^2.3.8",
     "@size-limit/preset-small-lib": "^11.2.0",
     "@testing-library/react": "^16.3.0",
     "@types/node": "^24.10.1",
-    "@vitest/coverage-v8": "^4.0.13",
+    "@vitest/coverage-v8": "^4.0.15",
     "jsdom": "^27.2.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "size-limit": "^11.2.0",
     "swr": "^2.3.6",
     "typescript": "^5.9.3",
-    "ultracite": "^6.3.6",
-    "vite": "^7.2.4",
+    "ultracite": "^6.3.10",
+    "vite": "^7.2.7",
     "vite-plugin-dts": "^4.5.4",
     "vitest": "^4.0.7"
   }
