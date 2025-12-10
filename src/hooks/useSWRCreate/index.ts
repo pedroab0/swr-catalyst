@@ -99,7 +99,7 @@ import type { CreateFunction } from "./types";
  */
 export function useSWRCreate<TData = unknown, TCache = unknown, TError = Error>(
   key: SWRKey<TData>,
-  createFunction: CreateFunction<TData, TCache>,
+  createFunction: CreateFunction<TData>,
   options: MutateOptions<TCache, TData> = {}
 ) {
   const { cache, mutate } = useSWRConfig();

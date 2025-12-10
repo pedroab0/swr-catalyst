@@ -128,7 +128,7 @@ import type { UpdateFunction } from "./types";
  */
 export function useSWRUpdate<TData = unknown, TCache = unknown, TError = Error>(
   key: SWRKey,
-  updateFunction: UpdateFunction<TData, TCache>,
+  updateFunction: UpdateFunction<TData>,
   options: MutateOptions<TCache, { id: string | number; data: TData }> = {}
 ) {
   const { cache, mutate } = useSWRConfig();

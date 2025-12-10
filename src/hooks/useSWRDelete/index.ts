@@ -111,13 +111,9 @@ import type { DeleteFunction } from "./types";
  *
  * // Later, you can use mutateByGroup('user-data') to revalidate all related caches
  */
-export function useSWRDelete<
-  TCache = unknown,
-  TResult = unknown,
-  TError = Error,
->(
+export function useSWRDelete<TCache = unknown, TError = Error>(
   key: SWRKey,
-  deleteFunction: DeleteFunction<TResult>,
+  deleteFunction: DeleteFunction,
   options: MutateOptions<TCache, string | number> = {}
 ) {
   const { cache, mutate } = useSWRConfig();
