@@ -1,6 +1,6 @@
-export { ApiError } from "../errors";
-
 export type { Todo, ValidationErrorResponse } from "../types";
+
+export { ApiError } from "../errors";
 
 export {
   createTodo,
@@ -9,7 +9,6 @@ export {
   fetchTodos,
   updateTodo,
 } from "./fetchers";
-
 export {
   createMockTodo,
   renderHookWithGlobalCache,

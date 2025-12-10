@@ -1,5 +1,5 @@
-import useSWR from "swr";
 import { act, waitFor } from "@testing-library/react";
+import useSWR from "swr";
 import { describe, expect, it } from "vitest";
 
 import type { SWRKey } from "@/types";
@@ -157,34 +157,34 @@ describe("useSWRUpdate - Integration Tests", () => {
     expect(todoToUpdate).toBeDefined();
 
     await act(async () => {
-      await result.current.update.trigger(todoToUpdate!.id, {
+      await result.current.update.trigger(todoToUpdate?.id as number, {
         title: "First Update",
       });
     });
 
     await waitFor(() => {
       const updated = result.current.swr.data?.find(
-        (t: Todo) => t.id === todoToUpdate!.id
+        (t: Todo) => t.id === todoToUpdate?.id
       );
       expect(updated?.title).toBe("First Update");
     });
 
     await act(async () => {
-      await result.current.update.trigger(todoToUpdate!.id, {
+      await result.current.update.trigger(todoToUpdate?.id as number, {
         completed: true,
       });
     });
 
     await waitFor(() => {
       const updated = result.current.swr.data?.find(
-        (t: Todo) => t.id === todoToUpdate!.id
+        (t: Todo) => t.id === todoToUpdate?.id
       );
       expect(updated?.title).toBe("First Update");
       expect(updated?.completed).toBe(true);
     });
 
     await act(async () => {
-      await result.current.update.trigger(todoToUpdate!.id, {
+      await result.current.update.trigger(todoToUpdate?.id as number, {
         title: "Final Update",
         completed: false,
       });
@@ -192,7 +192,7 @@ describe("useSWRUpdate - Integration Tests", () => {
 
     await waitFor(() => {
       const updated = result.current.swr.data?.find(
-        (t: Todo) => t.id === todoToUpdate!.id
+        (t: Todo) => t.id === todoToUpdate?.id
       );
       expect(updated?.title).toBe("Final Update");
       expect(updated?.completed).toBe(false);

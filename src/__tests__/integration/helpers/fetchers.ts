@@ -1,6 +1,6 @@
-import { ApiError } from "../errors";
-
 import type { Todo, ValidationErrorResponse } from "../types";
+
+import { ApiError } from "../errors";
 
 async function handleResponse<T>(
   res: Response,

@@ -1,5 +1,5 @@
-import useSWR from "swr";
 import { act, waitFor } from "@testing-library/react";
+import useSWR from "swr";
 import { describe, expect, it } from "vitest";
 
 import type { SWRKey } from "@/types";

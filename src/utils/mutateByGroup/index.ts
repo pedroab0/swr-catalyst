@@ -2,6 +2,7 @@ import type { MutatorOptions } from "swr";
 import { mutate } from "swr";
 
 import { MutationError, type MutationErrorContext } from "@/errors";
+
 import { extractSWRKey } from "../extractSWRKey";
 
 /**

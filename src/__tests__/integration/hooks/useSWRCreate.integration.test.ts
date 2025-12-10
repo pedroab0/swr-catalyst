@@ -1,13 +1,13 @@
-import useSWR from "swr";
 import { act, waitFor } from "@testing-library/react";
+import useSWR from "swr";
 import { describe, expect, it } from "vitest";
 
 import type { SWRKey } from "@/types";
 import type { Todo } from "../helpers";
 
-import { useSWRCreate } from "@/hooks";
-
 import { createTodo, fetchTodos, renderHookWithSWR } from "../helpers";
+
+import { useSWRCreate } from "@/hooks";
 
 describe("useSWRCreate - Integration Tests", () => {
   const todosKey: SWRKey<Todo> = {

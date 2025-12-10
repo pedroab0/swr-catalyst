@@ -1,12 +1,11 @@
+import { act, waitFor } from "@testing-library/react";
 import useSWR from "swr";
 import { describe, expect, it } from "vitest";
-import { act, waitFor } from "@testing-library/react";
 
 import type { SWRKey } from "@/types";
 import type { Todo } from "../helpers";
 
 import { mutateById } from "@/utils";
-
 import { fetchTodos, renderHookWithGlobalCache, uniqueKeyId } from "../helpers";
 
 describe("mutateById - Integration Tests", () => {

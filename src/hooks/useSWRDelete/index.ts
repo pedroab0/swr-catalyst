@@ -2,9 +2,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useSWRConfig } from "swr";
 
 import type { MutateOptions, SWRKey } from "@/types";
+import type { DeleteFunction } from "./types";
 
 import { swrMutate } from "@/utils";
-
 import {
   applyOptimisticUpdate,
   createMutationError,
@@ -12,8 +12,6 @@ import {
 } from "../shared/helpers";
 
 import { useStableKey } from "../useStableKey";
-
-import type { DeleteFunction } from "./types";
 
 /**
  * A hook for deleting data with SWR cache management and optimistic updates.

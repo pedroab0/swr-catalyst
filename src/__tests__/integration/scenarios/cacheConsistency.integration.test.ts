@@ -1,11 +1,16 @@
+import { act, waitFor } from "@testing-library/react";
 import useSWR from "swr";
 import { describe, expect, it } from "vitest";
-import { act, waitFor } from "@testing-library/react";
 
 import type { SWRKey } from "@/types";
 import type { Todo } from "../helpers";
 
-import { createTodo, fetchTodos, renderHookWithSWR, updateTodo } from "../helpers";
+import {
+  createTodo,
+  fetchTodos,
+  renderHookWithSWR,
+  updateTodo,
+} from "../helpers";
 
 import { useSWRCreate, useSWRUpdate } from "@/hooks";
 
@@ -85,7 +90,7 @@ describe("Cache Consistency Scenarios - Integration Tests", () => {
       const existingTodo = result.current.swr.data?.[0];
 
       await act(async () => {
-        await result.current.update.trigger(existingTodo!.id, {
+        await result.current.update.trigger(existingTodo?.id as number, {
           title: "Updated Title",
         });
       });

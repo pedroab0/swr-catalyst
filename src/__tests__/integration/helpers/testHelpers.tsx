@@ -1,6 +1,6 @@
+import { renderHook } from "@testing-library/react";
 // biome-ignore lint/style/useImportType: React import needed for JSX transform
 import React from "react";
-import { renderHook } from "@testing-library/react";
 import { SWRConfig } from "swr";
 
 import type { Todo } from "../types";

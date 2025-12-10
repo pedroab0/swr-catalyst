@@ -1,25 +1,24 @@
-import useSWR from "swr";
-import { HttpResponse, http } from "msw";
-import { describe, expect, it } from "vitest";
 import { act, waitFor } from "@testing-library/react";
-
-import { server } from "../setup/server";
+import { HttpResponse, http } from "msw";
+import useSWR from "swr";
+import { describe, expect, it } from "vitest";
 
 import type { SWRKey } from "@/types";
 import type { Todo } from "../helpers";
 
 import { MutationError } from "@/errors";
-
-import { useSWRCreate, useSWRUpdate, useSWRDelete } from "@/hooks";
-
 import {
   ApiError,
   createTodo,
-  fetchTodos,
-  updateTodo,
   deleteTodo,
+  fetchTodos,
   renderHookWithSWR,
+  updateTodo,
 } from "../helpers";
+
+import { useSWRCreate, useSWRDelete, useSWRUpdate } from "@/hooks";
+
+import { server } from "../setup/server";
 
 describe("Error Recovery Scenarios - Integration Tests", () => {
   const todosKey: SWRKey<Todo> = {
@@ -36,7 +35,7 @@ describe("Error Recovery Scenarios - Integration Tests", () => {
           throw new Error("Network error");
         }
 
-        return fetchTodos();
+        return await fetchTodos();
       };
 
       const { result } = renderHookWithSWR(() =>
@@ -122,7 +121,9 @@ describe("Error Recovery Scenarios - Integration Tests", () => {
 
         const update = useSWRUpdate(todosKey, failingUpdate, {
           optimisticUpdate: (currentData, { id, data }) => {
-            if (!currentData) return currentData;
+            if (!currentData) {
+              return currentData;
+            }
 
             return (currentData as Todo[]).map((todo) =>
               todo.id === id ? { ...todo, ...data } : todo
@@ -146,7 +147,7 @@ describe("Error Recovery Scenarios - Integration Tests", () => {
 
       await act(async () => {
         try {
-          await result.current.update.trigger(todoToUpdate!.id, {
+          await result.current.update.trigger(todoToUpdate?.id as number, {
             title: "Optimistic Title",
           });
         } catch {
@@ -586,7 +587,9 @@ describe("Error Recovery Scenarios - Integration Tests", () => {
 
         const update = useSWRUpdate(todosKey, updateTodo, {
           optimisticUpdate: (currentData, { id, data }) => {
-            if (!currentData) return currentData;
+            if (!currentData) {
+              return currentData;
+            }
 
             return (currentData as Todo[]).map((todo) =>
               todo.id === id ? { ...todo, ...data } : todo

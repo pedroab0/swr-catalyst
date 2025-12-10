@@ -2,8 +2,8 @@ import { act, waitFor } from "@testing-library/react";
 import useSWR from "swr";
 import { describe, expect, it } from "vitest";
 
-import type { Todo } from "../helpers";
 import type { SWRKey } from "@/types";
+import type { Todo } from "../helpers";
 
 import {
   createTodo,
@@ -93,7 +93,7 @@ describe("Concurrent Scenarios - Integration Tests", () => {
     expect(createdTodo).toBeDefined();
 
     await act(async () => {
-      await result.current.update.trigger(createdTodo!.id, {
+      await result.current.update.trigger(createdTodo?.id as number, {
         title: "Updated Todo",
         completed: true,
       });
@@ -101,7 +101,7 @@ describe("Concurrent Scenarios - Integration Tests", () => {
 
     await waitFor(() => {
       const updatedTodo = result.current.swr.data?.find(
-        (t: Todo) => t.id === createdTodo!.id
+        (t: Todo) => t.id === createdTodo?.id
       );
       expect(updatedTodo?.title).toBe("Updated Todo");
       expect(updatedTodo?.completed).toBe(true);
@@ -139,13 +139,13 @@ describe("Concurrent Scenarios - Integration Tests", () => {
     expect(createdTodo).toBeDefined();
 
     await act(async () => {
-      await result.current.del.trigger(createdTodo!.id);
+      await result.current.del.trigger(createdTodo?.id as number);
     });
 
     await waitFor(() => {
       expect(result.current.swr.data?.length).toBe(initialLength);
       const deletedTodo = result.current.swr.data?.find(
-        (t: Todo) => t.id === createdTodo!.id
+        (t: Todo) => t.id === createdTodo?.id
       );
       expect(deletedTodo).toBeUndefined();
     });
@@ -183,7 +183,7 @@ describe("Concurrent Scenarios - Integration Tests", () => {
     expect(createdTodo).toBeDefined();
 
     await act(async () => {
-      await result.current.update.trigger(createdTodo!.id, {
+      await result.current.update.trigger(createdTodo?.id as number, {
         title: "Updated CRUD Todo",
         completed: true,
       });
@@ -191,7 +191,7 @@ describe("Concurrent Scenarios - Integration Tests", () => {
 
     await waitFor(() => {
       const updated = result.current.swr.data?.find(
-        (t: Todo) => t.id === createdTodo!.id
+        (t: Todo) => t.id === createdTodo?.id
       );
 
       expect(updated?.title).toBe("Updated CRUD Todo");
@@ -199,13 +199,13 @@ describe("Concurrent Scenarios - Integration Tests", () => {
     });
 
     await act(async () => {
-      await result.current.del.trigger(createdTodo!.id);
+      await result.current.del.trigger(createdTodo?.id as number);
     });
 
     await waitFor(() => {
       expect(result.current.swr.data?.length).toBe(initialLength);
       const deleted = result.current.swr.data?.find(
-        (t: Todo) => t.id === createdTodo!.id
+        (t: Todo) => t.id === createdTodo?.id
       );
       expect(deleted).toBeUndefined();
     });
