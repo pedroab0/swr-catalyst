@@ -560,11 +560,11 @@ describe("Error Recovery Scenarios - Integration Tests", () => {
         expectedFetchCount: 2,
         expectedTitle: undefined,
       },
-    ])("$name", async ({ 
+    ])("$name", async ({
       mutateData,
       revalidate,
       expectedFetchCount,
-      expectedTitle
+      expectedTitle,
     }) => {
       const { result, getCount } = await setupCountingHook();
 
