@@ -4,6 +4,59 @@
     "./node_modules/ultracite/config/core/biome.jsonc",
     "./node_modules/ultracite/config/react/biome.jsonc"
   ],
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": {
+          "level": "on",
+          "options": {
+            "groups": [
+              [":BUN:", ":NODE:", ":PACKAGE:"],
+              ":BLANK_LINE:",
+              { "type": true },
+              ":BLANK_LINE:",
+              [
+                "@/helpers",
+                "@/helpers/**",
+                "@/utils",
+                "@/utils/**",
+                "@/utilities",
+                "@/utilities/**",
+                "@/errors",
+                "@/errors/**"
+              ],
+              [
+                "**/helpers",
+                "**/helpers/**",
+                "**/utils",
+                "**/utils/**",
+                "**/utilities",
+                "**/utilities/**",
+                "**/errors",
+                "**/errors/**"
+              ],
+              ":BLANK_LINE:",
+              ["@/constants", "@/constants/**", "@/enums", "@/enums/**"],
+              ["**/constants", "**/constants/**", "**/enums", "**/enums/**"],
+              ":BLANK_LINE:",
+              ["@/contexts", "@/contexts/**", "@/hooks", "@/hooks/**"],
+              ["**/contexts", "**/contexts/**", "**/hooks", "**/hooks/**"],
+              ":BLANK_LINE:",
+              ["@/components", "@/components/**"],
+              ["**/components", "**/components/**"],
+              ":BLANK_LINE:",
+              ["@/assets", "@/assets/**"],
+              ["**/assets", "**/assets/**"],
+              ":BLANK_LINE:",
+              ["@/**"],
+              ":BLANK_LINE:",
+              [":PATH:"]
+            ]
+          }
+        }
+      }
+    }
+  },
   "linter": {
     "rules": {
       "performance": {
@@ -16,7 +69,33 @@
             "maxAllowedComplexity": 20
           }
         }
+      },
+      "style": {
+        "useFilenamingConvention": {
+          "level": "error",
+          "options": {
+            "filenameCases": ["PascalCase", "camelCase"],
+            "strictCase": false
+          }
+        }
       }
     }
-  }
+  },
+  "overrides": [
+    {
+      "includes": [
+        "**/__tests__/**/*.ts",
+        "**/__tests__/**/*.tsx",
+        "**/*.test.ts",
+        "**/*.test.tsx"
+      ],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noMisplacedAssertion": "off"
+          }
+        }
+      }
+    }
+  ]
 }

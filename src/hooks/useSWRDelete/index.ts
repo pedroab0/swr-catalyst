@@ -2,9 +2,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useSWRConfig } from "swr";
 
 import type { MutateOptions, SWRKey } from "@/types";
+import type { DeleteFunction } from "./types";
 
 import { swrMutate } from "@/utils";
-
 import {
   applyOptimisticUpdate,
   createMutationError,
@@ -12,8 +12,6 @@ import {
 } from "../shared/helpers";
 
 import { useStableKey } from "../useStableKey";
-
-import type { DeleteFunction } from "./types";
 
 /**
  * A hook for deleting data with SWR cache management and optimistic updates.
@@ -111,13 +109,9 @@ import type { DeleteFunction } from "./types";
  *
  * // Later, you can use mutateByGroup('user-data') to revalidate all related caches
  */
-export function useSWRDelete<
-  TCache = unknown,
-  TResult = unknown,
-  TError = Error,
->(
+export function useSWRDelete<TCache = unknown, TError = Error>(
   key: SWRKey,
-  deleteFunction: DeleteFunction<TResult>,
+  deleteFunction: DeleteFunction,
   options: MutateOptions<TCache, string | number> = {}
 ) {
   const { cache, mutate } = useSWRConfig();

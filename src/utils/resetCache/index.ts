@@ -1,6 +1,7 @@
 import { mutate } from "swr";
 
 import { MutationError } from "@/errors";
+
 import { extractSWRKey } from "../extractSWRKey";
 
 type CacheKeyInput = string | string[] | null | undefined;

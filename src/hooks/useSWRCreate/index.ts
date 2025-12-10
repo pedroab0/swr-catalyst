@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useSWRConfig } from "swr";
 
 import type { MutateOptions, SWRKey } from "@/types";
+import type { CreateFunction } from "./types";
 
 import { swrMutate } from "@/utils";
 
@@ -10,10 +11,7 @@ import {
   createMutationError,
   rollbackOptimisticUpdate,
 } from "../shared";
-
 import { useStableKey } from "../useStableKey";
-
-import type { CreateFunction } from "./types";
 
 /**
  * A hook for creating new data with SWR cache management and optimistic updates.
@@ -99,7 +97,7 @@ import type { CreateFunction } from "./types";
  */
 export function useSWRCreate<TData = unknown, TCache = unknown, TError = Error>(
   key: SWRKey<TData>,
-  createFunction: CreateFunction<TData, TCache>,
+  createFunction: CreateFunction<TData>,
   options: MutateOptions<TCache, TData> = {}
 ) {
   const { cache, mutate } = useSWRConfig();

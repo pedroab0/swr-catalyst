@@ -1,6 +1,6 @@
-import { MutationError } from "@/errors";
-
 import type { SWRKey } from "@/types";
+
+import { MutationError } from "@/errors";
 
 /**
  * Creates a standardized MutationError with contextual information.

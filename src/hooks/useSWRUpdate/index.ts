@@ -2,9 +2,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useSWRConfig } from "swr";
 
 import type { MutateOptions, SWRKey } from "@/types";
+import type { UpdateFunction } from "./types";
 
 import { swrMutate } from "@/utils";
-
 import {
   applyOptimisticUpdate,
   createMutationError,
@@ -12,8 +12,6 @@ import {
 } from "../shared/helpers";
 
 import { useStableKey } from "../useStableKey";
-
-import type { UpdateFunction } from "./types";
 
 /**
  * A hook for updating existing data with SWR cache management and optimistic updates.
@@ -128,7 +126,7 @@ import type { UpdateFunction } from "./types";
  */
 export function useSWRUpdate<TData = unknown, TCache = unknown, TError = Error>(
   key: SWRKey,
-  updateFunction: UpdateFunction<TData, TCache>,
+  updateFunction: UpdateFunction<TData>,
   options: MutateOptions<TCache, { id: string | number; data: TData }> = {}
 ) {
   const { cache, mutate } = useSWRConfig();

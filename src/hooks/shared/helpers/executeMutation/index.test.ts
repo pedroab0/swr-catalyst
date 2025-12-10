@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { MutationError } from "@/errors";
 import type { SWRKey } from "@/types";
+
+import { MutationError } from "@/errors";
 
 import { executeMutation } from "./index";
 
