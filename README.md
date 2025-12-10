@@ -8,7 +8,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue)](https://www.typescriptlang.org/)
 [![Bundle Size](https://img.shields.io/bundlephobia/minzip/swr-catalyst)](https://bundlephobia.com/package/swr-catalyst)
 [![npm version](https://img.shields.io/npm/v/swr-catalyst?color=115%252C197%252C52)](https://www.npmjs.com/package/swr-catalyst)
-[![npm downloads](https://img.shields.io/npm/dm/swr-catalyst)](https://www.npmjs.com/package/swr-catalyst)
+[![npm downloads](https://img.shields.io/npm/dy/swr-catalyst)](https://www.npmjs.com/package/swr-catalyst)
 [![CI](https://github.com/pedroab0/swr-catalyst/actions/workflows/ci.yml/badge.svg)](https://github.com/pedroab0/swr-catalyst/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/github/pedroab0/swr-catalyst/graph/badge.svg?token=IL8XFDVYHU)](https://codecov.io/github/pedroab0/swr-catalyst)
 [![CodeScene Average Code Health](https://codescene.io/projects/73545/status-badges/average-code-health)](https://codescene.io/projects/73545)
