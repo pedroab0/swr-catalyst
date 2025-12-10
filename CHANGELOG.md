@@ -6,6 +6,14 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- Comprehensive integration test suite with MSW (closes #10)
+  - 53 integration tests covering all hooks and utilities
+  - Tests for `useSWRCreate`, `useSWRUpdate`, `useSWRDelete` with real SWR cache
+  - Tests for `mutateById`, `mutateByGroup`, `resetCache` utilities
+  - Error recovery scenarios including server validation errors (400/422)
+  - Cache consistency and revalidation timing tests
+  - Test helpers: `renderHookWithSWR`, `renderHookWithGlobalCache`, `ApiError` class
+- Testing guidelines added to CONTRIBUTING.md
 - CodeScene code health badge to README
 
 ### Changed
