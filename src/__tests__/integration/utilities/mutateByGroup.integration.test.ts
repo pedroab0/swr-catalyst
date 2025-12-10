@@ -8,6 +8,16 @@ import type { Todo } from "../helpers";
 import { mutateByGroup } from "@/utils";
 import { fetchTodos, renderHookWithGlobalCache, uniqueKeyId } from "../helpers";
 
+/** Asserts that todos data matches expected values */
+function assertTodosData(
+  data: Todo[] | undefined,
+  expected: { length: number; firstId: number; firstTitle: string }
+) {
+  expect(data?.length).toBe(expected.length);
+  expect(data?.[0].id).toBe(expected.firstId);
+  expect(data?.[0].title).toBe(expected.firstTitle);
+}
+
 describe("mutateByGroup - Integration Tests", () => {
   it("should revalidate cache entries by group", async () => {
     const groupName = uniqueKeyId("group-revalidate");
@@ -108,13 +118,15 @@ describe("mutateByGroup - Integration Tests", () => {
       await mutateByGroup(groupName, newData, { revalidate: false });
     });
 
+    const expectedData = {
+      length: 1,
+      firstId: 999,
+      firstTitle: "Group Mutated",
+    };
+
     await waitFor(() => {
-      expect(result.current.todos.data?.length).toBe(1);
-      expect(result.current.todos.data?.[0].id).toBe(999);
-      expect(result.current.todos.data?.[0].title).toBe("Group Mutated");
-      expect(result.current.settings.data?.length).toBe(1);
-      expect(result.current.settings.data?.[0].id).toBe(999);
-      expect(result.current.settings.data?.[0].title).toBe("Group Mutated");
+      assertTodosData(result.current.todos.data, expectedData);
+      assertTodosData(result.current.settings.data, expectedData);
     });
   });
 
