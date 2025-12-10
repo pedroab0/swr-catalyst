@@ -1,3 +1,5 @@
+import { isNullish } from "../isNullish";
+
 /**
  * Performs a deep equality check between two values.
  *
@@ -13,7 +15,7 @@ export function deepEqual(a: unknown, b: unknown): boolean {
     return true;
   }
 
-  if (a == null || b == null) {
+  if (isNullish(a) || isNullish(b)) {
     return a === b;
   }
 
