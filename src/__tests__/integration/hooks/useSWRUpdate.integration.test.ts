@@ -191,7 +191,6 @@ describe("useSWRUpdate - Integration Tests", () => {
 
     const todoId = todoToUpdate?.id as number;
 
-    // Sequential updates with cumulative expected state
     await updateAndVerify(
       result,
       todoId,
