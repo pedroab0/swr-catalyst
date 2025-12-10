@@ -20,6 +20,71 @@ import { useSWRCreate, useSWRDelete, useSWRUpdate } from "@/hooks";
 
 import { server } from "../setup/server";
 
+/**
+ * Creates a counting fetcher that tracks how many times it's called.
+ * Useful for testing revalidation behavior.
+ */
+function createCountingFetcher() {
+  let fetchCount = 0;
+
+  const fetcher = () => {
+    fetchCount += 1;
+    return fetchTodos();
+  };
+
+  const getCount = () => fetchCount;
+
+  return { fetcher, getCount };
+}
+
+/**
+ * Creates a mock server handler for validation/API errors.
+ */
+function mockApiError(
+  method: "post" | "patch" | "delete",
+  path: string,
+  errorPayload: { error: string; code: string; details?: Record<string, string> },
+  status: number
+) {
+  const handlers = {
+    post: http.post,
+    patch: http.patch,
+    delete: http.delete,
+  };
+
+  server.use(
+    handlers[method](path, () => HttpResponse.json(errorPayload, { status }))
+  );
+}
+
+/**
+ * Asserts that an error is a MutationError wrapping an ApiError with expected properties.
+ */
+function assertApiError(
+  error: unknown,
+  expectedStatus: number,
+  expectedCode: string,
+  checks?: { isValidationError?: boolean; isNotFound?: boolean }
+) {
+  expect(error).toBeInstanceOf(MutationError);
+
+  const mutationError = error as MutationError;
+  expect(mutationError.originalError).toBeInstanceOf(ApiError);
+
+  const apiError = mutationError.originalError as ApiError;
+  expect(apiError.status).toBe(expectedStatus);
+  expect(apiError.code).toBe(expectedCode);
+
+  if (checks?.isValidationError !== undefined) {
+    expect(apiError.isValidationError()).toBe(checks.isValidationError);
+  }
+  if (checks?.isNotFound !== undefined) {
+    expect(apiError.isNotFound()).toBe(checks.isNotFound);
+  }
+
+  return apiError;
+}
+
 describe("Error Recovery Scenarios - Integration Tests", () => {
   const todosKey: SWRKey<Todo> = {
     id: "todos",
@@ -295,20 +360,20 @@ describe("Error Recovery Scenarios - Integration Tests", () => {
 
   describe("Server Validation Errors (400/422)", () => {
     it("should handle 400 Bad Request with validation details", async () => {
-      server.use(
-        http.post("/api/todos", () =>
-          HttpResponse.json(
-            {
-              error: "Validation failed",
-              code: "VALIDATION_ERROR",
-              details: {
-                title: "Title is required",
-                completed: "Must be a boolean",
-              },
-            },
-            { status: 400 }
-          )
-        )
+      const errorDetails = {
+        title: "Title is required",
+        completed: "Must be a boolean",
+      };
+
+      mockApiError(
+        "post",
+        "/api/todos",
+        {
+          error: "Validation failed",
+          code: "VALIDATION_ERROR",
+          details: errorDetails,
+        },
+        400
       );
 
       const { result } = renderHookWithSWR(() =>
@@ -319,21 +384,10 @@ describe("Error Recovery Scenarios - Integration Tests", () => {
         try {
           await result.current.trigger({ id: 1, title: "", completed: false });
         } catch (error) {
-          expect(error).toBeInstanceOf(MutationError);
-
-          const mutationError = error as MutationError;
-
-          expect(mutationError.originalError).toBeInstanceOf(ApiError);
-
-          const apiError = mutationError.originalError as ApiError;
-
-          expect(apiError.status).toBe(400);
-          expect(apiError.code).toBe("VALIDATION_ERROR");
-          expect(apiError.isValidationError()).toBe(true);
-          expect(apiError.details).toEqual({
-            title: "Title is required",
-            completed: "Must be a boolean",
+          const apiError = assertApiError(error, 400, "VALIDATION_ERROR", {
+            isValidationError: true,
           });
+          expect(apiError.details).toEqual(errorDetails);
         }
       });
 
@@ -341,19 +395,15 @@ describe("Error Recovery Scenarios - Integration Tests", () => {
     });
 
     it("should handle 422 Unprocessable Entity", async () => {
-      server.use(
-        http.patch("/api/todos/:id", () =>
-          HttpResponse.json(
-            {
-              error: "Entity cannot be processed",
-              code: "UNPROCESSABLE_ENTITY",
-              details: {
-                title: "Title must be at least 3 characters",
-              },
-            },
-            { status: 422 }
-          )
-        )
+      mockApiError(
+        "patch",
+        "/api/todos/:id",
+        {
+          error: "Entity cannot be processed",
+          code: "UNPROCESSABLE_ENTITY",
+          details: { title: "Title must be at least 3 characters" },
+        },
+        422
       );
 
       const { result } = renderHookWithSWR(() =>
@@ -364,17 +414,9 @@ describe("Error Recovery Scenarios - Integration Tests", () => {
         try {
           await result.current.trigger(1, { title: "ab" });
         } catch (error) {
-          expect(error).toBeInstanceOf(MutationError);
-
-          const mutationError = error as MutationError;
-
-          expect(mutationError.originalError).toBeInstanceOf(ApiError);
-
-          const apiError = mutationError.originalError as ApiError;
-
-          expect(apiError.status).toBe(422);
-          expect(apiError.code).toBe("UNPROCESSABLE_ENTITY");
-          expect(apiError.isValidationError()).toBe(true);
+          assertApiError(error, 422, "UNPROCESSABLE_ENTITY", {
+            isValidationError: true,
+          });
         }
       });
 
@@ -382,13 +424,11 @@ describe("Error Recovery Scenarios - Integration Tests", () => {
     });
 
     it("should distinguish validation errors from network errors", async () => {
-      server.use(
-        http.post("/api/todos", () =>
-          HttpResponse.json(
-            { error: "Validation failed", code: "VALIDATION_ERROR" },
-            { status: 400 }
-          )
-        )
+      mockApiError(
+        "post",
+        "/api/todos",
+        { error: "Validation failed", code: "VALIDATION_ERROR" },
+        400
       );
 
       const { result: validationResult } = renderHookWithSWR(() =>
@@ -410,13 +450,11 @@ describe("Error Recovery Scenarios - Integration Tests", () => {
       });
 
       expect(caughtError).toBeDefined();
-      expect(caughtError).toBeInstanceOf(MutationError);
-      expect(caughtError?.originalError).toBeInstanceOf(ApiError);
 
-      const apiError = caughtError?.originalError as ApiError;
-
-      expect(apiError.isValidationError()).toBe(true);
-      expect(apiError.isNotFound()).toBe(false);
+      assertApiError(caughtError, 400, "VALIDATION_ERROR", {
+        isValidationError: true,
+        isNotFound: false,
+      });
 
       const networkFailingCreate = (_data: Todo): Promise<Todo> => {
         const error = new Error("Network request failed");
@@ -450,13 +488,11 @@ describe("Error Recovery Scenarios - Integration Tests", () => {
     });
 
     it("should handle 404 Not Found on delete", async () => {
-      server.use(
-        http.delete("/api/todos/:id", () =>
-          HttpResponse.json(
-            { error: "Todo not found", code: "NOT_FOUND" },
-            { status: 404 }
-          )
-        )
+      mockApiError(
+        "delete",
+        "/api/todos/:id",
+        { error: "Todo not found", code: "NOT_FOUND" },
+        404
       );
 
       const { result } = renderHookWithSWR(() =>
@@ -467,116 +503,78 @@ describe("Error Recovery Scenarios - Integration Tests", () => {
         try {
           await result.current.trigger(999);
         } catch (error) {
-          expect(error).toBeInstanceOf(MutationError);
-
-          const mutationError = error as MutationError;
-
-          expect(mutationError.originalError).toBeInstanceOf(ApiError);
-
-          const apiError = mutationError.originalError as ApiError;
-
-          expect(apiError.status).toBe(404);
-          expect(apiError.isNotFound()).toBe(true);
-          expect(apiError.isValidationError()).toBe(false);
+          assertApiError(error, 404, "NOT_FOUND", {
+            isNotFound: true,
+            isValidationError: false,
+          });
         }
       });
     });
   });
 
   describe("Revalidation Timing", () => {
-    it("should skip network request when revalidate is false", async () => {
-      let fetchCount = 0;
+    const swrOptions = {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    };
 
-      const countingFetcher = () => {
-        fetchCount += 1;
-
-        return fetchTodos();
-      };
-
+    async function setupCountingHook() {
+      const { fetcher, getCount } = createCountingFetcher();
       const { result } = renderHookWithSWR(() =>
-        useSWR(todosKey, countingFetcher, {
-          revalidateOnFocus: false,
-          revalidateOnReconnect: false,
-        })
+        useSWR(todosKey, fetcher, swrOptions)
       );
 
       await waitFor(() => expect(result.current.data).toBeDefined());
+      expect(getCount()).toBe(1);
 
-      expect(fetchCount).toBe(1);
+      return { result, getCount };
+    }
 
-      await act(async () => {
-        await result.current.mutate(
-          [{ id: 100, title: "Local Update", completed: true }],
-          { revalidate: false }
-        );
-      });
+    it.each([
+      {
+        name: "should skip network request when revalidate is false",
+        mutateData: [
+          { id: 100, title: "Local Update", completed: true },
+        ] as Todo[],
+        revalidate: false,
+        expectedFetchCount: 1,
+        expectedTitle: "Local Update",
+      },
+      {
+        name: "should trigger network request when revalidate is true",
+        mutateData: [
+          { id: 100, title: "Will Be Overwritten", completed: true },
+        ] as Todo[],
+        revalidate: true,
+        expectedFetchCount: 2,
+        expectedTitle: "Test Todo 1",
+      },
+      {
+        name: "should default to revalidate when mutate is called without data",
+        mutateData: undefined,
+        revalidate: undefined,
+        expectedFetchCount: 2,
+        expectedTitle: undefined,
+      },
+    ])(
+      "$name",
+      async ({ mutateData, revalidate, expectedFetchCount, expectedTitle }) => {
+        const { result, getCount } = await setupCountingHook();
 
-      expect(fetchCount).toBe(1);
-      expect(result.current.data?.[0].title).toBe("Local Update");
-    });
+        await act(async () => {
+          await result.current.mutate(
+            mutateData,
+            revalidate !== undefined ? { revalidate } : undefined
+          );
+        });
 
-    it("should trigger network request when revalidate is true", async () => {
-      let fetchCount = 0;
+        await waitFor(() => expect(getCount()).toBe(expectedFetchCount));
 
-      const countingFetcher = () => {
-        fetchCount += 1;
-
-        return fetchTodos();
-      };
-
-      const { result } = renderHookWithSWR(() =>
-        useSWR(todosKey, countingFetcher, {
-          revalidateOnFocus: false,
-          revalidateOnReconnect: false,
-        })
-      );
-
-      await waitFor(() => expect(result.current.data).toBeDefined());
-
-      expect(fetchCount).toBe(1);
-
-      await act(async () => {
-        await result.current.mutate(
-          [{ id: 100, title: "Will Be Overwritten", completed: true }],
-          { revalidate: true }
-        );
-      });
-
-      await waitFor(() => {
-        expect(fetchCount).toBe(2);
-      });
-
-      expect(result.current.data?.[0].title).toBe("Test Todo 1");
-    });
-
-    it("should default to revalidate when mutate is called without data", async () => {
-      let fetchCount = 0;
-
-      const countingFetcher = () => {
-        fetchCount += 1;
-
-        return fetchTodos();
-      };
-
-      const { result } = renderHookWithSWR(() =>
-        useSWR(todosKey, countingFetcher, {
-          revalidateOnFocus: false,
-          revalidateOnReconnect: false,
-        })
-      );
-
-      await waitFor(() => expect(result.current.data).toBeDefined());
-
-      expect(fetchCount).toBe(1);
-
-      await act(async () => {
-        await result.current.mutate();
-      });
-
-      await waitFor(() => {
-        expect(fetchCount).toBe(2);
-      });
-    });
+        if (expectedTitle) {
+          expect(result.current.data?.[0].title).toBe(expectedTitle);
+        }
+      }
+    );
 
     it("should preserve local changes with revalidate: false on mutation hook", async () => {
       const { result } = renderHookWithSWR(() => {
