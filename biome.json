@@ -16,6 +16,15 @@
             "maxAllowedComplexity": 20
           }
         }
+      },
+      "style": {
+        "useFilenamingConvention": {
+          "level": "error",
+          "options": {
+            "filenameCases": ["PascalCase", "camelCase"],
+            "strictCase": false
+          }
+        }
       }
     }
   }
