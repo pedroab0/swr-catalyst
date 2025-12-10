@@ -560,25 +560,27 @@ describe("Error Recovery Scenarios - Integration Tests", () => {
         expectedFetchCount: 2,
         expectedTitle: undefined,
       },
-    ])(
-      "$name",
-      async ({ mutateData, revalidate, expectedFetchCount, expectedTitle }) => {
-        const { result, getCount } = await setupCountingHook();
+    ])("$name", async ({ 
+      mutateData,
+      revalidate,
+      expectedFetchCount,
+      expectedTitle
+    }) => {
+      const { result, getCount } = await setupCountingHook();
 
-        await act(async () => {
-          await result.current.mutate(
-            mutateData,
-            revalidate !== undefined ? { revalidate } : undefined
-          );
-        });
+      await act(async () => {
+        await result.current.mutate(
+          mutateData,
+          revalidate !== undefined ? { revalidate } : undefined
+        );
+      });
 
-        await waitFor(() => expect(getCount()).toBe(expectedFetchCount));
+      await waitFor(() => expect(getCount()).toBe(expectedFetchCount));
 
-        if (expectedTitle) {
-          expect(result.current.data?.[0].title).toBe(expectedTitle);
-        }
+      if (expectedTitle) {
+        expect(result.current.data?.[0].title).toBe(expectedTitle);
       }
-    );
+    });
 
     it("should preserve local changes with revalidate: false on mutation hook", async () => {
       const { result } = renderHookWithSWR(() => {
