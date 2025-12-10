@@ -20,6 +20,39 @@ describe("useSWRUpdate - Integration Tests", () => {
     data: Partial<{ title: string; completed: boolean }>
   ) => updateTodo(Number(id), data);
 
+  /** Finds a todo by id in the data array */
+  const findTodoById = (data: Todo[] | undefined, id: number) =>
+    data?.find((t: Todo) => t.id === id);
+
+  /** Updates a todo and waits for the expected state */
+  async function updateAndVerify(
+    result: {
+      current: {
+        swr: { data?: Todo[] };
+        update: {
+          trigger: (id: number, data: Partial<Todo>) => Promise<unknown>;
+        };
+      };
+    },
+    todoId: number,
+    updateData: Partial<Todo>,
+    expectedState: { title?: string; completed?: boolean }
+  ) {
+    await act(async () => {
+      await result.current.update.trigger(todoId, updateData);
+    });
+
+    await waitFor(() => {
+      const updated = findTodoById(result.current.swr.data, todoId);
+      if (expectedState.title !== undefined) {
+        expect(updated?.title).toBe(expectedState.title);
+      }
+      if (expectedState.completed !== undefined) {
+        expect(updated?.completed).toBe(expectedState.completed);
+      }
+    });
+  }
+
   it("should update existing item in real SWR cache", async () => {
     const { result } = renderHookWithSWR(() => {
       const swr = useSWR(todosKey, fetchTodos);
@@ -156,47 +189,29 @@ describe("useSWRUpdate - Integration Tests", () => {
     const todoToUpdate = result.current.swr.data?.[0];
     expect(todoToUpdate).toBeDefined();
 
-    await act(async () => {
-      await result.current.update.trigger(todoToUpdate?.id as number, {
-        title: "First Update",
-      });
-    });
+    const todoId = todoToUpdate?.id as number;
 
-    await waitFor(() => {
-      const updated = result.current.swr.data?.find(
-        (t: Todo) => t.id === todoToUpdate?.id
-      );
-      expect(updated?.title).toBe("First Update");
-    });
+    // Sequential updates with cumulative expected state
+    await updateAndVerify(
+      result,
+      todoId,
+      { title: "First Update" },
+      { title: "First Update" }
+    );
 
-    await act(async () => {
-      await result.current.update.trigger(todoToUpdate?.id as number, {
-        completed: true,
-      });
-    });
+    await updateAndVerify(
+      result,
+      todoId,
+      { completed: true },
+      { title: "First Update", completed: true }
+    );
 
-    await waitFor(() => {
-      const updated = result.current.swr.data?.find(
-        (t: Todo) => t.id === todoToUpdate?.id
-      );
-      expect(updated?.title).toBe("First Update");
-      expect(updated?.completed).toBe(true);
-    });
-
-    await act(async () => {
-      await result.current.update.trigger(todoToUpdate?.id as number, {
-        title: "Final Update",
-        completed: false,
-      });
-    });
-
-    await waitFor(() => {
-      const updated = result.current.swr.data?.find(
-        (t: Todo) => t.id === todoToUpdate?.id
-      );
-      expect(updated?.title).toBe("Final Update");
-      expect(updated?.completed).toBe(false);
-    });
+    await updateAndVerify(
+      result,
+      todoId,
+      { title: "Final Update", completed: false },
+      { title: "Final Update", completed: false }
+    );
 
     expect(result.current.update.error).toBeNull();
   });
