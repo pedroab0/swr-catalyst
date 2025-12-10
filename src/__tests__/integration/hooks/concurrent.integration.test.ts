@@ -28,6 +28,49 @@ describe("Concurrent Scenarios - Integration Tests", () => {
 
   const deleteTodoWrapper = (id: string | number) => deleteTodo(Number(id));
 
+  /** Finds a todo by title in the data array */
+  const findTodoByTitle = (data: Todo[] | undefined, title: string) =>
+    data?.find((t: Todo) => t.title === title);
+
+  /** Finds a todo by id in the data array */
+  const findTodoById = (data: Todo[] | undefined, id: number) =>
+    data?.find((t: Todo) => t.id === id);
+
+  /** Creates a todo and waits for it to appear in the cache */
+  async function createAndWaitForTodo(
+    result: {
+      current: {
+        swr: { data?: Todo[] };
+        create: { trigger: (data: Todo) => Promise<unknown> };
+      };
+    },
+    todoData: Todo,
+    expectedLength: number
+  ) {
+    await act(async () => {
+      await result.current.create.trigger(todoData);
+    });
+
+    await waitFor(() => {
+      expect(result.current.swr.data?.length).toBe(expectedLength);
+    });
+
+    return findTodoByTitle(result.current.swr.data, todoData.title);
+  }
+
+  /** Asserts that a todo has the expected properties */
+  function assertTodoProperties(
+    todo: Todo | undefined,
+    expected: { title?: string; completed?: boolean }
+  ) {
+    if (expected.title !== undefined) {
+      expect(todo?.title).toBe(expected.title);
+    }
+    if (expected.completed !== undefined) {
+      expect(todo?.completed).toBe(expected.completed);
+    }
+  }
+
   it("should handle multiple hooks using same cache key", async () => {
     const { result } = renderHookWithSWR(() => {
       const swr1 = useSWR(todosKey, fetchTodos);
@@ -74,21 +117,12 @@ describe("Concurrent Scenarios - Integration Tests", () => {
     await waitFor(() => expect(result.current.swr.data).toBeDefined());
 
     const initialLength = result.current.swr.data?.length ?? 0;
+    const todoData = { id: 1, title: "New Todo for Update", completed: false };
 
-    await act(async () => {
-      await result.current.create.trigger({
-        id: 1,
-        title: "New Todo for Update",
-        completed: false,
-      });
-    });
-
-    await waitFor(() => {
-      expect(result.current.swr.data?.length).toBe(initialLength + 1);
-    });
-
-    const createdTodo = result.current.swr.data?.find(
-      (t: Todo) => t.title === "New Todo for Update"
+    const createdTodo = await createAndWaitForTodo(
+      result,
+      todoData,
+      initialLength + 1
     );
     expect(createdTodo).toBeDefined();
 
@@ -100,11 +134,14 @@ describe("Concurrent Scenarios - Integration Tests", () => {
     });
 
     await waitFor(() => {
-      const updatedTodo = result.current.swr.data?.find(
-        (t: Todo) => t.id === createdTodo?.id
+      const updatedTodo = findTodoById(
+        result.current.swr.data,
+        createdTodo?.id as number
       );
-      expect(updatedTodo?.title).toBe("Updated Todo");
-      expect(updatedTodo?.completed).toBe(true);
+      assertTodoProperties(updatedTodo, {
+        title: "Updated Todo",
+        completed: true,
+      });
     });
   });
 
@@ -120,21 +157,12 @@ describe("Concurrent Scenarios - Integration Tests", () => {
     await waitFor(() => expect(result.current.swr.data).toBeDefined());
 
     const initialLength = result.current.swr.data?.length ?? 0;
+    const todoData = { id: 1, title: "Todo to Delete", completed: false };
 
-    await act(async () => {
-      await result.current.create.trigger({
-        id: 1,
-        title: "Todo to Delete",
-        completed: false,
-      });
-    });
-
-    await waitFor(() => {
-      expect(result.current.swr.data?.length).toBe(initialLength + 1);
-    });
-
-    const createdTodo = result.current.swr.data?.find(
-      (t: Todo) => t.title === "Todo to Delete"
+    const createdTodo = await createAndWaitForTodo(
+      result,
+      todoData,
+      initialLength + 1
     );
     expect(createdTodo).toBeDefined();
 
@@ -144,10 +172,9 @@ describe("Concurrent Scenarios - Integration Tests", () => {
 
     await waitFor(() => {
       expect(result.current.swr.data?.length).toBe(initialLength);
-      const deletedTodo = result.current.swr.data?.find(
-        (t: Todo) => t.id === createdTodo?.id
-      );
-      expect(deletedTodo).toBeUndefined();
+      expect(
+        findTodoById(result.current.swr.data, createdTodo?.id as number)
+      ).toBeUndefined();
     });
   });
 
@@ -164,21 +191,12 @@ describe("Concurrent Scenarios - Integration Tests", () => {
     await waitFor(() => expect(result.current.swr.data).toBeDefined());
 
     const initialLength = result.current.swr.data?.length ?? 0;
+    const todoData = { id: 1, title: "CRUD Test Todo", completed: false };
 
-    await act(async () => {
-      await result.current.create.trigger({
-        id: 1,
-        title: "CRUD Test Todo",
-        completed: false,
-      });
-    });
-
-    await waitFor(() => {
-      expect(result.current.swr.data?.length).toBe(initialLength + 1);
-    });
-
-    const createdTodo = result.current.swr.data?.find(
-      (t: Todo) => t.title === "CRUD Test Todo"
+    const createdTodo = await createAndWaitForTodo(
+      result,
+      todoData,
+      initialLength + 1
     );
     expect(createdTodo).toBeDefined();
 
@@ -190,12 +208,14 @@ describe("Concurrent Scenarios - Integration Tests", () => {
     });
 
     await waitFor(() => {
-      const updated = result.current.swr.data?.find(
-        (t: Todo) => t.id === createdTodo?.id
+      const updated = findTodoById(
+        result.current.swr.data,
+        createdTodo?.id as number
       );
-
-      expect(updated?.title).toBe("Updated CRUD Todo");
-      expect(updated?.completed).toBe(true);
+      assertTodoProperties(updated, {
+        title: "Updated CRUD Todo",
+        completed: true,
+      });
     });
 
     await act(async () => {
@@ -204,10 +224,9 @@ describe("Concurrent Scenarios - Integration Tests", () => {
 
     await waitFor(() => {
       expect(result.current.swr.data?.length).toBe(initialLength);
-      const deleted = result.current.swr.data?.find(
-        (t: Todo) => t.id === createdTodo?.id
-      );
-      expect(deleted).toBeUndefined();
+      expect(
+        findTodoById(result.current.swr.data, createdTodo?.id as number)
+      ).toBeUndefined();
     });
 
     expect(result.current.create.error).toBeNull();
