@@ -8,7 +8,7 @@ import type { Todo } from "../helpers";
 import { mutateByGroup } from "@/utils";
 import { fetchTodos, renderHookWithGlobalCache, uniqueKeyId } from "../helpers";
 
-/** Asserts that todos data matches expected values */
+/** Asserts that todos data matches expected values. */
 function assertTodosData(
   data: Todo[] | undefined,
   expected: { length: number; firstId: number; firstTitle: string }

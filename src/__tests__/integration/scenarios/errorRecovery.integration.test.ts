@@ -43,7 +43,11 @@ function createCountingFetcher() {
 function mockApiError(
   method: "post" | "patch" | "delete",
   path: string,
-  errorPayload: { error: string; code: string; details?: Record<string, string> },
+  errorPayload: {
+    error: string;
+    code: string;
+    details?: Record<string, string>;
+  },
   status: number
 ) {
   const handlers = {
