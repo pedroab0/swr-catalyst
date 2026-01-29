@@ -17,7 +17,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6.0.1
+        uses: actions/checkout@v6.0.2
 
       - name: Setup Node.js
         uses: actions/setup-node@v6.2.0
@@ -37,7 +37,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6.0.1
+        uses: actions/checkout@v6.0.2
 
       - name: Setup Node.js
         uses: actions/setup-node@v6.2.0
@@ -57,7 +57,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6.0.1
+        uses: actions/checkout@v6.0.2
 
       - name: Setup Node.js
         uses: actions/setup-node@v6.2.0
@@ -90,7 +90,7 @@ jobs:
         node-version: [20.x, 22.x]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6.0.1
+        uses: actions/checkout@v6.0.2
 
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v6.2.0
