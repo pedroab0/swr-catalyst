@@ -1,8 +1,8 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "extends": [
-    "./node_modules/ultracite/config/core/biome.jsonc",
-    "./node_modules/ultracite/config/react/biome.jsonc"
+    "./node_modules/ultracite/config/biome/core/biome.jsonc",
+    "./node_modules/ultracite/config/biome/react/biome.jsonc"
   ],
   "assist": {
     "actions": {
@@ -71,6 +71,12 @@
         }
       },
       "style": {
+        "useConsistentTypeDefinitions": {
+          "level": "error",
+          "options": {
+            "style": "type"
+          }
+        },
         "useFilenamingConvention": {
           "level": "error",
           "options": {
