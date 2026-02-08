@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.1]
+
+### Changed
+
+- Upgraded `ultracite` to v7 with updated Biome config paths
+- Extracted nullish check into reusable `isNullish` utility function
+- Routine dev dependency and GitHub Actions bumps
+
+### Fixed
+
+- Biome config compatibility for `ultracite` v7 (`useConsistentTypeDefinitions` override, updated extends paths)
+
 ## [0.3.0]
 
 ### Added
@@ -103,7 +115,8 @@ Initial release.
 - Full TypeScript support with generics
 - Comprehensive JSDoc documentation
 
-[Unreleased]: https://github.com/pedroab0/swr-catalyst/compare/v0.2.2...HEAD
+[Unreleased]: https://github.com/pedroab0/swr-catalyst/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/pedroab0/swr-catalyst/compare/v0.2.2...v0.3.0
 [0.2.2]: https://github.com/pedroab0/swr-catalyst/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/pedroab0/swr-catalyst/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/pedroab0/swr-catalyst/compare/v0.1.2...v0.2.0
