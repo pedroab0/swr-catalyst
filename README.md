@@ -424,6 +424,25 @@ A type-safe wrapper around SWR's `mutate` function that correctly handles the st
 await swrMutate(mutate, key, optimisticData, false);
 ```
 
+#### `extractSWRKey(cacheKey)`
+
+Safely extracts a typed `SWRKey` object from any SWR cache key. Supports direct objects, SWR's serialized format, and JSON strings.
+
+*   **`cacheKey`**: The SWR cache key to extract from (object or serialized string).
+
+**Returns:** A parsed `SWRKey` object or `null` if extraction fails.
+
+**Example:**
+```typescript
+import { extractSWRKey } from 'swr-catalyst';
+
+// From serialized cache key
+const key = extractSWRKey(cacheKey);
+if (key) {
+  console.log(key.id, key.data);
+}
+```
+
 #### `swrGetCache(cache, key)`
 
 A type-safe wrapper around SWR's `cache.get()` method that correctly handles the structured `SWRKey` object.
