@@ -4,11 +4,10 @@ import { useSWRConfig } from "swr";
 import type { MutateOptions, SWRKey } from "@/types";
 import type { DeleteFunction } from "./types";
 
-import { swrMutate } from "@/utils";
 import {
   applyOptimisticUpdate,
   createMutationError,
-  rollbackOptimisticUpdate,
+  executeMutation,
 } from "../shared/helpers";
 
 import { useStableKey } from "../useStableKey";
@@ -150,29 +149,28 @@ export function useSWRDelete<TCache = unknown, TError = Error>(
       }
 
       try {
-        const result = await deleteFunction(id);
-
-        if (!isMountedRef.current) {
-          return result;
-        }
-
-        await swrMutate(mutate, stableKey);
+        const result = await executeMutation(
+          async () => {
+            try {
+              return await deleteFunction(id);
+            } catch (err) {
+              throw createMutationError("delete", stableKey, err, { id });
+            }
+          },
+          {
+            mutate,
+            stableKey,
+            shouldRollback: rollbackOnError && !!optimisticUpdate,
+            originalData,
+            onError: (err) => {
+              if (isMountedRef.current) {
+                setError(err as unknown as TError);
+              }
+            },
+          }
+        );
 
         return result;
-      } catch (err) {
-        if (rollbackOnError && optimisticUpdate) {
-          await rollbackOptimisticUpdate(mutate, stableKey, originalData);
-        }
-
-        const mutationError = createMutationError("delete", stableKey, err, {
-          id,
-        });
-
-        if (isMountedRef.current) {
-          setError(mutationError as TError);
-        }
-
-        throw mutationError;
       } finally {
         if (isMountedRef.current) {
           setIsMutating(false);
