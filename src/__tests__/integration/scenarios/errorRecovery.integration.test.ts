@@ -571,7 +571,7 @@ describe("Error Recovery Scenarios - Integration Tests", () => {
       await act(async () => {
         await result.current.mutate(
           mutateData,
-          revalidate !== undefined ? { revalidate } : undefined
+          revalidate === undefined ? undefined : { revalidate }
         );
       });
 
