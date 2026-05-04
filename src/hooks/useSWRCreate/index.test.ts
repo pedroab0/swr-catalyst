@@ -59,7 +59,7 @@ describe("useSWRCreate", () => {
     await act(async () => {
       try {
         await result.current.trigger({});
-      } catch (_e) {
+      } catch {
         // ignore
       }
     });
@@ -115,7 +115,7 @@ describe("useSWRCreate", () => {
     await act(async () => {
       try {
         await result.current.trigger({ title: "New" });
-      } catch (_e) {
+      } catch {
         // ignore
       }
     });
@@ -143,7 +143,7 @@ describe("useSWRCreate", () => {
     await act(async () => {
       try {
         await result.current.trigger({ title: "New" });
-      } catch (_e) {
+      } catch {
         // ignore
       }
     });
@@ -163,7 +163,7 @@ describe("useSWRCreate", () => {
     await act(async () => {
       try {
         await result.current.trigger({});
-      } catch (_e) {
+      } catch {
         // ignore
       }
     });
@@ -265,7 +265,7 @@ describe("useSWRCreate", () => {
     await act(async () => {
       try {
         await result.current.trigger({ title: "New" });
-      } catch (_e) {
+      } catch {
         // ignore
       }
     });
@@ -283,7 +283,7 @@ describe("useSWRCreate", () => {
     await act(async () => {
       try {
         await result.current.trigger({ title: "New" });
-      } catch (_e) {
+      } catch {
         // ignore
       }
     });

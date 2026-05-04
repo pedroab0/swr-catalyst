@@ -59,7 +59,7 @@ describe("useSWRDelete", () => {
     await act(async () => {
       try {
         await result.current.trigger(1);
-      } catch (_e) {
+      } catch {
         // ignore
       }
     });
@@ -121,7 +121,7 @@ describe("useSWRDelete", () => {
     await act(async () => {
       try {
         await result.current.trigger(1);
-      } catch (_e) {
+      } catch {
         // ignore
       }
     });
@@ -214,7 +214,7 @@ describe("useSWRDelete", () => {
     await act(async () => {
       try {
         await result.current.trigger(1);
-      } catch (_e) {
+      } catch {
         // ignore
       }
     });
@@ -264,7 +264,7 @@ describe("useSWRDelete", () => {
     await act(async () => {
       try {
         await result.current.trigger(1);
-      } catch (_e) {
+      } catch {
         // ignore
       }
     });
@@ -281,7 +281,7 @@ describe("useSWRDelete", () => {
     await act(async () => {
       try {
         await result.current.trigger(1);
-      } catch (_e) {
+      } catch {
         // ignore
       }
     });
