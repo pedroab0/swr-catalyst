@@ -1,6 +1,6 @@
 import { useSWRConfig } from "swr";
 
-import { captureCacheSnapshot, createCacheDiff } from "../utils/cacheSnapshot";
+import { captureCacheSnapshot, createCacheDiff } from "@demo/utils/cacheSnapshot";
 
 export function useCacheSnapshots() {
   const { cache } = useSWRConfig();

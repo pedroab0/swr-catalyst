@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from "react";
 
-import type { DemoEvent, DemoEventInput } from "../types";
+import type { DemoEvent, DemoEventInput } from "@demo/types";
 
 export function useDemoTimeline() {
   const [events, setEvents] = useState<DemoEvent[]>([]);

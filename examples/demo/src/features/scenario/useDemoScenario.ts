@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
 
-import type { DemoDataMode, DemoScenario, FailureMode } from "../types";
+import type { DemoDataMode, DemoScenario, FailureMode } from "@demo/types";
 
-import { ensureMswMode, getDataMode, setDataMode } from "../state/dataMode";
-import { getScenario, scenarioPresets, setScenario } from "../state/scenario";
+import { ensureMswMode, getDataMode, setDataMode } from "@demo/features/core/dataMode";
+import { getScenario, scenarioPresets, setScenario } from "./scenario";
 
 type UseDemoScenarioParams = {
   onModeFallback: (reason: string) => void;

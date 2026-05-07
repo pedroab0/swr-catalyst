@@ -1,4 +1,4 @@
-import type { DemoDataMode } from "../types";
+import type { DemoDataMode } from "@demo/types";
 
 let currentDataMode: DemoDataMode = "inMemory";
 let isWorkerStarted = false;
@@ -27,7 +27,7 @@ export async function ensureMswMode(): Promise<{
   }
 
   try {
-    const { worker } = await import("../mocks/browser");
+    const { worker } = await import("../../mocks/browser");
 
     await worker.start({
       onUnhandledRequest: "bypass",
