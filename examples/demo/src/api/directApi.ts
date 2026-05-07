@@ -4,7 +4,7 @@ import type {
   TodoInput,
   TodosSummary,
   TodoUpdate,
-} from "../types";
+} from "@demo/types";
 
 import {
   createTodo,
@@ -13,8 +13,8 @@ import {
   getTodos,
   getTodosSummary,
   updateTodo,
-} from "../mocks/dataStore";
-import { getScenario } from "../state/scenario";
+} from "@demo/mocks/dataStore";
+import { getScenario } from "@demo/features/scenario/scenario";
 
 async function maybeDelay() {
   const { delayMs } = getScenario();
