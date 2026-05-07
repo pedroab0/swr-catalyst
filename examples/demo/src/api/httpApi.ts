@@ -4,7 +4,7 @@ import type {
   TodoInput,
   TodosSummary,
   TodoUpdate,
-} from "../types";
+} from "@demo/types";
 
 type ApiErrorBody = {
   message?: string;
