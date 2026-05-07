@@ -111,12 +111,13 @@ export function useSWRCreate<TData = unknown, TCache = unknown, TError = Error>(
 
   const stableKey = useStableKey(key);
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    isMountedRef.current = true;
+
+    return () => {
       isMountedRef.current = false;
-    },
-    []
-  );
+    };
+  }, []);
 
   const trigger = useCallback(
     async (data: TData) => {
