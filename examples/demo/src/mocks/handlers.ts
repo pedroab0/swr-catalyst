@@ -1,8 +1,8 @@
 import { HttpResponse, http } from "msw";
 
-import type { TodoInput, TodoUpdate } from "../types";
+import type { TodoInput, TodoUpdate } from "@demo/types";
 
-import { getScenario } from "../state/scenario";
+import { getScenario } from "@demo/features/scenario/scenario";
 import {
   createTodo,
   deleteTodo,

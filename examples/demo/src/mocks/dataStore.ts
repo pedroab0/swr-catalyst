@@ -4,7 +4,7 @@ import type {
   TodoInput,
   TodosSummary,
   TodoUpdate,
-} from "../types";
+} from "@demo/types";
 
 const initialTodos: Todo[] = [
   { id: 1, title: "Document API behavior", completed: false },
