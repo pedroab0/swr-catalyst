@@ -138,12 +138,13 @@ export function useSWRUpdate<TData = unknown, TCache = unknown, TError = Error>(
 
   const stableKey = useStableKey(key);
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    isMountedRef.current = true;
+
+    return () => {
       isMountedRef.current = false;
-    },
-    []
-  );
+    };
+  }, []);
 
   const trigger = useCallback(
     async (id: string | number, data: TData) => {
