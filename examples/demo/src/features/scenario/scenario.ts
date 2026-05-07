@@ -1,4 +1,4 @@
-import type { DemoScenario } from "../types";
+import type { DemoScenario } from "@demo/types";
 
 export const scenarioPresets = [
   {

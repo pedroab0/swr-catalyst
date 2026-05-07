@@ -1,4 +1,4 @@
-import type { DemoEvent } from "../types";
+import type { DemoEvent } from "@demo/types";
 
 type ActionTimelineProps = {
   events: DemoEvent[];

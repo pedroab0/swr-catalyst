@@ -1,4 +1,4 @@
-import type { DemoToast } from "../types";
+import type { DemoToast } from "@demo/types";
 
 type StatusToastRegionProps = {
   toasts: DemoToast[];
