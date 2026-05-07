@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+
+- Complete interactive Demo App showcasing `swr-catalyst` capabilities:
+  - Domain-based architecture with separated features (todos, scenario, timeline, cache, core)
+  - Interactive components: Action Timeline, Cache Viewer, Cache Diff Viewer, Error Inspector, Scenario Presets, and Tour Overlay
+  - State management for data modes (in-memory vs MSW) and scenario configuration
+  - Custom orchestration hooks for timeline, scenarios, cache snapshots, and toasts
+  - Comprehensive README documentation for demo architecture and usage
+- Comprehensive reliability suite for the Demo App:
+  - Playwright E2E testing across Chromium, Firefox, and WebKit
+  - 100% feature coverage for demo interactions (CRUD, Replay, Toasts, Utilities)
+  - Automated accessibility (a11y) audits via `@axe-core/playwright`
+  - Visual regression testing with dynamic content masking
+  - CI workflow integration: demo build verification and E2E gate on PRs
+- New npm scripts for demo management: `demo:test`, `demo:test:ui`, `demo:test:update`
+- Demo App section in the main README
+- Playwright E2E testing documentation in `CONTRIBUTING.md`
+
+### Fixed
+
+- Initialized `isMountedRef` to `true` on mount in mutation hooks to prevent state updates on unmounted components
+- Improved heading hierarchy in Demo App for better accessibility
+
 ## [0.3.1]
 
 ### Changed
