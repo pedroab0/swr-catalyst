@@ -1,7 +1,7 @@
 import type { Cache } from "swr";
 import { extractSWRKey } from "swr-catalyst";
 
-import type { CacheDiff, CacheSnapshot, CacheSnapshotRow } from "../types";
+import type { CacheDiff, CacheSnapshot, CacheSnapshotRow } from "@demo/types";
 
 function stringifySafe(value: unknown): string {
   try {

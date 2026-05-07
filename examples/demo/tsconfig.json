@@ -4,9 +4,11 @@
     "module": "ESNext",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "types": ["react", "vite/client"],
+    "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
       "swr-catalyst": ["../../src/index.ts"],
+      "@demo/*": ["./src/*"],
       "@/*": ["../../src/*"]
     },
     "moduleResolution": "bundler",
