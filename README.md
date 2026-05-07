@@ -458,6 +458,35 @@ const { cache } = useSWRConfig();
 const cachedTodos = swrGetCache(cache, { id: 'todos', data: '/api/todos' });
 ```
 
+## Demo App
+
+This repository includes a runnable demo in `examples/demo` that showcases:
+- `useSWRCreate`, `useSWRUpdate`, `useSWRDelete`
+- Optimistic updates with rollback
+- `MutationError` inspection helpers
+- Cache utilities: `mutateById`, `mutateByGroup`, `resetCache`
+- Utility helpers: `swrMutate`, `swrGetCache`, `extractSWRKey`, `to`
+- `useStableKey` behavior with object keys
+- Scenario presets (`happy path`, `validation`, `network slow`)
+- Data mode switching (`inMemory` direct calls or `msw` fetch handlers)
+- Action timeline with replay and cache diff viewer
+- **100% E2E Coverage**: Full testing suite with Playwright, including visual regression and accessibility checks.
+
+Run it locally:
+
+```bash
+npm run demo:dev
+```
+
+Build and preview:
+
+```bash
+npm run demo:build
+npm run demo:preview
+```
+
+Detailed guide: `examples/demo/README.md`
+
 ## Bundle Size
 
 | Package | Minified | Minified + Gzipped |
