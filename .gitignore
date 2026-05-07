@@ -29,6 +29,7 @@ coverage
 
 # AI
 /GEMINI.MD
+/AGENTS.md
 /ai
 /.aidocs
 /.claude
@@ -36,5 +37,10 @@ coverage
 /.cursor
 /.github/copilot-instructions.md
 
+# Playwright
+playwright-report/
+test-results/
+
 # Documentation
 /TODO.md
+/.specs
