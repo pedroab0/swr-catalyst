@@ -71,6 +71,9 @@ jobs:
       - name: Build package
         run: npm run build
 
+      - name: Build demo app
+        run: npm run demo:build
+
       - name: Check bundle size
         run: npm run size
 
@@ -78,7 +81,9 @@ jobs:
         uses: actions/upload-artifact@v7.0.1
         with:
           name: dist
-          path: dist/
+          path: |
+            dist/
+            examples/demo/dist/
           retention-days: 7
 
   test:
@@ -129,12 +134,49 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
+  e2e:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: [build]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6.0.2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6.4.0
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v8.0.1
+        with:
+          name: dist
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright tests
+        run: npx playwright test
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
   # Summary job that all checks must pass
   ci-success:
     name: CI Success
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    needs: [lint, typecheck, build, test]
+    needs: [lint, typecheck, build, test, e2e]
     if: always()
     steps:
       - name: Check all jobs
@@ -142,7 +184,8 @@ jobs:
           if [[ "${{ needs.lint.result }}" != "success" ]] || \
              [[ "${{ needs.typecheck.result }}" != "success" ]] || \
              [[ "${{ needs.build.result }}" != "success" ]] || \
-             [[ "${{ needs.test.result }}" != "success" ]]; then
+             [[ "${{ needs.test.result }}" != "success" ]] || \
+             [[ "${{ needs.e2e.result }}" != "success" ]]; then
             echo "One or more CI jobs failed"
             exit 1
           fi
