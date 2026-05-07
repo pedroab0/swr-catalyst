@@ -22,7 +22,7 @@ First off, thank you for considering contributing! It's people like you that mak
 
 ## Testing
 
-This project uses [Vitest](https://vitest.dev/) for testing with two types of tests:
+This project uses Vitest and Playwright for testing with three types of tests:
 
 ### Test Commands
 
@@ -32,6 +32,10 @@ This project uses [Vitest](https://vitest.dev/) for testing with two types of te
 | `npm run test:unit` | Run unit tests only |
 | `npm run test:integration` | Run integration tests only |
 | `npm run test:coverage` | Run all tests with coverage report |
+| `npm run demo:dev` | Run the demo app locally |
+| `npm run demo:test` | Run E2E tests for the demo |
+| `npm run demo:test:ui` | Run E2E tests in interactive UI mode |
+| `npm run demo:test:update` | Update baseline screenshots for visual regression |
 
 ### Unit Tests
 
@@ -76,6 +80,22 @@ src/__tests__/integration/
 - Use `renderHookWithSWR` for isolated cache per test
 - Use `renderHookWithGlobalCache` for utility tests
 - Test error recovery, optimistic updates, and cache consistency
+
+### End-to-End (E2E) Tests
+
+We use [Playwright](https://playwright.dev/) to test the demo application in real browsers (Chromium, Firefox, and WebKit). These tests ensure that the library integrates correctly within a React application and that the user interface behaves as expected.
+
+**Features tested:**
+- Full CRUD lifecycle with optimistic updates
+- Error handling and visual feedback
+- Cache utility interactions
+- Accessibility (via `axe-core`)
+- Visual regression (screenshot comparison)
+
+Run E2E tests locally:
+```bash
+npm run demo:test
+```
 
 ### Writing Integration Tests
 
