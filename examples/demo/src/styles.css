@@ -1,0 +1,494 @@
+:root {
+  color-scheme: dark;
+  font-family: "IBM Plex Sans", "Avenir Next", "Segoe UI", sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  --pageBgA: #020617;
+  --pageBgB: #0b1120;
+  --panelBg: rgba(15, 23, 42, 0.88);
+  --panelBorder: rgba(148, 163, 184, 0.26);
+  --title: #f8fafc;
+  --text: #dbe6ff;
+  --muted: #94a3b8;
+  --danger: #fda4af;
+  --dangerBorder: #be123c;
+  --accent: #2dd4bf;
+  --controlBg: #0f172a;
+  --controlBorder: #334155;
+  --preBg: #020617;
+  --preBorder: #334155;
+  --todoBorder: #334155;
+  --optimisticBorder: #0d9488;
+  --noteBg: rgba(37, 99, 235, 0.14);
+  --noteBorder: rgba(125, 211, 252, 0.34);
+  --timelineBorder: rgba(45, 212, 191, 0.38);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 12% 14%, #0b2f42 0%, transparent 30%),
+    radial-gradient(circle at 85% 10%, #262050 0%, transparent 34%),
+    linear-gradient(180deg, var(--pageBgB), var(--pageBgA));
+  min-height: 100vh;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+code {
+  background: rgba(148, 163, 184, 0.2);
+  border-radius: 6px;
+  padding: 0.1rem 0.3rem;
+}
+
+.layout {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1rem 4rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.panel {
+  border: 1px solid var(--panelBorder);
+  background: var(--panelBg);
+  border-radius: 14px;
+  padding: 1rem;
+  backdrop-filter: blur(7px);
+}
+
+.panelHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.hero h1 {
+  margin: 0;
+  color: var(--title);
+  font-size: clamp(1.7rem, 2.2vw, 2.4rem);
+}
+
+h2 {
+  margin-top: 0;
+  color: var(--title);
+}
+
+h3 {
+  margin-bottom: 0.4rem;
+  color: #cbd5e1;
+}
+
+.controls,
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+label {
+  display: grid;
+  gap: 0.25rem;
+  font-size: 0.92rem;
+}
+
+input,
+select,
+button {
+  border-radius: 10px;
+  border: 1px solid var(--controlBorder);
+  padding: 0.5rem 0.7rem;
+  background: var(--controlBg);
+  color: #e2e8f0;
+}
+
+input,
+select {
+  min-width: 180px;
+}
+
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23cbd5e1' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 0.65rem;
+  padding-right: 2rem;
+}
+
+button {
+  cursor: pointer;
+  transition:
+    transform 120ms ease,
+    border-color 120ms ease,
+    background-color 120ms ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  border-color: #67e8f9;
+  background: #132546;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+button.danger {
+  border-color: var(--dangerBorder);
+  color: var(--danger);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 0.6rem;
+  margin: 1rem 0;
+}
+
+.stats div {
+  border: 1px dashed var(--panelBorder);
+  border-radius: 12px;
+  padding: 0.45rem 0.6rem;
+}
+
+.stats dt {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.stats dd {
+  margin: 0.2rem 0 0;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.todoList {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.todoList li {
+  border: 1px solid var(--todoBorder);
+  border-radius: 10px;
+  padding: 0.55rem 0.65rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.todoList li.optimistic {
+  border-color: var(--optimisticBorder);
+}
+
+.todoLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.todoLabel input[type="checkbox"] {
+  min-width: auto;
+  width: auto;
+  padding: 0;
+}
+
+.utilitiesActions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.heroControls {
+  align-items: flex-end;
+}
+
+.heroControls > button {
+  align-self: flex-end;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.error {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.badge {
+  border: 1px solid #2dd4bf;
+  color: #67e8f9;
+  padding: 0.2rem 0.5rem;
+  border-radius: 99px;
+  font-size: 0.82rem;
+}
+
+.detailsList {
+  margin: 0;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.detailsList div {
+  display: grid;
+  grid-template-columns: minmax(150px, 220px) 1fr;
+  gap: 0.4rem;
+}
+
+.detailsList.compact {
+  margin-top: 0.6rem;
+  margin-bottom: 0.6rem;
+}
+
+.detailsList dt {
+  font-weight: 700;
+  color: #f1f5f9;
+}
+
+.detailsList dd {
+  margin: 0;
+}
+
+.commentList {
+  margin: 0.6rem 0;
+  padding-left: 1.2rem;
+  color: var(--muted);
+}
+
+.commentList li + li {
+  margin-top: 0.3rem;
+}
+
+.note {
+  background: var(--noteBg);
+  border-color: var(--noteBorder);
+}
+
+.note ol {
+  margin: 0.5rem 0 0;
+  padding-left: 1.2rem;
+}
+
+.note li + li {
+  margin-top: 0.35rem;
+}
+
+pre {
+  margin: 0.35rem 0 0;
+  padding: 0.65rem;
+  border-radius: 12px;
+  border: 1px solid var(--preBorder);
+  background: var(--preBg);
+  color: #e2e8f0;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.cacheRow {
+  border: 1px solid var(--todoBorder);
+  border-radius: 12px;
+  padding: 0.75rem;
+  margin-top: 0.6rem;
+}
+
+.presetGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.6rem;
+}
+
+.presetButton {
+  display: grid;
+  gap: 0.15rem;
+  text-align: left;
+}
+
+.presetButton small {
+  color: var(--muted);
+}
+
+.presetButton.active {
+  border-color: #22d3ee;
+  box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.35);
+}
+
+.timelineList {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.timelineItem {
+  border: 1px solid var(--timelineBorder);
+  border-radius: 12px;
+  padding: 0.7rem;
+}
+
+.timelineHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.timelineAction.active {
+  border-color: #22d3ee;
+}
+
+.statusTag {
+  border-radius: 99px;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border: 1px solid transparent;
+}
+
+.status-success {
+  border-color: rgba(45, 212, 191, 0.5);
+  color: #5eead4;
+}
+
+.status-error {
+  border-color: rgba(251, 113, 133, 0.55);
+  color: #fda4af;
+}
+
+.status-warning {
+  border-color: rgba(251, 191, 36, 0.5);
+  color: #fde68a;
+}
+
+.status-info {
+  border-color: rgba(125, 211, 252, 0.5);
+  color: #7dd3fc;
+}
+
+.toastRegion {
+  position: sticky;
+  top: 0.75rem;
+  z-index: 40;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.toast {
+  border-radius: 12px;
+  border: 1px solid var(--panelBorder);
+  background: rgba(15, 23, 42, 0.95);
+  padding: 0.6rem 0.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.toast p {
+  margin: 0;
+}
+
+.toast-success {
+  border-color: rgba(45, 212, 191, 0.6);
+}
+
+.toast-error {
+  border-color: rgba(244, 63, 94, 0.7);
+}
+
+.toast-warning {
+  border-color: rgba(234, 179, 8, 0.7);
+}
+
+.toast-info {
+  border-color: rgba(56, 189, 248, 0.7);
+}
+
+.tourOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 6, 23, 0.72);
+  display: grid;
+  place-items: center;
+  z-index: 50;
+  padding: 1rem;
+}
+
+.tourCard {
+  width: min(560px, 100%);
+}
+
+.tourCard ol {
+  margin: 0.5rem 0;
+  padding-left: 1.2rem;
+}
+
+.tourCard li + li {
+  margin-top: 0.3rem;
+}
+
+details {
+  margin-top: 0.55rem;
+  border: 1px solid var(--preBorder);
+  border-radius: 10px;
+  padding: 0.45rem;
+  background: rgba(2, 6, 23, 0.56);
+}
+
+summary {
+  cursor: pointer;
+  color: #cbd5e1;
+}
+
+@media (max-width: 768px) {
+  .layout {
+    padding: 1rem 0.75rem 2rem;
+  }
+
+  .todoList li {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .detailsList div {
+    grid-template-columns: 1fr;
+  }
+
+  .panelHeader {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  input,
+  select {
+    min-width: 100%;
+  }
+
+  .controls {
+    align-items: stretch;
+  }
+
+  .toast {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
