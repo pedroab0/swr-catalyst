@@ -76,7 +76,7 @@ export const resetCache = async (preservedKeys: CacheKeyInput = []) => {
   } catch (error) {
     throw new MutationError(
       `Failed to reset cache${
-        keys ? ` (preserving: ${keys.join(", ")})` : ""
+        keys && keys.length > 0 ? ` (preserving: ${keys.join(", ")})` : ""
       }. ${error instanceof Error ? error.message : String(error)}`,
       {
         operation: "delete",
