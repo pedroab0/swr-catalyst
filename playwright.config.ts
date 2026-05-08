@@ -18,12 +18,11 @@ export default defineConfig({
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: "html",
   expect: {
-    /* Increase tolerance for cross-platform and cross-architecture rendering differences */
+    /* Increase tolerance for cross-platform rendering differences (Mac ARM vs CI x86) */
     toHaveScreenshot: {
-      maxDiffPixelRatio: 0.1,
+      maxDiffPixelRatio: 0.15,
       threshold: 0.2,
       animations: "disabled",
-      allowSizeMismatch: true,
     },
     timeout: 15 * 1000,
   },
