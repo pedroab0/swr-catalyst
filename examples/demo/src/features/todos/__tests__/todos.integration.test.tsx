@@ -1,5 +1,11 @@
 import App from "@demo/App";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 async function createTodo(title: string) {
@@ -26,13 +32,15 @@ describe("todos feature", () => {
 
     const createdTodoLabel = screen.getByText("Write demo regression test");
     const createdTodoItem = createdTodoLabel.closest("li");
-    expect(createdTodoItem).toBeTruthy();
-
-    const createdRenameButton = createdTodoItem?.querySelector("button");
-    expect(createdRenameButton?.textContent).toBe("Rename");
-    if (!createdRenameButton) {
-      throw new Error("Rename button not found for created todo.");
+    if (!createdTodoItem) {
+      throw new Error("Created todo item not found");
     }
+
+    const createdRenameButton = await within(createdTodoItem).findByRole(
+      "button",
+      { name: "Rename" }
+    );
+    expect(createdRenameButton).toBeTruthy();
 
     fireEvent.click(createdRenameButton);
 
@@ -40,18 +48,23 @@ describe("todos feature", () => {
     fireEvent.change(renameInput, { target: { value: "Renamed item" } });
     fireEvent.click(screen.getByRole("button", { name: "Save" }));
 
-    await waitFor(() => {
-      expect(screen.getByText("Renamed item")).toBeTruthy();
+    const deleteButton = await waitFor(() => {
+      const renamedLabel = screen.getByText("Renamed item");
+      const renamedTodoItem = renamedLabel.closest("li");
+      if (!renamedTodoItem) {
+        throw new Error("Renamed todo item not found");
+      }
+      const btn = within(renamedTodoItem).queryByRole("button", {
+        name: "Delete",
+      });
+      if (!btn) {
+        throw new Error("Delete button not found yet");
+      }
+      return btn;
     });
 
-    const renamedLabel = screen.getByText("Renamed item");
-    const renamedTodoItem = renamedLabel.closest("li");
-    expect(renamedTodoItem).toBeTruthy();
-    const deleteButton = renamedTodoItem?.querySelector("button.danger");
-    expect(deleteButton?.textContent).toBe("Delete");
-    if (!deleteButton) {
-      throw new Error("Delete button not found for renamed todo.");
-    }
+    expect(deleteButton.textContent).toBe("Delete");
+
     const totalBeforeDelete = screen.getAllByRole("button", {
       name: "Delete",
     }).length;
