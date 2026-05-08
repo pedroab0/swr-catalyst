@@ -1,17 +1,16 @@
-import { useAppController } from "@demo/hooks/useAppController";
-
-import { ActionTimeline } from "@demo/features/timeline/ActionTimeline";
 import { CacheDiffViewer } from "@demo/features/cache/CacheDiffViewer";
 import { CacheViewer } from "@demo/features/cache/CacheViewer";
-import { ErrorInspector } from "@demo/features/core/ErrorInspector";
-import { ScenarioPresets } from "@demo/features/scenario/ScenarioPresets";
-import { StableKeySection } from "@demo/features/core/StableKeySection";
-import { StatusToastRegion } from "@demo/features/core/StatusToastRegion";
-import { TodoSection } from "@demo/features/todos/TodoSection";
-import { TourOverlay } from "@demo/features/core/TourOverlay";
-import { UtilitiesSection } from "@demo/features/core/UtilitiesSection";
 import { DemoHeader } from "@demo/features/core/DemoHeader";
 import { DemoInstructions } from "@demo/features/core/DemoInstructions";
+import { ErrorInspector } from "@demo/features/core/ErrorInspector";
+import { StableKeySection } from "@demo/features/core/StableKeySection";
+import { StatusToastRegion } from "@demo/features/core/StatusToastRegion";
+import { TourOverlay } from "@demo/features/core/TourOverlay";
+import { UtilitiesSection } from "@demo/features/core/UtilitiesSection";
+import { ScenarioPresets } from "@demo/features/scenario/ScenarioPresets";
+import { ActionTimeline } from "@demo/features/timeline/ActionTimeline";
+import { TodoSection } from "@demo/features/todos/TodoSection";
+import { useAppController } from "@demo/hooks/useAppController";
 
 export default function App() {
   const {

@@ -1,3 +1,6 @@
+import { useCacheSnapshots } from "@demo/features/cache/useCacheSnapshots";
+import { appConfigKey, todosKey, todosSummaryKey } from "@demo/keys";
+import type { DemoEventInput, Todo } from "@demo/types";
 import { useState } from "react";
 import { type Key, unstable_serialize, useSWRConfig } from "swr";
 import {
@@ -9,12 +12,6 @@ import {
   swrGetCache,
   swrMutate,
 } from "swr-catalyst";
-
-import type { DemoEventInput, Todo } from "@demo/types";
-
-import { useCacheSnapshots } from "@demo/features/cache/useCacheSnapshots";
-
-import { appConfigKey, todosKey, todosSummaryKey } from "@demo/keys";
 
 type CacheEntryValue<TData> = {
   data?: TData;

@@ -1,5 +1,5 @@
 import { resolve } from "node:path";
-import { defineConfig } from "vitest/config";
+import { configDefaults, defineConfig } from "vitest/config";
 
 export default defineConfig({
   root: import.meta.dirname,
@@ -11,9 +11,16 @@ export default defineConfig({
     },
   },
   test: {
+    name: "demo",
     globals: true,
     environment: "jsdom",
-    setupFiles: [resolve(import.meta.dirname, "../../src/__tests__/integration/setup/vitest.setup.ts")],
+    setupFiles: [
+      resolve(
+        import.meta.dirname,
+        "../../src/__tests__/integration/setup/vitest.setup.ts"
+      ),
+    ],
+    exclude: [...configDefaults.exclude, "e2e/**"],
   },
   build: {
     outDir: resolve(import.meta.dirname, "dist"),

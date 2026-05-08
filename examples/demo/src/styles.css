@@ -1,9 +1,4 @@
 :root {
-  color-scheme: dark;
-  font-family: "IBM Plex Sans", "Avenir Next", "Segoe UI", sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
   --pageBgA: #020617;
   --pageBgB: #0b1120;
   --panelBg: rgba(15, 23, 42, 0.88);
@@ -23,6 +18,10 @@
   --noteBg: rgba(37, 99, 235, 0.14);
   --noteBorder: rgba(125, 211, 252, 0.34);
   --timelineBorder: rgba(45, 212, 191, 0.38);
+  font-family: "IBM Plex Sans", "Avenir Next", "Segoe UI", sans-serif;
+  font-weight: 400;
+  line-height: 1.5;
+  color-scheme: dark;
 }
 
 *,
@@ -32,13 +31,13 @@
 }
 
 body {
+  min-height: 100vh;
   margin: 0;
   color: var(--text);
   background:
     radial-gradient(circle at 12% 14%, #0b2f42 0%, transparent 30%),
     radial-gradient(circle at 85% 10%, #262050 0%, transparent 34%),
     linear-gradient(180deg, var(--pageBgB), var(--pageBgA));
-  min-height: 100vh;
 }
 
 button,
@@ -48,38 +47,38 @@ select {
 }
 
 code {
+  padding: 0.1rem 0.3rem;
   background: rgba(148, 163, 184, 0.2);
   border-radius: 6px;
-  padding: 0.1rem 0.3rem;
 }
 
 .layout {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 2rem 1rem 4rem;
   display: grid;
   gap: 1rem;
+  max-width: 1100px;
+  padding: 2rem 1rem 4rem;
+  margin: 0 auto;
 }
 
 .panel {
-  border: 1px solid var(--panelBorder);
-  background: var(--panelBg);
-  border-radius: 14px;
   padding: 1rem;
+  background: var(--panelBg);
+  border: 1px solid var(--panelBorder);
+  border-radius: 14px;
   backdrop-filter: blur(7px);
 }
 
 .panelHeader {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
   gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .hero h1 {
   margin: 0;
-  color: var(--title);
   font-size: clamp(1.7rem, 2.2vw, 2.4rem);
+  color: var(--title);
 }
 
 h2 {
@@ -109,11 +108,11 @@ label {
 input,
 select,
 button {
-  border-radius: 10px;
-  border: 1px solid var(--controlBorder);
   padding: 0.5rem 0.7rem;
-  background: var(--controlBg);
   color: #e2e8f0;
+  background: var(--controlBg);
+  border: 1px solid var(--controlBorder);
+  border-radius: 10px;
 }
 
 input,
@@ -122,12 +121,12 @@ select {
 }
 
 select {
+  padding-right: 2rem;
   appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23cbd5e1' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 0.75rem center;
   background-size: 0.65rem;
-  padding-right: 2rem;
 }
 
 button {
@@ -139,19 +138,19 @@ button {
 }
 
 button:hover {
-  transform: translateY(-1px);
-  border-color: #67e8f9;
   background: #132546;
+  border-color: #67e8f9;
+  transform: translateY(-1px);
 }
 
 button:disabled {
-  opacity: 0.6;
   cursor: not-allowed;
+  opacity: 0.6;
 }
 
 button.danger {
-  border-color: var(--dangerBorder);
   color: var(--danger);
+  border-color: var(--dangerBorder);
 }
 
 .stats {
@@ -162,14 +161,14 @@ button.danger {
 }
 
 .stats div {
+  padding: 0.45rem 0.6rem;
   border: 1px dashed var(--panelBorder);
   border-radius: 12px;
-  padding: 0.45rem 0.6rem;
 }
 
 .stats dt {
-  color: var(--muted);
   font-size: 0.85rem;
+  color: var(--muted);
 }
 
 .stats dd {
@@ -179,21 +178,21 @@ button.danger {
 }
 
 .todoList {
-  list-style: none;
-  padding: 0;
-  margin: 1rem 0 0;
   display: grid;
   gap: 0.45rem;
+  padding: 0;
+  margin: 1rem 0 0;
+  list-style: none;
 }
 
 .todoList li {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.55rem 0.65rem;
   border: 1px solid var(--todoBorder);
   border-radius: 10px;
-  padding: 0.55rem 0.65rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.6rem;
 }
 
 .todoList li.optimistic {
@@ -202,13 +201,13 @@ button.danger {
 
 .todoLabel {
   display: flex;
-  align-items: center;
   gap: 0.5rem;
+  align-items: center;
 }
 
 .todoLabel input[type="checkbox"] {
-  min-width: auto;
   width: auto;
+  min-width: auto;
   padding: 0;
 }
 
@@ -231,22 +230,22 @@ button.danger {
 }
 
 .error {
-  color: var(--danger);
   font-weight: 600;
+  color: var(--danger);
 }
 
 .badge {
-  border: 1px solid #2dd4bf;
-  color: #67e8f9;
   padding: 0.2rem 0.5rem;
-  border-radius: 99px;
   font-size: 0.82rem;
+  color: #67e8f9;
+  border: 1px solid #2dd4bf;
+  border-radius: 99px;
 }
 
 .detailsList {
-  margin: 0;
   display: grid;
   gap: 0.4rem;
+  margin: 0;
 }
 
 .detailsList div {
@@ -270,8 +269,8 @@ button.danger {
 }
 
 .commentList {
-  margin: 0.6rem 0;
   padding-left: 1.2rem;
+  margin: 0.6rem 0;
   color: var(--muted);
 }
 
@@ -285,8 +284,8 @@ button.danger {
 }
 
 .note ol {
-  margin: 0.5rem 0 0;
   padding-left: 1.2rem;
+  margin: 0.5rem 0 0;
 }
 
 .note li + li {
@@ -294,22 +293,22 @@ button.danger {
 }
 
 pre {
-  margin: 0.35rem 0 0;
   padding: 0.65rem;
-  border-radius: 12px;
-  border: 1px solid var(--preBorder);
-  background: var(--preBg);
-  color: #e2e8f0;
+  margin: 0.35rem 0 0;
   overflow-x: auto;
-  white-space: pre-wrap;
+  color: #e2e8f0;
   word-break: break-word;
+  white-space: pre-wrap;
+  background: var(--preBg);
+  border: 1px solid var(--preBorder);
+  border-radius: 12px;
 }
 
 .cacheRow {
-  border: 1px solid var(--todoBorder);
-  border-radius: 12px;
   padding: 0.75rem;
   margin-top: 0.6rem;
+  border: 1px solid var(--todoBorder);
+  border-radius: 12px;
 }
 
 .presetGrid {
@@ -339,16 +338,16 @@ pre {
 }
 
 .timelineItem {
+  padding: 0.7rem;
   border: 1px solid var(--timelineBorder);
   border-radius: 12px;
-  padding: 0.7rem;
 }
 
 .timelineHeader {
   display: flex;
-  justify-content: space-between;
   gap: 0.5rem;
   align-items: center;
+  justify-content: space-between;
 }
 
 .timelineAction.active {
@@ -356,32 +355,32 @@ pre {
 }
 
 .statusTag {
-  border-radius: 99px;
   padding: 0.15rem 0.5rem;
   font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   border: 1px solid transparent;
+  border-radius: 99px;
 }
 
 .status-success {
-  border-color: rgba(45, 212, 191, 0.5);
   color: #5eead4;
+  border-color: rgba(45, 212, 191, 0.5);
 }
 
 .status-error {
-  border-color: rgba(251, 113, 133, 0.55);
   color: #fda4af;
+  border-color: rgba(251, 113, 133, 0.55);
 }
 
 .status-warning {
-  border-color: rgba(251, 191, 36, 0.5);
   color: #fde68a;
+  border-color: rgba(251, 191, 36, 0.5);
 }
 
 .status-info {
-  border-color: rgba(125, 211, 252, 0.5);
   color: #7dd3fc;
+  border-color: rgba(125, 211, 252, 0.5);
 }
 
 .toastRegion {
@@ -393,14 +392,14 @@ pre {
 }
 
 .toast {
-  border-radius: 12px;
-  border: 1px solid var(--panelBorder);
-  background: rgba(15, 23, 42, 0.95);
-  padding: 0.6rem 0.75rem;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
   gap: 0.6rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 0.75rem;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid var(--panelBorder);
+  border-radius: 12px;
 }
 
 .toast p {
@@ -426,11 +425,11 @@ pre {
 .tourOverlay {
   position: fixed;
   inset: 0;
-  background: rgba(2, 6, 23, 0.72);
+  z-index: 50;
   display: grid;
   place-items: center;
-  z-index: 50;
   padding: 1rem;
+  background: rgba(2, 6, 23, 0.72);
 }
 
 .tourCard {
@@ -438,8 +437,8 @@ pre {
 }
 
 .tourCard ol {
-  margin: 0.5rem 0;
   padding-left: 1.2rem;
+  margin: 0.5rem 0;
 }
 
 .tourCard li + li {
@@ -447,16 +446,16 @@ pre {
 }
 
 details {
+  padding: 0.45rem;
   margin-top: 0.55rem;
+  background: rgba(2, 6, 23, 0.56);
   border: 1px solid var(--preBorder);
   border-radius: 10px;
-  padding: 0.45rem;
-  background: rgba(2, 6, 23, 0.56);
 }
 
 summary {
-  cursor: pointer;
   color: #cbd5e1;
+  cursor: pointer;
 }
 
 @media (max-width: 768px) {
@@ -474,8 +473,8 @@ summary {
   }
 
   .panelHeader {
-    align-items: flex-start;
     flex-direction: column;
+    align-items: flex-start;
   }
 
   input,

@@ -1,8 +1,7 @@
+import App from "@demo/App";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { SWRConfig } from "swr";
-
-import App from "@demo/App";
 import "./styles.css";
 
 const rootElement = document.getElementById("root");

@@ -1,4 +1,8 @@
-import type { DemoScenario, ScenarioPreset, ScenarioPresetId } from "@demo/types";
+import type {
+  DemoScenario,
+  ScenarioPreset,
+  ScenarioPresetId,
+} from "@demo/types";
 
 type ScenarioPresetsProps = {
   activeScenario: DemoScenario;
