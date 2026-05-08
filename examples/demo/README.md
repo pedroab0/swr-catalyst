@@ -85,10 +85,12 @@ When you intentionally change the UI, you need to update both sets of images:
 1.  **Local (Mac):** Run `npm run demo:test:update`.
 2.  **CI (Linux):** 
     - Push your changes and let the CI fail.
-    - Download the `playwright-report` from the failed GitHub Action.
-    - Copy the "Actual" images into the snapshots folder (ensure they end in `-linux.png`).
+    - Go to the failed GitHub Action run.
+    - Download the `playwright-report` from the **Artifacts** section.
+    - Extract the zip and copy the "Actual" images into the snapshots folder (ensure they end in `-linux.png`).
+    - Commit and push the new Linux baselines.
 
-**Note:** Running the Mac tests will *not* overwrite the Linux files, and vice versa. You should commit both sets of files to the repository. This ensures that the CI environment remains the source of truth for Linux rendering.
+**Note:** Running the Mac tests will *not* overwrite the Linux files, and vice versa. You should commit both sets of files to the repository. This ensures that the CI environment remains the source of truth for Linux rendering, bypassing local hardware architecture differences (ARM64 vs AMD64).
 
 ## Guided walkthrough
 
