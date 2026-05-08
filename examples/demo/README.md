@@ -66,10 +66,36 @@ Open the interactive UI mode for debugging:
 npm run demo:test:ui
 ```
 
-Update visual regression baseline screenshots:
+Update local visual regression baseline screenshots:
 ```bash
 npm run demo:test:update
 ```
+
+Run E2E tests in a Linux container (matches CI environment):
+```bash
+npm run demo:test:docker
+```
+
+Update Linux visual regression baseline screenshots:
+```bash
+npm run demo:test:docker:update
+```
+
+## Maintaining Visual Snapshots
+
+Visual regression tests are notoriously sensitive to OS-level rendering differences (fonts, antialiasing). To keep the CI green while allowing fast local development, Playwright is configured to use platform-specific snapshots:
+
+- **Mac (`-darwin.png`)**: Used when running `npm run demo:test` locally.
+- **Linux (`-linux.png`)**: Used in GitHub Actions.
+
+### Updating Snapshots
+
+When you intentionally change the UI, you need to update both sets of images:
+
+1.  **Local (Mac):** Run `npm run demo:test:update`.
+2.  **CI (Linux):** Run `npm run demo:test:docker:update`. This requires Docker and will generate the Linux baselines on your machine.
+
+**Note:** Running the Mac tests will *not* overwrite the Linux files, and vice versa. You should commit both sets of files to the repository.
 
 ## Guided walkthrough
 

@@ -35,7 +35,9 @@ This project uses Vitest and Playwright for testing with three types of tests:
 | `npm run demo:dev` | Run the demo app locally |
 | `npm run demo:test` | Run E2E tests for the demo |
 | `npm run demo:test:ui` | Run E2E tests in interactive UI mode |
-| `npm run demo:test:update` | Update baseline screenshots for visual regression |
+| `npm run demo:test:update` | Update local baseline screenshots |
+| `npm run demo:test:docker` | Run E2E tests in Linux Docker (matches CI) |
+| `npm run demo:test:docker:update` | Update Linux baseline screenshots using Docker |
 
 ### Unit Tests
 
@@ -96,6 +98,18 @@ Run E2E tests locally:
 ```bash
 npm run demo:test
 ```
+
+#### Maintaining Visual Snapshots
+
+Visual regression tests are sensitive to the operating system's rendering engine. To ensure consistency, we maintain two sets of baseline snapshots:
+- `*-darwin.png`: For local development on macOS.
+- `*-linux.png`: For GitHub Actions (Ubuntu).
+
+When you change the UI, you must update **both** sets:
+1.  **Update Mac snapshots:** `npm run demo:test:update`
+2.  **Update Linux snapshots:** `npm run demo:test:docker:update` (requires Docker)
+
+Alternatively, you can download the "Actual" snapshots from a failed CI run and place them in the snapshots directory.
 
 ### Writing Integration Tests
 

@@ -46,6 +46,8 @@
     "demo:test": "playwright test",
     "demo:test:ui": "playwright test --ui",
     "demo:test:update": "playwright test --update-snapshots",
+    "demo:test:docker": "docker run --rm -e CI=1 -v $(pwd):/work -w /work mcr.microsoft.com/playwright:v1.59.1-noble /bin/bash -c 'npm install && npx playwright test \"$@\"' --",
+    "demo:test:docker:update": "npm run demo:test:docker -- --update-snapshots",
     "prepublishOnly": "npm run build"
   },
   "engines": {
