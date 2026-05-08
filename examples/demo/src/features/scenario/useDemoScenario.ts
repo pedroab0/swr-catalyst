@@ -1,8 +1,11 @@
+import {
+  ensureMswMode,
+  getDataMode,
+  setDataMode,
+} from "@demo/features/core/dataMode";
+import type { DemoDataMode, DemoScenario, FailureMode } from "@demo/types";
 import { useMemo, useState } from "react";
 
-import type { DemoDataMode, DemoScenario, FailureMode } from "@demo/types";
-
-import { ensureMswMode, getDataMode, setDataMode } from "@demo/features/core/dataMode";
 import { getScenario, scenarioPresets, setScenario } from "./scenario";
 
 type UseDemoScenarioParams = {

@@ -1,7 +1,10 @@
+import App from "@demo/App";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import App from "@demo/App";
+const VALIDATION_ERRORS = /Validation errors/;
+const VALIDATION_MODE_ENABLED = /Validation mode enabled/i;
+const MUTATION_ERROR_INSPECTOR = /MutationError Inspector/i;
 
 async function createTodo(title: string) {
   const input = screen.getByPlaceholderText("Create a todo");
@@ -32,15 +35,17 @@ describe("scenario feature", () => {
   it("should render mutation errors when validation mode is enabled", async () => {
     render(<App />);
 
-    fireEvent.click(screen.getByRole("button", { name: /Validation errors/ }));
+    fireEvent.click(screen.getByRole("button", { name: VALIDATION_ERRORS }));
 
     const input = screen.getByPlaceholderText("Create a todo");
     fireEvent.change(input, { target: { value: "Fail" } });
     fireEvent.click(screen.getByRole("button", { name: "Create" }));
 
     await waitFor(() => {
-      expect(screen.getAllByText(/Validation mode enabled/i).length).toBeGreaterThan(0);
-      expect(screen.getByText(/MutationError Inspector/i)).toBeTruthy();
+      expect(
+        screen.getAllByText(VALIDATION_MODE_ENABLED).length
+      ).toBeGreaterThan(0);
+      expect(screen.getByText(MUTATION_ERROR_INSPECTOR)).toBeTruthy();
     });
   });
 });

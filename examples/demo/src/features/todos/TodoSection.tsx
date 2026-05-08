@@ -1,3 +1,13 @@
+import {
+  createTodoApi,
+  deleteTodoApi,
+  fetchTodos,
+  fetchTodosSummary,
+  updateTodoApi,
+} from "@demo/api/fetchers";
+import { useCacheSnapshots } from "@demo/features/cache/useCacheSnapshots";
+import { todosKey, todosSummaryKey } from "@demo/keys";
+import type { DemoEventInput, Todo, TodoInput, TodoUpdate } from "@demo/types";
 import { type SyntheticEvent, useState } from "react";
 import useSWR, { useSWRConfig } from "swr";
 import {
@@ -8,19 +18,6 @@ import {
   useSWRDelete,
   useSWRUpdate,
 } from "swr-catalyst";
-
-import type { DemoEventInput, Todo, TodoInput, TodoUpdate } from "@demo/types";
-
-import { useCacheSnapshots } from "@demo/features/cache/useCacheSnapshots";
-
-import {
-  createTodoApi,
-  deleteTodoApi,
-  fetchTodos,
-  fetchTodosSummary,
-  updateTodoApi,
-} from "@demo/api/fetchers";
-import { todosKey, todosSummaryKey } from "@demo/keys";
 
 type TodoSectionEventInput = Omit<DemoEventInput, "dataMode" | "scenario">;
 

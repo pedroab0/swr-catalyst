@@ -1,7 +1,6 @@
+import App from "@demo/App";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-
-import App from "@demo/App";
 
 async function createTodo(title: string) {
   const input = screen.getByPlaceholderText("Create a todo");

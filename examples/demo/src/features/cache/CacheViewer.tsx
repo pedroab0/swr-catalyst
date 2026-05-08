@@ -55,7 +55,7 @@ export function CacheViewer() {
       ) : null}
 
       {rows.map((row, index) => (
-        <article className="cacheRow" key={`${row.rawKey}-${index}`}>
+        <article className="cacheRow" key={row.rawKey}>
           <h3>Entry {index + 1}</h3>
           <p className="muted">Raw key</p>
           <pre>{row.rawKey}</pre>

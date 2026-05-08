@@ -1,8 +1,7 @@
+import { getScenario } from "@demo/features/scenario/scenario";
+import type { TodoInput, TodoUpdate } from "@demo/types";
 import { HttpResponse, http } from "msw";
 
-import type { TodoInput, TodoUpdate } from "@demo/types";
-
-import { getScenario } from "@demo/features/scenario/scenario";
 import {
   createTodo,
   deleteTodo,

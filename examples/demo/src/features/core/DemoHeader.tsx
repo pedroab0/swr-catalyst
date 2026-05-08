@@ -5,20 +5,20 @@ import type {
   TodosSummary,
 } from "@demo/types";
 
-interface DemoHeaderProps {
-  scenario: { failureMode: FailureMode; delayMs: number };
-  dataMode: DemoDataMode;
-  summary?: TodosSummary;
-  summaryLoading: boolean;
-  summaryError: unknown;
+type DemoHeaderProps = {
   appConfig?: AppConfig;
   configError: unknown;
+  dataMode: DemoDataMode;
   keyPreview: string;
-  onFailureModeChange: (mode: FailureMode) => void;
-  onDelayChange: (delay: number) => void;
   onDataModeSelect: (mode: DemoDataMode) => void;
+  onDelayChange: (delay: number) => void;
+  onFailureModeChange: (mode: FailureMode) => void;
   onResetClick: () => void;
-}
+  scenario: { failureMode: FailureMode; delayMs: number };
+  summary?: TodosSummary;
+  summaryError: unknown;
+  summaryLoading: boolean;
+};
 
 export function DemoHeader({
   scenario,
@@ -66,9 +66,7 @@ export function DemoHeader({
           <input
             max={3000}
             min={0}
-            onChange={(event) =>
-              onDelayChange(Number(event.target.value) || 0)
-            }
+            onChange={(event) => onDelayChange(Number(event.target.value) || 0)}
             step={100}
             type="number"
             value={scenario.delayMs}

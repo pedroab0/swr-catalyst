@@ -1,6 +1,5 @@
-import { useCallback, useRef, useState } from "react";
-
 import type { DemoToast, DemoToastVariant } from "@demo/types";
+import { useCallback, useRef, useState } from "react";
 
 const TOAST_TIMEOUT_MS = 3500;
 

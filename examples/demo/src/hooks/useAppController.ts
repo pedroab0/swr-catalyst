@@ -1,7 +1,11 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import useSWR, { useSWRConfig } from "swr";
-import { resetCache } from "swr-catalyst";
-
+import { fetchAppConfig, fetchTodosSummary } from "@demo/api/fetchers";
+import { useCacheSnapshots } from "@demo/features/cache/useCacheSnapshots";
+import { useStatusToasts } from "@demo/features/core/useStatusToasts";
+import { scenarioPresets } from "@demo/features/scenario/scenario";
+import { useDemoScenario } from "@demo/features/scenario/useDemoScenario";
+import { useDemoTimeline } from "@demo/features/timeline/useDemoTimeline";
+import { appConfigKey, todosKey, todosSummaryKey } from "@demo/keys";
+import { resetDemoData } from "@demo/mocks/dataStore";
 import type {
   AppConfig,
   DemoDataMode,
@@ -11,16 +15,9 @@ import type {
   ScenarioPresetId,
   TodosSummary,
 } from "@demo/types";
-
-import { useCacheSnapshots } from "@demo/features/cache/useCacheSnapshots";
-import { useDemoScenario } from "@demo/features/scenario/useDemoScenario";
-import { useDemoTimeline } from "@demo/features/timeline/useDemoTimeline";
-import { useStatusToasts } from "@demo/features/core/useStatusToasts";
-
-import { fetchAppConfig, fetchTodosSummary } from "@demo/api/fetchers";
-import { appConfigKey, todosKey, todosSummaryKey } from "@demo/keys";
-import { resetDemoData } from "@demo/mocks/dataStore";
-import { scenarioPresets } from "@demo/features/scenario/scenario";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import useSWR, { useSWRConfig } from "swr";
+import { resetCache } from "swr-catalyst";
 
 type AppEventInput = Omit<DemoEventInput, "dataMode" | "scenario">;
 type AppEventContext = {
@@ -120,13 +117,13 @@ export function useAppController() {
     }
   }, [events, selectedDiffEventId]);
 
-  async function syncCoreCaches() {
+  const syncCoreCaches = useCallback(async () => {
     await Promise.all([
       mutate(todosKey),
       mutate(todosSummaryKey),
       mutate(appConfigKey),
     ]);
-  }
+  }, [mutate]);
 
   function handleFailureModeChange(nextFailureMode: FailureMode) {
     const nextScenario = {
@@ -195,36 +192,39 @@ export function useAppController() {
     );
   }
 
-  async function handleSwitchDataMode(nextMode: DemoDataMode) {
-    const before = takeSnapshot();
-    const resolvedMode = await switchMode(nextMode);
-    await syncCoreCaches();
-    const after = takeSnapshot();
-    const failedToSwitch = resolvedMode !== nextMode;
+  const handleSwitchDataMode = useCallback(
+    async (nextMode: DemoDataMode) => {
+      const before = takeSnapshot();
+      const resolvedMode = await switchMode(nextMode);
+      await syncCoreCaches();
+      const after = takeSnapshot();
+      const failedToSwitch = resolvedMode !== nextMode;
 
-    reportEvent(
-      {
-        category: "system",
-        action: "Switch data mode",
-        status: failedToSwitch ? "warning" : "success",
-        payloadSummary: nextMode,
-        resultSummary: failedToSwitch
-          ? `Fallback to ${resolvedMode}`
-          : `Now using ${resolvedMode}`,
-        keyRefs: ["mode", "todos", "todos-summary", "app-config"],
-        cacheDiff: createDiff(before, after),
-        replayable: true,
-        replayAction: async () => {
-          await handleSwitchDataMode(nextMode);
+      reportEvent(
+        {
+          category: "system",
+          action: "Switch data mode",
+          status: failedToSwitch ? "warning" : "success",
+          payloadSummary: nextMode,
+          resultSummary: failedToSwitch
+            ? `Fallback to ${resolvedMode}`
+            : `Now using ${resolvedMode}`,
+          keyRefs: ["mode", "todos", "todos-summary", "app-config"],
+          cacheDiff: createDiff(before, after),
+          replayable: true,
+          replayAction: async () => {
+            await handleSwitchDataMode(nextMode);
+          },
         },
-      },
-      {
-        dataMode: resolvedMode,
-      }
-    );
-  }
+        {
+          dataMode: resolvedMode,
+        }
+      );
+    },
+    [createDiff, reportEvent, switchMode, syncCoreCaches, takeSnapshot]
+  );
 
-  async function handleResetDemo() {
+  const handleResetDemo = useCallback(async () => {
     const before = takeSnapshot();
 
     resetDemoData();
@@ -262,7 +262,16 @@ export function useAppController() {
     }
 
     pushToast("success", "Demo state reset to the happy path baseline.");
-  }
+  }, [
+    addEvent,
+    applyPreset,
+    clearEvents,
+    createDiff,
+    dataMode,
+    pushToast,
+    syncCoreCaches,
+    takeSnapshot,
+  ]);
 
   async function handleReplayEvent(eventId: number) {
     const before = takeSnapshot();
@@ -302,7 +311,9 @@ export function useAppController() {
     (nextMode: DemoDataMode) => {
       handleSwitchDataMode(nextMode).catch((error) => {
         const message =
-          error instanceof Error ? error.message : "Failed to switch data mode.";
+          error instanceof Error
+            ? error.message
+            : "Failed to switch data mode.";
         setLastError(error);
         pushToast("error", message);
       });

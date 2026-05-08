@@ -1,6 +1,6 @@
+import { getDataMode } from "@demo/features/core/dataMode";
 import type { TodoInput, TodoUpdate } from "@demo/types";
 
-import { getDataMode } from "@demo/features/core/dataMode";
 import {
   createTodoDirect,
   deleteTodoDirect,
