@@ -10,7 +10,10 @@ test.describe("swr-catalyst demo app", () => {
   test.beforeEach(async ({ page }) => {
     // Dismiss the tour overlay by setting the localStorage item before loading the page
     await page.addInitScript(() => {
-      window.localStorage.setItem("swr-catalyst-demo-tour-dismissed-v1", "true");
+      window.localStorage.setItem(
+        "swr-catalyst-demo-tour-dismissed-v1",
+        "true"
+      );
     });
     await page.goto("/");
   });
