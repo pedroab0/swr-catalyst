@@ -33,6 +33,27 @@ describe("extractSWRKey", () => {
 
   it("should return null for a non-SWRKey object", () => {
     const key = { name: "John" };
-    expect(extractSWRKey(key)).toBeNull();
+    expect(extractSWRKey(key as any)).toBeNull();
+  });
+
+  it("should return null for non-string, non-object inputs", () => {
+    expect(extractSWRKey(123 as any)).toBeNull();
+    expect(extractSWRKey(true as any)).toBeNull();
+  });
+
+  it("should return null for malformed serialized strings (missing quotes)", () => {
+    const keyString = "#id:user-1";
+    expect(extractSWRKey(keyString)).toBeNull();
+  });
+
+  it("should extract data from a JSON format string (future-proofing)", () => {
+    const keyString = '{"id":"user-1","group":"users","data":"some-data"}';
+    const expected = { id: "user-1", group: "users", data: "some-data" };
+    expect(extractSWRKey(keyString)).toEqual(expected);
+  });
+
+  it("should return null for JSON strings missing an id", () => {
+    const keyString = '{"not-id":"1"}';
+    expect(extractSWRKey(keyString)).toBeNull();
   });
 });

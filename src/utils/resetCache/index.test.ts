@@ -46,4 +46,46 @@ describe("resetCache", () => {
     expect(data).toBeUndefined();
     expect(revalidate).toBe(false);
   });
+
+  it("should clear all keys if preservedKeys is null", async () => {
+    await resetCache(null);
+    const filter = (mutate as any).mock.calls[0][0];
+
+    expect(filter({ id: "any" })).toBe(true);
+  });
+
+  it("should handle mixed key types in filter (unstructured keys)", async () => {
+    await resetCache(["user-1"]);
+    const filter = (mutate as any).mock.calls[0][0];
+
+    expect(filter("random-string")).toBe(true);
+  });
+
+  it("should throw MutationError if mutate fails", async () => {
+    (mutate as any).mockImplementationOnce(() =>
+      Promise.reject(new Error("Mutation failed"))
+    );
+
+    await expect(resetCache()).rejects.toThrow("Failed to reset cache");
+  });
+
+  it("should include preserved keys in the error message if reset fails", async () => {
+    (mutate as any).mockImplementationOnce(() =>
+      Promise.reject(new Error("Mutation failed"))
+    );
+
+    await expect(resetCache("user-1")).rejects.toThrow(
+      "Failed to reset cache (preserving: user-1)"
+    );
+  });
+
+  it("should handle non-Error objects in catch block", async () => {
+    (mutate as any).mockImplementationOnce(() =>
+      Promise.reject("String error")
+    );
+
+    await expect(resetCache()).rejects.toThrow(
+      "Failed to reset cache. String error"
+    );
+  });
 });
