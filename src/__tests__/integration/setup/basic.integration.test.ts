@@ -25,9 +25,9 @@ describe("Basic Integration Test Setup", () => {
 
   it("should handle MSW POST requests", async () => {
     const response = await fetch("/api/todos", {
-      method: "POST",
+      body: JSON.stringify({ completed: false, title: "Test Todo" }),
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title: "Test Todo", completed: false }),
+      method: "POST",
     });
 
     expect(response.ok).toBe(true);

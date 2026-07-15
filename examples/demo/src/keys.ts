@@ -1,19 +1,19 @@
 import type { SWRKey } from "swr-catalyst";
 
 export const todosKey: SWRKey<string> = {
-  id: "todos",
-  group: "tasks",
   data: "/api/todos",
+  group: "tasks",
+  id: "todos",
 };
 
 export const todosSummaryKey: SWRKey<string> = {
-  id: "todos-summary",
-  group: "tasks",
   data: "/api/todos?view=summary",
+  group: "tasks",
+  id: "todos-summary",
 };
 
 export const appConfigKey: SWRKey<string> = {
-  id: "app-config",
-  group: "meta",
   data: "/api/config",
+  group: "meta",
+  id: "app-config",
 };

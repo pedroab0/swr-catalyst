@@ -101,5 +101,5 @@ export type ErrorConstructorWithStackTrace = typeof Error & {
    * @param targetObject - The object to attach the stack trace to
    * @param constructorOpt - Optional constructor to exclude from the stack trace
    */
-  captureStackTrace(targetObject: object, constructorOpt?: unknown): void;
+  captureStackTrace: (targetObject: object, constructorOpt?: unknown) => void;
 };

@@ -53,9 +53,9 @@ export function createCacheDiff(
 
     if (beforeRow.value !== afterRow.value) {
       changed.push({
-        key: cacheKey,
-        before: beforeRow.value,
         after: afterRow.value,
+        before: beforeRow.value,
+        key: cacheKey,
       });
     }
   }
@@ -66,5 +66,5 @@ export function createCacheDiff(
     }
   }
 
-  return { added, removed, changed };
+  return { added, changed, removed };
 }

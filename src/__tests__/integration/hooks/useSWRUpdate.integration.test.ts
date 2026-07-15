@@ -11,8 +11,8 @@ import { useSWRUpdate } from "@/hooks";
 
 describe("useSWRUpdate - Integration Tests", () => {
   const todosKey: SWRKey<Todo> = {
+    data: { completed: false, id: 1, title: "" },
     id: "todos",
-    data: { id: 1, completed: false, title: "" },
   };
 
   const updateTodoWrapper = (
@@ -202,14 +202,14 @@ describe("useSWRUpdate - Integration Tests", () => {
       result,
       todoId,
       { completed: true },
-      { title: "First Update", completed: true }
+      { completed: true, title: "First Update" }
     );
 
     await updateAndVerify(
       result,
       todoId,
-      { title: "Final Update", completed: false },
-      { title: "Final Update", completed: false }
+      { completed: false, title: "Final Update" },
+      { completed: false, title: "Final Update" }
     );
 
     expect(result.current.update.error).toBeNull();

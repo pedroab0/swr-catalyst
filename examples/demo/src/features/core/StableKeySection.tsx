@@ -12,12 +12,12 @@ export function StableKeySection() {
   renderCountRef.current += 1;
 
   const dynamicKey: SWRKey<{ url: string; params: { filter: FilterValue } }> = {
-    id: "todos-filtered",
-    group: "tasks",
     data: {
-      url: "/api/todos",
       params: { filter },
+      url: "/api/todos",
     },
+    group: "tasks",
+    id: "todos-filtered",
   };
 
   const stableKey = useStableKey(dynamicKey);

@@ -83,7 +83,7 @@ export function useStableKey<T = unknown>(
     currentKey.group !== group ||
     !deepEqual(currentKey.data, data)
   ) {
-    stableKeyRef.current = { id, group, data } as SWRKey<T>;
+    stableKeyRef.current = { data, group, id } as SWRKey<T>;
   }
 
   return stableKeyRef.current;

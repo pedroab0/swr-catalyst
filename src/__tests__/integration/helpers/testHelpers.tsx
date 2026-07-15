@@ -46,9 +46,9 @@ export function uniqueKeyId(prefix: string): string {
 
 export function createMockTodo(overrides: Partial<Todo> = {}): Todo {
   return {
+    completed: false,
     id: Math.floor(Math.random() * 10_000),
     title: `Test Todo ${Date.now()}`,
-    completed: false,
     ...overrides,
   };
 }

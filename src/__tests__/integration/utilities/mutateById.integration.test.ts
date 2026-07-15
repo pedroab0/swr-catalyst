@@ -13,8 +13,8 @@ describe("mutateById - Integration Tests", () => {
     const keyId = uniqueKeyId("mutate-by-id-revalidate");
 
     const todosKey: SWRKey<Todo> = {
+      data: { completed: false, id: 1, title: "" },
       id: keyId,
-      data: { id: 1, completed: false, title: "" },
     };
 
     let fetchCount = 0;
@@ -50,8 +50,8 @@ describe("mutateById - Integration Tests", () => {
     const keyId = uniqueKeyId("mutate-by-id-update");
 
     const todosKey: SWRKey<Todo> = {
+      data: { completed: false, id: 1, title: "" },
       id: keyId,
-      data: { id: 1, completed: false, title: "" },
     };
 
     const { result } = renderHookWithGlobalCache(() =>
@@ -67,8 +67,8 @@ describe("mutateById - Integration Tests", () => {
     expect(result.current.data?.[0].title).toBe("Test Todo 1");
 
     const newTodos: Todo[] = [
-      { id: 100, title: "Mutated Todo 1", completed: true },
-      { id: 101, title: "Mutated Todo 2", completed: false },
+      { completed: true, id: 100, title: "Mutated Todo 1" },
+      { completed: false, id: 101, title: "Mutated Todo 2" },
     ];
 
     await act(async () => {
@@ -89,13 +89,13 @@ describe("mutateById - Integration Tests", () => {
     const keyId2 = uniqueKeyId("mutate-multi-2");
 
     const todosKey1: SWRKey<Todo> = {
+      data: { completed: false, id: 1, title: "" },
       id: keyId1,
-      data: { id: 1, completed: false, title: "" },
     };
 
     const todosKey2: SWRKey<Todo> = {
+      data: { completed: false, id: 2, title: "" },
       id: keyId2,
-      data: { id: 2, completed: false, title: "" },
     };
 
     let fetchCount1 = 0;

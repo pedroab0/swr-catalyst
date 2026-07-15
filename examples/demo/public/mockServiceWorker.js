@@ -48,11 +48,11 @@ addEventListener("message", async (event) => {
 
     case "INTEGRITY_CHECK_REQUEST": {
       sendToClient(client, {
-        type: "INTEGRITY_CHECK_RESPONSE",
         payload: {
-          packageVersion: PACKAGE_VERSION,
           checksum: INTEGRITY_CHECKSUM,
+          packageVersion: PACKAGE_VERSION,
         },
+        type: "INTEGRITY_CHECK_RESPONSE",
       });
       break;
     }
@@ -61,13 +61,13 @@ addEventListener("message", async (event) => {
       activeClientIds.add(clientId);
 
       sendToClient(client, {
-        type: "MOCKING_ENABLED",
         payload: {
           client: {
-            id: client.id,
             frameType: client.frameType,
+            id: client.id,
           },
         },
+        type: "MOCKING_ENABLED",
       });
       break;
     }
@@ -144,7 +144,6 @@ async function handleRequest(event, requestId, requestInterceptedAt) {
     sendToClient(
       client,
       {
-        type: "RESPONSE",
         payload: {
           isMockedResponse: IS_MOCKED_RESPONSE in response,
           request: {
@@ -152,13 +151,14 @@ async function handleRequest(event, requestId, requestInterceptedAt) {
             ...serializedRequest,
           },
           response: {
-            type: responseClone.type,
+            body: responseClone.body,
+            headers: Object.fromEntries(responseClone.headers.entries()),
             status: responseClone.status,
             statusText: responseClone.statusText,
-            headers: Object.fromEntries(responseClone.headers.entries()),
-            body: responseClone.body,
+            type: responseClone.type,
           },
         },
+        type: "RESPONSE",
       },
       responseClone.body ? [serializedRequest.body, responseClone.body] : []
     );
@@ -257,12 +257,12 @@ async function getResponse(event, client, requestId, requestInterceptedAt) {
   const clientMessage = await sendToClient(
     client,
     {
-      type: "REQUEST",
       payload: {
         id: requestId,
         interceptedAt: requestInterceptedAt,
         ...serializedRequest,
       },
+      type: "REQUEST",
     },
     [serializedRequest.body]
   );
@@ -321,8 +321,8 @@ function respondWithMock(response) {
   const mockedResponse = new Response(response.body, response);
 
   Reflect.defineProperty(mockedResponse, IS_MOCKED_RESPONSE, {
-    value: true,
     enumerable: true,
+    value: true,
   });
 
   return mockedResponse;
@@ -333,18 +333,18 @@ function respondWithMock(response) {
  */
 async function serializeRequest(request) {
   return {
-    url: request.url,
-    mode: request.mode,
-    method: request.method,
-    headers: Object.fromEntries(request.headers.entries()),
+    body: await request.arrayBuffer(),
     cache: request.cache,
     credentials: request.credentials,
     destination: request.destination,
+    headers: Object.fromEntries(request.headers.entries()),
     integrity: request.integrity,
+    keepalive: request.keepalive,
+    method: request.method,
+    mode: request.mode,
     redirect: request.redirect,
     referrer: request.referrer,
     referrerPolicy: request.referrerPolicy,
-    body: await request.arrayBuffer(),
-    keepalive: request.keepalive,
+    url: request.url,
   };
 }

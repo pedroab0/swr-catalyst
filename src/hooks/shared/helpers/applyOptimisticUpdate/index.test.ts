@@ -8,14 +8,14 @@ const mutate = vi.fn();
 const cacheGet = vi.fn();
 const cacheSet = vi.fn();
 const cache = {
-  get: cacheGet,
-  set: cacheSet,
   delete: vi.fn(),
+  get: cacheGet,
   keys: vi.fn(() => []),
+  set: cacheSet,
 } as any;
 
 describe("applyOptimisticUpdate", () => {
-  const testKey: SWRKey = { id: "todos", data: "/api/todos" };
+  const testKey: SWRKey = { data: "/api/todos", id: "todos" };
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -154,16 +154,16 @@ describe("applyOptimisticUpdate", () => {
 
   it("should handle complex data transformations", async () => {
     const originalData = {
-      items: [{ id: 1, title: "Todo 1" }],
       count: 1,
+      items: [{ id: 1, title: "Todo 1" }],
     };
 
     cacheGet.mockReturnValue({ data: originalData });
 
     const newItem = { id: 2, title: "Todo 2" };
     const optimisticUpdateFn = vi.fn((current: any, data: any) => ({
-      items: [...current.items, data],
       count: current.count + 1,
+      items: [...current.items, data],
     }));
 
     const result = await applyOptimisticUpdate(cache, mutate, testKey, {
@@ -175,11 +175,11 @@ describe("applyOptimisticUpdate", () => {
     expect(mutate).toHaveBeenCalledWith(
       testKey,
       {
+        count: 2,
         items: [
           { id: 1, title: "Todo 1" },
           { id: 2, title: "Todo 2" },
         ],
-        count: 2,
       },
       false
     );
@@ -202,7 +202,7 @@ describe("applyOptimisticUpdate", () => {
   });
 
   it("should work with different key types", async () => {
-    const stringKey: SWRKey = { id: "todos-string", data: "/api/todos" };
+    const stringKey: SWRKey = { data: "/api/todos", id: "todos-string" };
     cacheGet.mockReturnValue({ data: [] });
 
     const optimisticUpdateFn = vi.fn(() => [{ id: 1 }]);

@@ -4,6 +4,19 @@
     "./node_modules/ultracite/config/biome/core/biome.jsonc",
     "./node_modules/ultracite/config/biome/react/biome.jsonc"
   ],
+  "javascript": {
+    "globals": [
+      "describe",
+      "it",
+      "expect",
+      "beforeEach",
+      "afterEach",
+      "beforeAll",
+      "afterAll",
+      "vi",
+      "React"
+    ]
+  },
   "assist": {
     "actions": {
       "source": {
@@ -83,7 +96,8 @@
             "filenameCases": ["PascalCase", "camelCase"],
             "strictCase": false
           }
-        }
+        },
+        "useErrorCause": "off"
       }
     }
   },
@@ -99,6 +113,31 @@
         "rules": {
           "suspicious": {
             "noMisplacedAssertion": "off"
+          },
+          "style": {
+            "useDestructuring": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["src/__tests__/integration/setup/vitest.setup.ts"],
+      "linter": {
+        "enabled": false
+      },
+      "formatter": {
+        "enabled": false
+      }
+    },
+    {
+      "includes": ["examples/demo/**/*"],
+      "linter": {
+        "rules": {
+          "performance": {
+            "noJsxPropsBind": "off"
+          },
+          "style": {
+            "noIncrementDecrement": "off"
           }
         }
       }

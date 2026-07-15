@@ -9,7 +9,7 @@ import { executeMutation } from "./index";
 const mutate = vi.fn();
 
 describe("executeMutation", () => {
-  const testKey: SWRKey = { id: "todos", data: "/api/todos" };
+  const testKey: SWRKey = { data: "/api/todos", id: "todos" };
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -23,9 +23,9 @@ describe("executeMutation", () => {
 
       const result = await executeMutation(mutationFn, {
         mutate,
-        stableKey: testKey,
-        shouldRollback: false,
         onError,
+        shouldRollback: false,
+        stableKey: testKey,
       });
 
       expect(result).toEqual({ id: 1, title: "New" });
@@ -35,15 +35,15 @@ describe("executeMutation", () => {
     });
 
     it("should return mutation result", async () => {
-      const expectedResult = { success: true, data: { id: 123 } };
+      const expectedResult = { data: { id: 123 }, success: true };
       const mutationFn = vi.fn().mockResolvedValue(expectedResult);
       const onError = vi.fn();
 
       const result = await executeMutation(mutationFn, {
         mutate,
-        stableKey: testKey,
-        shouldRollback: false,
         onError,
+        shouldRollback: false,
+        stableKey: testKey,
       });
 
       expect(result).toBe(expectedResult);
@@ -55,9 +55,9 @@ describe("executeMutation", () => {
 
       await executeMutation(mutationFn, {
         mutate,
-        stableKey: testKey,
-        shouldRollback: false,
         onError,
+        shouldRollback: false,
+        stableKey: testKey,
       });
 
       expect(onError).not.toHaveBeenCalled();
@@ -68,7 +68,7 @@ describe("executeMutation", () => {
     it("should call onError and rethrow on failure", async () => {
       const error = new MutationError(
         "Failed",
-        { operation: "create", key: testKey, timestamp: Date.now() },
+        { key: testKey, operation: "create", timestamp: Date.now() },
         new Error("Original")
       );
       const mutationFn = vi.fn().mockRejectedValue(error);
@@ -77,9 +77,9 @@ describe("executeMutation", () => {
       await expect(
         executeMutation(mutationFn, {
           mutate,
-          stableKey: testKey,
-          shouldRollback: false,
           onError,
+          shouldRollback: false,
+          stableKey: testKey,
         })
       ).rejects.toThrow(error);
 
@@ -95,9 +95,9 @@ describe("executeMutation", () => {
       try {
         await executeMutation(mutationFn, {
           mutate,
-          stableKey: testKey,
-          shouldRollback: false,
           onError,
+          shouldRollback: false,
+          stableKey: testKey,
         });
       } catch {
         // ignore
@@ -117,10 +117,10 @@ describe("executeMutation", () => {
       try {
         await executeMutation(mutationFn, {
           mutate,
-          stableKey: testKey,
-          shouldRollback: true,
-          originalData,
           onError,
+          originalData,
+          shouldRollback: true,
+          stableKey: testKey,
         });
       } catch {
         // ignore
@@ -139,10 +139,10 @@ describe("executeMutation", () => {
       try {
         await executeMutation(mutationFn, {
           mutate,
-          stableKey: testKey,
-          shouldRollback: false,
-          originalData,
           onError,
+          originalData,
+          shouldRollback: false,
+          stableKey: testKey,
         });
       } catch {
         // ignore
@@ -160,10 +160,10 @@ describe("executeMutation", () => {
       try {
         await executeMutation(mutationFn, {
           mutate,
-          stableKey: testKey,
-          shouldRollback: true,
-          originalData: undefined,
           onError,
+          originalData: undefined,
+          shouldRollback: true,
+          stableKey: testKey,
         });
       } catch {
         // ignore
@@ -180,10 +180,10 @@ describe("executeMutation", () => {
       try {
         await executeMutation(mutationFn, {
           mutate,
-          stableKey: testKey,
-          shouldRollback: true,
-          originalData: null,
           onError,
+          originalData: null,
+          shouldRollback: true,
+          stableKey: testKey,
         });
       } catch {
         // ignore
@@ -200,10 +200,10 @@ describe("executeMutation", () => {
       try {
         await executeMutation(mutationFn, {
           mutate,
-          stableKey: testKey,
-          shouldRollback: true,
-          originalData: [],
           onError,
+          originalData: [],
+          shouldRollback: true,
+          stableKey: testKey,
         });
       } catch {
         // ignore
@@ -223,9 +223,9 @@ describe("executeMutation", () => {
       try {
         await executeMutation(mutationFn, {
           mutate,
-          stableKey: testKey,
-          shouldRollback: false,
           onError,
+          shouldRollback: false,
+          stableKey: testKey,
         });
       } catch {
         callOrder.push("catch");
@@ -247,10 +247,10 @@ describe("executeMutation", () => {
       try {
         await executeMutation(mutationFn, {
           mutate,
-          stableKey: testKey,
-          shouldRollback: true,
-          originalData: [],
           onError,
+          originalData: [],
+          shouldRollback: true,
+          stableKey: testKey,
         });
       } catch {
         callOrder.push("catch");
@@ -267,9 +267,9 @@ describe("executeMutation", () => {
 
       const result = await executeMutation(mutationFn, {
         mutate,
-        stableKey: testKey,
-        shouldRollback: false,
         onError,
+        shouldRollback: false,
+        stableKey: testKey,
       });
 
       expect(result).toBeUndefined();
@@ -282,9 +282,9 @@ describe("executeMutation", () => {
 
       const result = await executeMutation(mutationFn, {
         mutate,
-        stableKey: testKey,
-        shouldRollback: false,
         onError,
+        shouldRollback: false,
+        stableKey: testKey,
       });
 
       expect(result).toBeNull();
@@ -300,9 +300,9 @@ describe("executeMutation", () => {
 
       const result = await executeMutation(mutationFn, {
         mutate,
-        stableKey: testKey,
-        shouldRollback: false,
         onError,
+        shouldRollback: false,
+        stableKey: testKey,
       });
 
       expect(result).toEqual(complexResult);
@@ -316,9 +316,9 @@ describe("executeMutation", () => {
       await expect(
         executeMutation(mutationFn, {
           mutate,
-          stableKey: testKey,
-          shouldRollback: false,
           onError,
+          shouldRollback: false,
+          stableKey: testKey,
         })
       ).rejects.toThrow(TypeError);
 

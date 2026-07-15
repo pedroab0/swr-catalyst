@@ -11,8 +11,8 @@ import { useSWRDelete } from "@/hooks";
 
 describe("useSWRDelete - Integration Tests", () => {
   const todosKey: SWRKey<Todo> = {
+    data: { completed: false, id: 1, title: "" },
     id: "todos",
-    data: { id: 1, completed: false, title: "" },
   };
 
   const deleteTodoWrapper = (id: string | number) => deleteTodo(Number(id));
@@ -23,7 +23,7 @@ describe("useSWRDelete - Integration Tests", () => {
 
       const del = useSWRDelete(todosKey, deleteTodoWrapper);
 
-      return { swr, del };
+      return { del, swr };
     });
 
     await waitFor(() => expect(result.current.swr.data).toBeDefined());
@@ -78,7 +78,7 @@ describe("useSWRDelete - Integration Tests", () => {
 
       const del = useSWRDelete(todosKey, deleteTodoWrapper);
 
-      return { swr, del };
+      return { del, swr };
     });
 
     await waitFor(() => expect(result.current.swr.data).toBeDefined());
@@ -130,7 +130,7 @@ describe("useSWRDelete - Integration Tests", () => {
 
       const del = useSWRDelete(todosKey, deleteTodoWrapper);
 
-      return { swr, del };
+      return { del, swr };
     });
 
     await waitFor(() => expect(result.current.swr.data).toBeDefined());

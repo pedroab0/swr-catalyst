@@ -1,16 +1,17 @@
 import { afterAll, afterEach, beforeAll } from "vitest";
 
-import { resetServerData, server } from "./server";
-
-beforeAll(() => {
+beforeAll(async () => {
+  const { server } = await import("./server");
   server.listen({ onUnhandledRequest: "error" });
 });
 
-afterEach(() => {
+afterEach(async () => {
+  const { resetServerData, server } = await import("./server");
   server.resetHandlers();
   resetServerData();
 });
 
-afterAll(() => {
+afterAll(async () => {
+  const { server } = await import("./server");
   server.close();
 });

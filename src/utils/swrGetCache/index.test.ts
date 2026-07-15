@@ -6,7 +6,7 @@ import { swrGetCache } from "./index";
 
 describe("swrGetCache", () => {
   it("should get cache entry for valid key", () => {
-    const key: SWRKey = { id: "todos", data: "/api/todos" };
+    const key: SWRKey = { data: "/api/todos", id: "todos" };
     const cachedData = {
       data: [{ id: 1, title: "Test" }],
       isValidating: false,
@@ -32,7 +32,7 @@ describe("swrGetCache", () => {
   });
 
   it("should handle cache miss", () => {
-    const key: SWRKey = { id: "todos", data: "/api/todos" };
+    const key: SWRKey = { data: "/api/todos", id: "todos" };
     const mockCache = new Map();
     mockCache.get = vi.fn().mockReturnValue(undefined);
 

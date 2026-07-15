@@ -35,9 +35,9 @@ export async function fetchTodoById(id: number): Promise<Todo> {
 
 export async function createTodo(todo: Todo): Promise<Todo> {
   const res = await fetch("/api/todos", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(todo),
+    headers: { "Content-Type": "application/json" },
+    method: "POST",
   });
 
   return handleResponse<Todo>(res, "Failed to create todo");
@@ -48,9 +48,9 @@ export async function updateTodo(
   data: Partial<{ title: string; completed: boolean }>
 ): Promise<Todo> {
   const res = await fetch(`/api/todos/${id}`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
+    headers: { "Content-Type": "application/json" },
+    method: "PATCH",
   });
 
   return handleResponse<Todo>(res, `Failed to update todo ${id}`);

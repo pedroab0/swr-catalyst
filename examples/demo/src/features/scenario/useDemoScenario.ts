@@ -71,12 +71,12 @@ export function useDemoScenario({ onModeFallback }: UseDemoScenarioParams) {
   }
 
   return {
-    scenario,
+    applyPreset,
     dataMode,
     presetList,
-    setFailureMode,
+    scenario,
     setDelayMs,
-    applyPreset,
+    setFailureMode,
     switchMode,
   };
 }

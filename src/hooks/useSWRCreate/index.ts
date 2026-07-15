@@ -178,8 +178,8 @@ export function useSWRCreate<TData = unknown, TCache = unknown, TError = Error>(
   );
 
   return {
-    trigger,
-    isMutating,
     error,
+    isMutating,
+    trigger,
   };
 }

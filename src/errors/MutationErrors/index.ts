@@ -41,7 +41,7 @@ export class MutationError extends Error {
     context: MutationErrorContext,
     originalError: unknown
   ) {
-    super(message);
+    super(message, { cause: originalError });
     this.context = context;
     this.originalError = originalError;
 
@@ -75,8 +75,8 @@ export class MutationError extends Error {
 
     const operationText = {
       create: "add",
-      update: "update",
       delete: "delete",
+      update: "update",
     }[operation];
 
     return `Failed to ${operationText} ${resource}. Please try again.`;
@@ -106,14 +106,14 @@ export class MutationError extends Error {
    */
   toJSON() {
     return {
-      name: this.name,
-      message: this.message,
       context: this.context,
+      message: this.message,
+      name: this.name,
       originalError:
         this.originalError instanceof Error
           ? {
-              name: this.originalError.name,
               message: this.originalError.message,
+              name: this.originalError.name,
               stack: this.originalError.stack,
             }
           : String(this.originalError),
