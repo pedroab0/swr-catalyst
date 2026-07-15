@@ -14,31 +14,31 @@ describe("resetCache - Integration Tests", () => {
     const keyId2 = uniqueKeyId("reset-settings");
 
     const todosKey: SWRKey<Todo> = {
+      data: { completed: false, id: 1, title: "" },
       id: keyId1,
-      data: { id: 1, completed: false, title: "" },
     };
 
     const settingsKey: SWRKey<Todo> = {
+      data: { completed: false, id: 2, title: "" },
       id: keyId2,
-      data: { id: 2, completed: false, title: "" },
     };
 
     const { result } = renderHookWithGlobalCache(() => {
       const todos = useSWR(todosKey, fetchTodos, {
-        revalidateOnMount: true,
         revalidateIfStale: false,
         revalidateOnFocus: false,
+        revalidateOnMount: true,
         revalidateOnReconnect: false,
       });
 
       const settings = useSWR(settingsKey, fetchTodos, {
-        revalidateOnMount: true,
         revalidateIfStale: false,
         revalidateOnFocus: false,
+        revalidateOnMount: true,
         revalidateOnReconnect: false,
       });
 
-      return { todos, settings };
+      return { settings, todos };
     });
 
     await waitFor(() => {
@@ -64,13 +64,13 @@ describe("resetCache - Integration Tests", () => {
     const clearKeyId = uniqueKeyId("clear-settings");
 
     const todosKey: SWRKey<Todo> = {
+      data: { completed: false, id: 1, title: "" },
       id: preserveKeyId,
-      data: { id: 1, completed: false, title: "" },
     };
 
     const settingsKey: SWRKey<Todo> = {
+      data: { completed: false, id: 2, title: "" },
       id: clearKeyId,
-      data: { id: 2, completed: false, title: "" },
     };
 
     const { result } = renderHookWithGlobalCache(() => {
@@ -86,7 +86,7 @@ describe("resetCache - Integration Tests", () => {
         revalidateOnReconnect: false,
       });
 
-      return { todos, settings };
+      return { settings, todos };
     });
 
     await waitFor(() => {
@@ -95,7 +95,7 @@ describe("resetCache - Integration Tests", () => {
     });
 
     const modifiedData: Todo[] = [
-      { id: 888, title: "Modified Preserved", completed: true },
+      { completed: true, id: 888, title: "Modified Preserved" },
     ];
 
     await act(async () => {
@@ -124,18 +124,18 @@ describe("resetCache - Integration Tests", () => {
     const keyId3 = uniqueKeyId("clear-me");
 
     const key1: SWRKey<Todo> = {
+      data: { completed: false, id: 1, title: "" },
       id: keyId1,
-      data: { id: 1, completed: false, title: "" },
     };
 
     const key2: SWRKey<Todo> = {
+      data: { completed: false, id: 2, title: "" },
       id: keyId2,
-      data: { id: 2, completed: false, title: "" },
     };
 
     const key3: SWRKey<Todo> = {
+      data: { completed: false, id: 3, title: "" },
       id: keyId3,
-      data: { id: 3, completed: false, title: "" },
     };
 
     const { result } = renderHookWithGlobalCache(() => {
@@ -167,12 +167,12 @@ describe("resetCache - Integration Tests", () => {
     await act(async () => {
       await mutateById(
         keyId1,
-        [{ id: 111, title: "Preserved 1", completed: false }],
+        [{ completed: false, id: 111, title: "Preserved 1" }],
         { revalidate: false }
       );
       await mutateById(
         keyId2,
-        [{ id: 222, title: "Preserved 2", completed: false }],
+        [{ completed: false, id: 222, title: "Preserved 2" }],
         { revalidate: false }
       );
     });

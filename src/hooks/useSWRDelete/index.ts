@@ -189,8 +189,8 @@ export function useSWRDelete<TCache = unknown, TError = Error>(
   );
 
   return {
-    trigger,
-    isMutating,
     error,
+    isMutating,
+    trigger,
   };
 }

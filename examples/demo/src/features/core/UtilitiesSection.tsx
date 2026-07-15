@@ -106,15 +106,15 @@ export function UtilitiesSection({
 
       setStatusMessage(message);
       onActionEvent({
-        category: "utilities",
         action: params.action,
-        status: "success",
-        payloadSummary: params.payloadSummary,
-        resultSummary: message,
-        keyRefs: params.keyRefs,
         cacheDiff: createDiff(before, after),
-        replayable: Boolean(params.replayable),
+        category: "utilities",
+        keyRefs: params.keyRefs,
+        payloadSummary: params.payloadSummary,
         replayAction: params.replayAction,
+        replayable: Boolean(params.replayable),
+        resultSummary: message,
+        status: "success",
       });
 
       return result;
@@ -125,13 +125,13 @@ export function UtilitiesSection({
 
       captureMutationError(error);
       onActionEvent({
-        category: "utilities",
         action: params.action,
-        status: "error",
-        payloadSummary: params.payloadSummary,
+        cacheDiff: createDiff(before, after),
+        category: "utilities",
         errorSummary: errorMessage,
         keyRefs: params.keyRefs,
-        cacheDiff: createDiff(before, after),
+        payloadSummary: params.payloadSummary,
+        status: "error",
       });
 
       return null;
@@ -147,18 +147,18 @@ export function UtilitiesSection({
 
     await runTrackedUtility({
       action: "mutateById revalidate",
-      payloadSummary: ids.join(", "),
-      keyRefs: ids,
       execute: async () => {
         await mutateById(ids.length === 1 ? ids[0] : ids);
         return ids;
       },
-      resultSummary: (result) =>
-        `mutateById revalidated ${result.length} target id(s).`,
-      replayable: true,
+      keyRefs: ids,
+      payloadSummary: ids.join(", "),
       replayAction: async () => {
         await revalidateById();
       },
+      replayable: true,
+      resultSummary: (result) =>
+        `mutateById revalidated ${result.length} target id(s).`,
     });
   }
 
@@ -171,18 +171,18 @@ export function UtilitiesSection({
 
     await runTrackedUtility({
       action: "mutateByGroup revalidate",
-      payloadSummary: groups.join(", "),
-      keyRefs: groups,
       execute: async () => {
         await mutateByGroup(groups.length === 1 ? groups[0] : groups);
         return groups;
       },
-      resultSummary: (result) =>
-        `mutateByGroup revalidated ${result.length} group(s).`,
-      replayable: true,
+      keyRefs: groups,
+      payloadSummary: groups.join(", "),
       replayAction: async () => {
         await revalidateByGroup();
       },
+      replayable: true,
+      resultSummary: (result) =>
+        `mutateByGroup revalidated ${result.length} group(s).`,
     });
   }
 
@@ -200,8 +200,6 @@ export function UtilitiesSection({
 
     await runTrackedUtility({
       action: "mutateById update without revalidate",
-      payloadSummary: `todos count=${currentTodos.length}`,
-      keyRefs: ["todos"],
       execute: async () => {
         await mutateById("todos", nextTodos, {
           revalidate: false,
@@ -209,28 +207,28 @@ export function UtilitiesSection({
         readAndDisplayCache();
         return nextTodos;
       },
-      resultSummary: (result) =>
-        `mutateById wrote ${result.length} todos (all completed=true) without revalidation.`,
-      replayable: true,
+      keyRefs: ["todos"],
+      payloadSummary: `todos count=${currentTodos.length}`,
       replayAction: async () => {
         await updateByIdWithoutRevalidate();
       },
+      replayable: true,
+      resultSummary: (result) =>
+        `mutateById wrote ${result.length} todos (all completed=true) without revalidation.`,
     });
   }
 
   async function writeWithSWRMutate() {
     const currentTodos = readTodosFromCache();
     const optimisticTodo: Todo = {
-      id: Date.now(),
-      title: injectedTitle.trim() || "Injected via swrMutate()",
       completed: false,
+      id: Date.now(),
       optimistic: true,
+      title: injectedTitle.trim() || "Injected via swrMutate()",
     };
 
     await runTrackedUtility({
       action: "swrMutate write",
-      payloadSummary: JSON.stringify(optimisticTodo),
-      keyRefs: ["todos"],
       execute: async () => {
         await swrMutate(
           mutate,
@@ -241,20 +239,20 @@ export function UtilitiesSection({
         readAndDisplayCache();
         return optimisticTodo;
       },
-      resultSummary: (result) =>
-        `swrMutate wrote optimistic todo #${result.id}.`,
-      replayable: true,
+      keyRefs: ["todos"],
+      payloadSummary: JSON.stringify(optimisticTodo),
       replayAction: async () => {
         await writeWithSWRMutate();
       },
+      replayable: true,
+      resultSummary: (result) =>
+        `swrMutate wrote optimistic todo #${result.id}.`,
     });
   }
 
   async function preserveConfigAndResetCache() {
     await runTrackedUtility({
       action: "resetCache preserve app-config",
-      payloadSummary: "preserve=app-config",
-      keyRefs: ["app-config"],
       execute: async () => {
         await resetCache(["app-config"]);
         await mutate(todosKey);
@@ -262,6 +260,8 @@ export function UtilitiesSection({
         readAndDisplayCache();
         return true;
       },
+      keyRefs: ["app-config"],
+      payloadSummary: "preserve=app-config",
       resultSummary: () =>
         "resetCache cleared entries except app-config and refetched todo caches.",
     });
@@ -278,8 +278,6 @@ export function UtilitiesSection({
 
     await runTrackedUtility({
       action: "Run utilities batch scenario",
-      payloadSummary: `ids=[${ids.join(", ")}], groups=[${groups.join(", ")}]`,
-      keyRefs: [...ids, ...groups],
       execute: async () => {
         if (ids.length > 0) {
           await mutateById(ids.length === 1 ? ids[0] : ids);
@@ -292,16 +290,18 @@ export function UtilitiesSection({
         readAndDisplayCache();
 
         return {
-          ids,
           groups,
+          ids,
         };
       },
-      resultSummary: (result) =>
-        `Batch scenario finished for ${result.ids.length} id(s) and ${result.groups.length} group(s).`,
-      replayable: true,
+      keyRefs: [...ids, ...groups],
+      payloadSummary: `ids=[${ids.join(", ")}], groups=[${groups.join(", ")}]`,
       replayAction: async () => {
         await runBatchScenario();
       },
+      replayable: true,
+      resultSummary: (result) =>
+        `Batch scenario finished for ${result.ids.length} id(s) and ${result.groups.length} group(s).`,
     });
   }
 
@@ -316,13 +316,13 @@ export function UtilitiesSection({
     const after = takeSnapshot();
 
     onActionEvent({
-      category: "utilities",
       action: "extractSWRKey parse",
-      status: "info",
+      cacheDiff: createDiff(before, after),
+      category: "utilities",
+      keyRefs: ["todos-summary"],
       payloadSummary: "todos-summary",
       resultSummary: "Serialized key parsed with extractSWRKey.",
-      keyRefs: ["todos-summary"],
-      cacheDiff: createDiff(before, after),
+      status: "info",
     });
 
     setStatusMessage("Serialized key parsed with extractSWRKey.");
@@ -337,12 +337,12 @@ export function UtilitiesSection({
 
     const after = takeSnapshot();
     onActionEvent({
-      category: "utilities",
       action: "Inspect app-config cache",
-      status: "info",
-      resultSummary: "Read app-config cache entry.",
-      keyRefs: ["app-config"],
       cacheDiff: createDiff(before, after),
+      category: "utilities",
+      keyRefs: ["app-config"],
+      resultSummary: "Read app-config cache entry.",
+      status: "info",
     });
   }
 

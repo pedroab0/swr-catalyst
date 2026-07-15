@@ -25,15 +25,15 @@ describe("mutateByGroup - Integration Tests", () => {
     const keyId2 = uniqueKeyId("user-settings");
 
     const userTodosKey: SWRKey<Todo> = {
-      id: keyId1,
+      data: { completed: false, id: 1, title: "" },
       group: groupName,
-      data: { id: 1, completed: false, title: "" },
+      id: keyId1,
     };
 
     const userSettingsKey: SWRKey<Todo> = {
-      id: keyId2,
+      data: { completed: false, id: 2, title: "" },
       group: groupName,
-      data: { id: 2, completed: false, title: "" },
+      id: keyId2,
     };
 
     let todosFetchCount = 0;
@@ -50,7 +50,7 @@ describe("mutateByGroup - Integration Tests", () => {
         return fetchTodos();
       });
 
-      return { todos, settings };
+      return { settings, todos };
     });
 
     await waitFor(() => {
@@ -77,15 +77,15 @@ describe("mutateByGroup - Integration Tests", () => {
     const keyId2 = uniqueKeyId("settings-update");
 
     const userTodosKey: SWRKey<Todo> = {
-      id: keyId1,
+      data: { completed: false, id: 1, title: "" },
       group: groupName,
-      data: { id: 1, completed: false, title: "" },
+      id: keyId1,
     };
 
     const userSettingsKey: SWRKey<Todo> = {
-      id: keyId2,
+      data: { completed: false, id: 2, title: "" },
       group: groupName,
-      data: { id: 2, completed: false, title: "" },
+      id: keyId2,
     };
 
     const { result } = renderHookWithGlobalCache(() => {
@@ -99,7 +99,7 @@ describe("mutateByGroup - Integration Tests", () => {
         revalidateOnReconnect: false,
       });
 
-      return { todos, settings };
+      return { settings, todos };
     });
 
     await waitFor(() => {
@@ -111,7 +111,7 @@ describe("mutateByGroup - Integration Tests", () => {
     expect(result.current.settings.data?.[0].title).toBe("Test Todo 1");
 
     const newData: Todo[] = [
-      { id: 999, title: "Group Mutated", completed: true },
+      { completed: true, id: 999, title: "Group Mutated" },
     ];
 
     await act(async () => {
@@ -119,9 +119,9 @@ describe("mutateByGroup - Integration Tests", () => {
     });
 
     const expectedData = {
-      length: 1,
       firstId: 999,
       firstTitle: "Group Mutated",
+      length: 1,
     };
 
     await waitFor(() => {
@@ -137,15 +137,15 @@ describe("mutateByGroup - Integration Tests", () => {
     const keyIdB = uniqueKeyId("todos-b");
 
     const groupAKey: SWRKey<Todo> = {
-      id: keyIdA,
+      data: { completed: false, id: 1, title: "" },
       group: groupA,
-      data: { id: 1, completed: false, title: "" },
+      id: keyIdA,
     };
 
     const groupBKey: SWRKey<Todo> = {
-      id: keyIdB,
+      data: { completed: false, id: 2, title: "" },
       group: groupB,
-      data: { id: 2, completed: false, title: "" },
+      id: keyIdB,
     };
 
     let fetchCountA = 0;

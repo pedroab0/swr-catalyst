@@ -51,9 +51,9 @@ function mockApiError(
   status: number
 ) {
   const handlers = {
-    post: http.post,
-    patch: http.patch,
     delete: http.delete,
+    patch: http.patch,
+    post: http.post,
   };
 
   server.use(
@@ -91,8 +91,8 @@ function assertApiError(
 
 describe("Error Recovery Scenarios - Integration Tests", () => {
   const todosKey: SWRKey<Todo> = {
+    data: { completed: false, id: 1, title: "" },
     id: "todos",
-    data: { id: 1, completed: false, title: "" },
   };
 
   describe("Network Errors", () => {
@@ -100,6 +100,7 @@ describe("Error Recovery Scenarios - Integration Tests", () => {
       let shouldFail = true;
 
       const unreliableFetcher = async () => {
+        // biome-ignore lint/suspicious/noUnnecessaryConditions: modified dynamically in test
         if (shouldFail) {
           throw new Error("Network error");
         }
@@ -146,9 +147,9 @@ describe("Error Recovery Scenarios - Integration Tests", () => {
       await act(async () => {
         try {
           await result.current.trigger({
+            completed: false,
             id: 1,
             title: "Test",
-            completed: false,
           });
         } catch {
           // Expected
@@ -164,9 +165,9 @@ describe("Error Recovery Scenarios - Integration Tests", () => {
 
       await act(async () => {
         await workingResult.current.trigger({
+          completed: false,
           id: 1,
           title: "Success",
-          completed: false,
         });
       });
 
@@ -248,9 +249,9 @@ describe("Error Recovery Scenarios - Integration Tests", () => {
       await act(async () => {
         try {
           await result.current.trigger({
+            completed: false,
             id: 1,
             title: "Test",
-            completed: false,
           });
         } catch {
           // Expected
@@ -279,9 +280,9 @@ describe("Error Recovery Scenarios - Integration Tests", () => {
       await act(async () => {
         try {
           await result.current.trigger({
+            completed: false,
             id: 1,
             title: "Test 1",
-            completed: false,
           });
         } catch {
           // Expected
@@ -293,9 +294,9 @@ describe("Error Recovery Scenarios - Integration Tests", () => {
       await act(async () => {
         try {
           await result.current.trigger({
+            completed: false,
             id: 2,
             title: "Test 2",
-            completed: false,
           });
         } catch {
           // Expected
@@ -327,9 +328,9 @@ describe("Error Recovery Scenarios - Integration Tests", () => {
 
       await act(async () => {
         await result.current.trigger({
+          completed: false,
           id: 1,
           title: "First Todo",
-          completed: false,
         });
       });
 
@@ -338,9 +339,9 @@ describe("Error Recovery Scenarios - Integration Tests", () => {
       await act(async () => {
         try {
           await result.current.trigger({
+            completed: false,
             id: 2,
             title: "Second Todo",
-            completed: false,
           });
         } catch {
           // Expected
@@ -351,9 +352,9 @@ describe("Error Recovery Scenarios - Integration Tests", () => {
 
       await act(async () => {
         await result.current.trigger({
+          completed: false,
           id: 3,
           title: "Third Todo",
-          completed: false,
         });
       });
 
@@ -365,17 +366,17 @@ describe("Error Recovery Scenarios - Integration Tests", () => {
   describe("Server Validation Errors (400/422)", () => {
     it("should handle 400 Bad Request with validation details", async () => {
       const errorDetails = {
-        title: "Title is required",
         completed: "Must be a boolean",
+        title: "Title is required",
       };
 
       mockApiError(
         "post",
         "/api/todos",
         {
-          error: "Validation failed",
           code: "VALIDATION_ERROR",
           details: errorDetails,
+          error: "Validation failed",
         },
         400
       );
@@ -386,7 +387,7 @@ describe("Error Recovery Scenarios - Integration Tests", () => {
 
       await act(async () => {
         try {
-          await result.current.trigger({ id: 1, title: "", completed: false });
+          await result.current.trigger({ completed: false, id: 1, title: "" });
         } catch (error) {
           const apiError = assertApiError(error, 400, "VALIDATION_ERROR", {
             isValidationError: true,
@@ -403,9 +404,9 @@ describe("Error Recovery Scenarios - Integration Tests", () => {
         "patch",
         "/api/todos/:id",
         {
-          error: "Entity cannot be processed",
           code: "UNPROCESSABLE_ENTITY",
           details: { title: "Title must be at least 3 characters" },
+          error: "Entity cannot be processed",
         },
         422
       );
@@ -431,7 +432,7 @@ describe("Error Recovery Scenarios - Integration Tests", () => {
       mockApiError(
         "post",
         "/api/todos",
-        { error: "Validation failed", code: "VALIDATION_ERROR" },
+        { code: "VALIDATION_ERROR", error: "Validation failed" },
         400
       );
 
@@ -444,9 +445,9 @@ describe("Error Recovery Scenarios - Integration Tests", () => {
       await act(async () => {
         try {
           await validationResult.current.trigger({
+            completed: false,
             id: 1,
             title: "",
-            completed: false,
           });
         } catch (error) {
           caughtError = error as MutationError;
@@ -456,8 +457,8 @@ describe("Error Recovery Scenarios - Integration Tests", () => {
       expect(caughtError).toBeDefined();
 
       assertApiError(caughtError, 400, "VALIDATION_ERROR", {
-        isValidationError: true,
         isNotFound: false,
+        isValidationError: true,
       });
 
       const networkFailingCreate = (_data: Todo): Promise<Todo> => {
@@ -475,9 +476,9 @@ describe("Error Recovery Scenarios - Integration Tests", () => {
       await act(async () => {
         try {
           await networkResult.current.trigger({
+            completed: false,
             id: 1,
             title: "Test",
-            completed: false,
           });
         } catch {
           // Expected
@@ -495,7 +496,7 @@ describe("Error Recovery Scenarios - Integration Tests", () => {
       mockApiError(
         "delete",
         "/api/todos/:id",
-        { error: "Todo not found", code: "NOT_FOUND" },
+        { code: "NOT_FOUND", error: "Todo not found" },
         404
       );
 
@@ -531,34 +532,34 @@ describe("Error Recovery Scenarios - Integration Tests", () => {
       await waitFor(() => expect(result.current.data).toBeDefined());
       expect(getCount()).toBe(1);
 
-      return { result, getCount };
+      return { getCount, result };
     }
 
     it.each([
       {
-        name: "should skip network request when revalidate is false",
-        mutateData: [
-          { id: 100, title: "Local Update", completed: true },
-        ] as Todo[],
-        revalidate: false,
         expectedFetchCount: 1,
         expectedTitle: "Local Update",
+        mutateData: [
+          { completed: true, id: 100, title: "Local Update" },
+        ] as Todo[],
+        name: "should skip network request when revalidate is false",
+        revalidate: false,
       },
       {
-        name: "should trigger network request when revalidate is true",
-        mutateData: [
-          { id: 100, title: "Will Be Overwritten", completed: true },
-        ] as Todo[],
-        revalidate: true,
         expectedFetchCount: 2,
         expectedTitle: "Test Todo 1",
+        mutateData: [
+          { completed: true, id: 100, title: "Will Be Overwritten" },
+        ] as Todo[],
+        name: "should trigger network request when revalidate is true",
+        revalidate: true,
       },
       {
-        name: "should default to revalidate when mutate is called without data",
-        mutateData: undefined,
-        revalidate: undefined,
         expectedFetchCount: 2,
         expectedTitle: undefined,
+        mutateData: undefined,
+        name: "should default to revalidate when mutate is called without data",
+        revalidate: undefined,
       },
     ])("$name", async ({
       mutateData,

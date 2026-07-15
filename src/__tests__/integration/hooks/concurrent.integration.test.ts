@@ -17,8 +17,8 @@ import { useSWRCreate, useSWRDelete, useSWRUpdate } from "@/hooks";
 
 describe("Concurrent Scenarios - Integration Tests", () => {
   const todosKey: SWRKey<Todo> = {
+    data: { completed: false, id: 1, title: "" },
     id: "todos",
-    data: { id: 1, completed: false, title: "" },
   };
 
   const updateTodoWrapper = (
@@ -77,7 +77,7 @@ describe("Concurrent Scenarios - Integration Tests", () => {
       const swr2 = useSWR(todosKey, fetchTodos);
       const create = useSWRCreate(todosKey, createTodo);
 
-      return { swr1, swr2, create };
+      return { create, swr1, swr2 };
     });
 
     await waitFor(() => {
@@ -91,9 +91,9 @@ describe("Concurrent Scenarios - Integration Tests", () => {
 
     await act(async () => {
       await result.current.create.trigger({
+        completed: false,
         id: 1,
         title: "Shared Cache Test",
-        completed: false,
       });
     });
 
@@ -111,13 +111,13 @@ describe("Concurrent Scenarios - Integration Tests", () => {
       const create = useSWRCreate(todosKey, createTodo);
       const update = useSWRUpdate(todosKey, updateTodoWrapper);
 
-      return { swr, create, update };
+      return { create, swr, update };
     });
 
     await waitFor(() => expect(result.current.swr.data).toBeDefined());
 
     const initialLength = result.current.swr.data?.length ?? 0;
-    const todoData = { id: 1, title: "New Todo for Update", completed: false };
+    const todoData = { completed: false, id: 1, title: "New Todo for Update" };
 
     const createdTodo = await createAndWaitForTodo(
       result,
@@ -128,8 +128,8 @@ describe("Concurrent Scenarios - Integration Tests", () => {
 
     await act(async () => {
       await result.current.update.trigger(createdTodo?.id as number, {
-        title: "Updated Todo",
         completed: true,
+        title: "Updated Todo",
       });
     });
 
@@ -139,8 +139,8 @@ describe("Concurrent Scenarios - Integration Tests", () => {
         createdTodo?.id as number
       );
       assertTodoProperties(updatedTodo, {
-        title: "Updated Todo",
         completed: true,
+        title: "Updated Todo",
       });
     });
   });
@@ -151,13 +151,13 @@ describe("Concurrent Scenarios - Integration Tests", () => {
       const create = useSWRCreate(todosKey, createTodo);
       const del = useSWRDelete(todosKey, deleteTodoWrapper);
 
-      return { swr, create, del };
+      return { create, del, swr };
     });
 
     await waitFor(() => expect(result.current.swr.data).toBeDefined());
 
     const initialLength = result.current.swr.data?.length ?? 0;
-    const todoData = { id: 1, title: "Todo to Delete", completed: false };
+    const todoData = { completed: false, id: 1, title: "Todo to Delete" };
 
     const createdTodo = await createAndWaitForTodo(
       result,
@@ -185,13 +185,13 @@ describe("Concurrent Scenarios - Integration Tests", () => {
       const update = useSWRUpdate(todosKey, updateTodoWrapper);
       const del = useSWRDelete(todosKey, deleteTodoWrapper);
 
-      return { swr, create, update, del };
+      return { create, del, swr, update };
     });
 
     await waitFor(() => expect(result.current.swr.data).toBeDefined());
 
     const initialLength = result.current.swr.data?.length ?? 0;
-    const todoData = { id: 1, title: "CRUD Test Todo", completed: false };
+    const todoData = { completed: false, id: 1, title: "CRUD Test Todo" };
 
     const createdTodo = await createAndWaitForTodo(
       result,
@@ -202,8 +202,8 @@ describe("Concurrent Scenarios - Integration Tests", () => {
 
     await act(async () => {
       await result.current.update.trigger(createdTodo?.id as number, {
-        title: "Updated CRUD Todo",
         completed: true,
+        title: "Updated CRUD Todo",
       });
     });
 
@@ -213,8 +213,8 @@ describe("Concurrent Scenarios - Integration Tests", () => {
         createdTodo?.id as number
       );
       assertTodoProperties(updated, {
-        title: "Updated CRUD Todo",
         completed: true,
+        title: "Updated CRUD Todo",
       });
     });
 
@@ -239,7 +239,7 @@ describe("Concurrent Scenarios - Integration Tests", () => {
       const swr = useSWR(todosKey, fetchTodos);
       const create = useSWRCreate(todosKey, createTodo);
 
-      return { swr, create };
+      return { create, swr };
     });
 
     await waitFor(() => expect(result.current.swr.data).toBeDefined());
@@ -248,17 +248,17 @@ describe("Concurrent Scenarios - Integration Tests", () => {
 
     await act(async () => {
       await result.current.create.trigger({
+        completed: false,
         id: 1,
         title: "Consistency Test 1",
-        completed: false,
       });
     });
 
     await act(async () => {
       await result.current.create.trigger({
+        completed: true,
         id: 2,
         title: "Consistency Test 2",
-        completed: true,
       });
     });
 

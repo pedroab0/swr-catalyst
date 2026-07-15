@@ -37,8 +37,8 @@ test.describe("swr-catalyst demo app", () => {
   test("should perform basic CRUD operations", async ({ page }) => {
     const input = page.getByPlaceholder("Create a todo");
     const createButton = page.getByRole("button", {
-      name: "Create",
       exact: true,
+      name: "Create",
     });
 
     // CREATE
@@ -77,8 +77,8 @@ test.describe("swr-catalyst demo app", () => {
 
     const input = page.getByPlaceholder("Create a todo");
     const createButton = page.getByRole("button", {
-      name: "Create",
       exact: true,
+      name: "Create",
     });
 
     await input.fill("No"); // Too short, triggers validation error
@@ -129,7 +129,7 @@ test.describe("swr-catalyst demo app", () => {
     // 1. Create a todo
     const input = page.getByPlaceholder("Create a todo");
     await input.fill("Replay Target");
-    await page.getByRole("button", { name: "Create", exact: true }).click();
+    await page.getByRole("button", { exact: true, name: "Create" }).click();
 
     // 2. Locate timeline entry and replay
     const timelineEntry = page
@@ -160,7 +160,7 @@ test.describe("swr-catalyst demo app", () => {
     // 2. Error toast
     await page.getByRole("button", { name: "Validation errors" }).click();
     await page.getByPlaceholder("Create a todo").fill("x"); // Trigger validation
-    await page.getByRole("button", { name: "Create", exact: true }).click();
+    await page.getByRole("button", { exact: true, name: "Create" }).click();
     await expect(page.locator(".toast-error")).toBeVisible();
   });
 

@@ -15,7 +15,7 @@ export function useStatusToasts() {
     (variant: DemoToastVariant, message: string) => {
       const id = nextIdRef.current++;
 
-      setToasts((current) => [...current, { id, variant, message }]);
+      setToasts((current) => [...current, { id, message, variant }]);
 
       window.setTimeout(() => {
         dismissToast(id);
@@ -25,8 +25,8 @@ export function useStatusToasts() {
   );
 
   return {
-    toasts,
-    pushToast,
     dismissToast,
+    pushToast,
+    toasts,
   };
 }

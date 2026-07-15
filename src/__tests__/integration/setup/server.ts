@@ -2,8 +2,8 @@ import { HttpResponse, http } from "msw";
 import { setupServer } from "msw/node";
 
 const mockTodos = [
-  { id: 1, title: "Test Todo 1", completed: false },
-  { id: 2, title: "Test Todo 2", completed: true },
+  { completed: false, id: 1, title: "Test Todo 1" },
+  { completed: true, id: 2, title: "Test Todo 2" },
 ];
 
 let todosData = [...mockTodos];
@@ -30,9 +30,9 @@ export const handlers = [
     };
 
     const newTodo = {
+      completed: body.completed ?? false,
       id: nextId,
       title: body.title,
-      completed: body.completed ?? false,
     };
 
     nextId += 1;
@@ -71,7 +71,7 @@ export const handlers = [
 
     todosData.splice(todoIndex, 1);
 
-    return HttpResponse.json({ success: true, id });
+    return HttpResponse.json({ id, success: true });
   }),
 ];
 

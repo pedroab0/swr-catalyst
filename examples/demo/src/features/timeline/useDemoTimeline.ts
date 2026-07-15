@@ -33,9 +33,9 @@ export function useDemoTimeline() {
   );
 
   return {
-    events,
     addEvent,
     clearEvents,
+    events,
     replayEvent,
   };
 }

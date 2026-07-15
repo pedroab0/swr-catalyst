@@ -92,8 +92,8 @@ export function useAppController() {
     (event: AppEventInput, context: AppEventContext = {}) => {
       addEvent({
         ...event,
-        scenario: context.scenario ?? scenario,
         dataMode: context.dataMode ?? dataMode,
+        scenario: context.scenario ?? scenario,
       });
 
       pushToast(toToastVariant(event.status), toToastMessage(event));
@@ -134,12 +134,12 @@ export function useAppController() {
 
     reportEvent(
       {
-        category: "system",
         action: "Set failure mode",
-        status: "info",
+        category: "system",
+        keyRefs: ["scenario"],
         payloadSummary: nextFailureMode,
         resultSummary: `Failure mode set to ${nextFailureMode}`,
-        keyRefs: ["scenario"],
+        status: "info",
       },
       {
         scenario: nextScenario,
@@ -156,12 +156,12 @@ export function useAppController() {
 
     reportEvent(
       {
-        category: "system",
         action: "Set delay",
-        status: "info",
+        category: "system",
+        keyRefs: ["scenario"],
         payloadSummary: `${nextDelayMs}ms`,
         resultSummary: `Delay set to ${nextDelayMs}ms`,
-        keyRefs: ["scenario"],
+        status: "info",
       },
       {
         scenario: nextScenario,
@@ -179,12 +179,12 @@ export function useAppController() {
 
     reportEvent(
       {
-        category: "system",
         action: "Apply scenario preset",
-        status: "info",
+        category: "system",
+        keyRefs: ["scenario"],
         payloadSummary: preset.label,
         resultSummary: `${preset.scenario.failureMode} with ${preset.scenario.delayMs}ms delay`,
-        keyRefs: ["scenario"],
+        status: "info",
       },
       {
         scenario: preset.scenario,
@@ -202,19 +202,19 @@ export function useAppController() {
 
       reportEvent(
         {
-          category: "system",
           action: "Switch data mode",
-          status: failedToSwitch ? "warning" : "success",
-          payloadSummary: nextMode,
-          resultSummary: failedToSwitch
-            ? `Fallback to ${resolvedMode}`
-            : `Now using ${resolvedMode}`,
-          keyRefs: ["mode", "todos", "todos-summary", "app-config"],
           cacheDiff: createDiff(before, after),
-          replayable: true,
+          category: "system",
+          keyRefs: ["mode", "todos", "todos-summary", "app-config"],
+          payloadSummary: nextMode,
           replayAction: async () => {
             await handleSwitchDataMode(nextMode);
           },
+          replayable: true,
+          resultSummary: failedToSwitch
+            ? `Fallback to ${resolvedMode}`
+            : `Now using ${resolvedMode}`,
+          status: failedToSwitch ? "warning" : "success",
         },
         {
           dataMode: resolvedMode,
@@ -241,20 +241,20 @@ export function useAppController() {
     const resetScenario = scenarioPresets.find(
       (preset) => preset.id === "happyPath"
     )?.scenario ?? {
-      failureMode: "none",
       delayMs: 0,
+      failureMode: "none",
     };
 
     const resetEvent = addEvent({
-      category: "system",
       action: "Reset demo state",
-      status: "success",
+      cacheDiff: createDiff(before, after),
+      category: "system",
+      dataMode,
+      keyRefs: ["todos", "todos-summary", "app-config"],
       payloadSummary: "happyPath + clear cache",
       resultSummary: "Todos, scenario, and cache returned to baseline",
-      keyRefs: ["todos", "todos-summary", "app-config"],
       scenario: resetScenario,
-      dataMode,
-      cacheDiff: createDiff(before, after),
+      status: "success",
     });
 
     if (resetEvent.cacheDiff) {
@@ -281,13 +281,13 @@ export function useAppController() {
       const after = takeSnapshot();
 
       reportEvent({
-        category: "system",
         action: "Replay timeline event",
-        status: "success",
+        cacheDiff: createDiff(before, after),
+        category: "system",
+        keyRefs: ["timeline"],
         payloadSummary: `eventId=${eventId}`,
         resultSummary: `Replayed event ${eventId}`,
-        keyRefs: ["timeline"],
-        cacheDiff: createDiff(before, after),
+        status: "success",
       });
     } catch (error) {
       const after = takeSnapshot();
@@ -296,13 +296,13 @@ export function useAppController() {
 
       setLastError(error);
       reportEvent({
-        category: "system",
         action: "Replay timeline event",
-        status: "error",
-        payloadSummary: `eventId=${eventId}`,
+        cacheDiff: createDiff(before, after),
+        category: "system",
         errorSummary: errorMessage,
         keyRefs: ["timeline"],
-        cacheDiff: createDiff(before, after),
+        payloadSummary: `eventId=${eventId}`,
+        status: "error",
       });
     }
   }
@@ -334,9 +334,9 @@ export function useAppController() {
     () =>
       JSON.stringify(
         {
+          appConfigKey,
           todosKey,
           todosSummaryKey,
-          appConfigKey,
         },
         null,
         2
@@ -350,31 +350,31 @@ export function useAppController() {
   );
 
   return {
-    lastError,
-    setLastError,
-    selectedDiffEventId,
-    setSelectedDiffEventId,
-    toasts,
-    pushToast,
+    appConfig,
+    clearEvents,
+    configError,
+    dataMode,
     dismissToast,
     events,
-    clearEvents,
-    scenario,
-    dataMode,
-    presetList,
-    summary,
-    summaryLoading,
-    summaryError,
-    appConfig,
-    configError,
-    reportEvent,
-    handleFailureModeChange,
-    handleDelayChange,
     handleApplyPreset,
-    handleReplayEvent,
     handleDataModeSelect,
+    handleDelayChange,
+    handleFailureModeChange,
+    handleReplayEvent,
     handleResetClick,
     keyPreview,
+    lastError,
+    presetList,
+    pushToast,
+    reportEvent,
+    scenario,
     selectedDiffEvent,
+    selectedDiffEventId,
+    setLastError,
+    setSelectedDiffEventId,
+    summary,
+    summaryError,
+    summaryLoading,
+    toasts,
   };
 }

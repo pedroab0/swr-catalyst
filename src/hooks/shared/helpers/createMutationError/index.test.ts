@@ -5,7 +5,7 @@ import type { SWRKey } from "@/types";
 import { createMutationError } from "./index";
 
 describe("createMutationError", () => {
-  const testKey: SWRKey = { id: "todos", data: "/api/todos" };
+  const testKey: SWRKey = { data: "/api/todos", id: "todos" };
 
   describe("create operation", () => {
     it("should create error for create operation with data", () => {
@@ -144,7 +144,7 @@ describe("createMutationError", () => {
 
     it("should use empty string when key has no id", () => {
       const originalError = new Error("Failed");
-      const keyWithoutId = { id: "", data: "/api" };
+      const keyWithoutId = { data: "/api", id: "" };
       const error = createMutationError("update", keyWithoutId, originalError);
 
       expect(error.message).toBe('Failed to update resource "unknown". Failed');

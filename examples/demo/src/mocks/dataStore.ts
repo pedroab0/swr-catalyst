@@ -7,15 +7,15 @@ import type {
 } from "@demo/types";
 
 const initialTodos: Todo[] = [
-  { id: 1, title: "Document API behavior", completed: false },
-  { id: 2, title: "Ship optimistic updates", completed: true },
-  { id: 3, title: "Review integration tests", completed: false },
+  { completed: false, id: 1, title: "Document API behavior" },
+  { completed: true, id: 2, title: "Ship optimistic updates" },
+  { completed: false, id: 3, title: "Review integration tests" },
 ];
 
 const appConfig: AppConfig = {
+  environment: "mocked",
   name: "swr-catalyst demo",
   version: "0.1.0",
-  environment: "mocked",
 };
 
 let todos = initialTodos.map((todo) => ({ ...todo }));
@@ -34,9 +34,9 @@ export function getTodosSummary(): TodosSummary {
   const completed = todos.filter((todo) => todo.completed).length;
 
   return {
-    total,
     completed,
     pending: total - completed,
+    total,
   };
 }
 
@@ -46,9 +46,9 @@ export function getAppConfig(): AppConfig {
 
 export function createTodo(input: TodoInput): Todo {
   const todo: Todo = {
+    completed: Boolean(input.completed),
     id: nextId++,
     title: input.title.trim(),
-    completed: Boolean(input.completed),
   };
 
   todos = [...todos, todo];

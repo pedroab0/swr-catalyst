@@ -79,8 +79,8 @@ export const resetCache = async (preservedKeys: CacheKeyInput = []) => {
         keys && keys.length > 0 ? ` (preserving: ${keys.join(", ")})` : ""
       }. ${error instanceof Error ? error.message : String(error)}`,
       {
-        operation: "delete",
         key: null,
+        operation: "delete",
         timestamp: Date.now(),
       },
       error

@@ -7,21 +7,21 @@ import { useSWRUpdate } from "./index";
 
 const mutate = vi.fn();
 const cacheGet = vi.fn();
-const cache = { get: cacheGet, set: vi.fn(), delete: vi.fn() };
+const cache = { delete: vi.fn(), get: cacheGet, set: vi.fn() };
 
 vi.mock("swr", async (importOriginal) => {
   const original = await importOriginal<typeof import("swr")>();
   return {
     ...original,
     useSWRConfig: () => ({
-      mutate,
       cache,
+      mutate,
     }),
   };
 });
 
 describe("useSWRUpdate", () => {
-  const testKey: SWRKey = { id: "todos", data: "/api/todos" };
+  const testKey: SWRKey = { data: "/api/todos", id: "todos" };
 
   beforeEach(() => {
     mutate.mockClear();
@@ -98,7 +98,7 @@ describe("useSWRUpdate", () => {
         { id: 1, title: "Old" },
         { id: 2, title: "Other" },
       ],
-      { id: 1, data: { title: "Updated" } }
+      { data: { title: "Updated" }, id: 1 }
     );
   });
 
@@ -131,7 +131,7 @@ describe("useSWRUpdate", () => {
   });
 
   it("should return updated data from trigger", async () => {
-    const updatedData = { id: 1, title: "Updated", completed: true };
+    const updatedData = { completed: true, id: 1, title: "Updated" };
     const updateFn = vi.fn().mockResolvedValue(updatedData);
 
     const { result } = renderHook(() => useSWRUpdate(testKey, updateFn));

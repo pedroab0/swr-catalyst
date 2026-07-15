@@ -17,8 +17,8 @@ describe("mutateByGroup", () => {
 
     const filter = (mutate as any).mock.calls[0][0];
 
-    expect(filter({ id: "any", group: "group-1" })).toBe(true);
-    expect(filter({ id: "any", group: "group-2" })).toBe(false);
+    expect(filter({ group: "group-1", id: "any" })).toBe(true);
+    expect(filter({ group: "group-2", id: "any" })).toBe(false);
     expect(filter({ id: "any" })).toBe(false);
   });
 
@@ -27,9 +27,9 @@ describe("mutateByGroup", () => {
 
     const filter = (mutate as any).mock.calls[0][0];
 
-    expect(filter({ id: "any", group: "group-1" })).toBe(true);
-    expect(filter({ id: "any", group: "group-2" })).toBe(true);
-    expect(filter({ id: "any", group: "group-3" })).toBe(false);
+    expect(filter({ group: "group-1", id: "any" })).toBe(true);
+    expect(filter({ group: "group-2", id: "any" })).toBe(true);
+    expect(filter({ group: "group-3", id: "any" })).toBe(false);
   });
 
   it("should pass newData and revalidate options to global mutate", async () => {

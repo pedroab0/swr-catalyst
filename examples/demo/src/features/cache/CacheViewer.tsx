@@ -26,8 +26,8 @@ export function CacheViewer() {
       const parsed = extractSWRKey(key);
 
       return {
-        rawKey,
         extractedKey: stringifySafe(parsed),
+        rawKey,
         value: stringifySafe(cache.get(key)),
       };
     });

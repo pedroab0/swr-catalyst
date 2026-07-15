@@ -61,8 +61,8 @@ export function createMutationError(
   return new MutationError(
     message,
     {
-      operation,
       key: stableKey,
+      operation,
       ...additionalContext,
       timestamp: Date.now(),
     },

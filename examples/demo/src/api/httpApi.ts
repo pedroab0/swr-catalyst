@@ -48,21 +48,21 @@ export function fetchAppConfigHttp() {
 
 export function createTodoHttp(input: TodoInput) {
   return request<Todo>("/api/todos", {
-    method: "POST",
+    body: JSON.stringify(input),
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(input),
+    method: "POST",
   });
 }
 
 export function updateTodoHttp(id: string | number, update: TodoUpdate) {
   return request<Todo>(`/api/todos/${id}`, {
-    method: "PATCH",
+    body: JSON.stringify(update),
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(update),
+    method: "PATCH",
   });
 }
 
