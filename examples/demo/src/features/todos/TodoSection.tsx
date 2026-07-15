@@ -73,10 +73,10 @@ export function TodoSection({
       optimisticUpdate: (currentTodos, input) => [
         ...(currentTodos ?? []),
         {
-          id: Date.now(),
-          title: input.title,
           completed: Boolean(input.completed),
+          id: Date.now(),
           optimistic: true,
+          title: input.title,
         },
       ],
       rollbackOnError: true,
@@ -134,15 +134,15 @@ export function TodoSection({
       setLastAction(nextActionMessage);
 
       onActionEvent({
-        category: "hooks",
         action: params.action,
-        status: "success",
-        payloadSummary: params.payloadSummary,
-        resultSummary: params.resultSummary(result),
-        keyRefs: ["todos", "todos-summary"],
         cacheDiff: createDiff(before, after),
-        replayable: Boolean(params.replayable),
+        category: "hooks",
+        keyRefs: ["todos", "todos-summary"],
+        payloadSummary: params.payloadSummary,
         replayAction: params.replayAction,
+        replayable: Boolean(params.replayable),
+        resultSummary: params.resultSummary(result),
+        status: "success",
       });
 
       return result;
@@ -153,13 +153,13 @@ export function TodoSection({
       setLastAction(`${params.action} failed: ${errorMessage}`);
       onMutationError(error);
       onActionEvent({
-        category: "hooks",
         action: params.action,
-        status: "error",
-        payloadSummary: params.payloadSummary,
+        cacheDiff: createDiff(before, after),
+        category: "hooks",
         errorSummary: errorMessage,
         keyRefs: ["todos", "todos-summary"],
-        cacheDiff: createDiff(before, after),
+        payloadSummary: params.payloadSummary,
+        status: "error",
       });
 
       return null;
@@ -174,21 +174,21 @@ export function TodoSection({
 
     const created = await runTrackedHookAction({
       action: "Create todo",
-      payloadSummary: `title=${JSON.stringify(trimmedTitle)}`,
       execute: async () => {
         const createdTodo = await createMutation.trigger({
-          title: trimmedTitle,
           completed: false,
+          title: trimmedTitle,
         });
         await syncTodosCache();
         setNewTitle("");
         return createdTodo;
       },
-      resultSummary: () => `Created title=${JSON.stringify(trimmedTitle)}.`,
-      replayable: true,
+      payloadSummary: `title=${JSON.stringify(trimmedTitle)}`,
       replayAction: async () => {
         await createTodoFromTitle(trimmedTitle);
       },
+      replayable: true,
+      resultSummary: () => `Created title=${JSON.stringify(trimmedTitle)}.`,
     });
 
     if (created) {
@@ -202,7 +202,6 @@ export function TodoSection({
     try {
       const updated = await runTrackedHookAction({
         action: "Toggle todo",
-        payloadSummary: `id=${todo.id}, completed=${String(!todo.completed)}`,
         execute: async () => {
           const updatedTodo = await updateMutation.trigger(todo.id, {
             completed: !todo.completed,
@@ -210,12 +209,13 @@ export function TodoSection({
           await syncTodosCache();
           return updatedTodo;
         },
-        resultSummary: () =>
-          `Todo ${todo.id} completed toggled to ${String(!todo.completed)}.`,
-        replayable: true,
+        payloadSummary: `id=${todo.id}, completed=${String(!todo.completed)}`,
         replayAction: async () => {
           await toggleTodo(todo);
         },
+        replayable: true,
+        resultSummary: () =>
+          `Todo ${todo.id} completed toggled to ${String(!todo.completed)}.`,
       });
 
       if (updated) {
@@ -248,7 +248,6 @@ export function TodoSection({
     try {
       const updated = await runTrackedHookAction({
         action: "Rename todo",
-        payloadSummary: `id=${todo.id}, title=${JSON.stringify(nextTitle)}`,
         execute: async () => {
           const updatedTodo = await updateMutation.trigger(todo.id, {
             title: nextTitle,
@@ -256,6 +255,7 @@ export function TodoSection({
           await syncTodosCache();
           return updatedTodo;
         },
+        payloadSummary: `id=${todo.id}, title=${JSON.stringify(nextTitle)}`,
         resultSummary: () =>
           `Todo ${todo.id} renamed to ${JSON.stringify(nextTitle)}.`,
       });
@@ -275,12 +275,12 @@ export function TodoSection({
     try {
       const deleted = await runTrackedHookAction({
         action: "Delete todo",
-        payloadSummary: `id=${id}`,
         execute: async () => {
           const deletedResult = await deleteMutation.trigger(id);
           await syncTodosCache();
           return deletedResult;
         },
+        payloadSummary: `id=${id}`,
         resultSummary: () => `Deleted id=${id}`,
       });
 

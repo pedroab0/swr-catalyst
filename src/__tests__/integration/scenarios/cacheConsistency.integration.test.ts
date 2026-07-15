@@ -16,8 +16,8 @@ import { useSWRCreate, useSWRUpdate } from "@/hooks";
 
 describe("Cache Consistency Scenarios - Integration Tests", () => {
   const todosKey: SWRKey<Todo> = {
+    data: { completed: false, id: 1, title: "" },
     id: "todos",
-    data: { id: 1, completed: false, title: "" },
   };
 
   const updateTodoWrapper = (
@@ -32,7 +32,7 @@ describe("Cache Consistency Scenarios - Integration Tests", () => {
         const swr2 = useSWR(todosKey, fetchTodos);
         const create = useSWRCreate(todosKey, createTodo);
 
-        return { swr1, swr2, create };
+        return { create, swr1, swr2 };
       });
 
       await waitFor(() => {
@@ -46,9 +46,9 @@ describe("Cache Consistency Scenarios - Integration Tests", () => {
 
       await act(async () => {
         await result.current.create.trigger({
+          completed: false,
           id: 1,
           title: "Propagation Test",
-          completed: false,
         });
       });
 
@@ -66,16 +66,16 @@ describe("Cache Consistency Scenarios - Integration Tests", () => {
         const create = useSWRCreate(todosKey, createTodo);
         const update = useSWRUpdate(todosKey, updateTodoWrapper);
 
-        return { swr, create, update };
+        return { create, swr, update };
       });
 
       await waitFor(() => expect(result.current.swr.data).toBeDefined());
 
       await act(async () => {
         await result.current.create.trigger({
+          completed: false,
           id: 1,
           title: "New Todo",
-          completed: false,
         });
       });
 
@@ -122,7 +122,7 @@ describe("Cache Consistency Scenarios - Integration Tests", () => {
         const swr = useSWR(todosKey, countingFetcher);
         const create = useSWRCreate(todosKey, createTodo);
 
-        return { swr, create };
+        return { create, swr };
       });
 
       await waitFor(() => expect(result.current.swr.data).toBeDefined());
@@ -131,9 +131,9 @@ describe("Cache Consistency Scenarios - Integration Tests", () => {
 
       await act(async () => {
         await result.current.create.trigger({
+          completed: false,
           id: 1,
           title: "Revalidation Test",
-          completed: false,
         });
       });
 
@@ -167,6 +167,7 @@ describe("Cache Consistency Scenarios - Integration Tests", () => {
       let isSlowFetch = false;
 
       const variableSpeedFetcher = async () => {
+        // biome-ignore lint/suspicious/noUnnecessaryConditions: modified dynamically in test
         if (isSlowFetch) {
           await new Promise((resolve) => setTimeout(resolve, 100));
         }
@@ -204,13 +205,13 @@ describe("Cache Consistency Scenarios - Integration Tests", () => {
   describe("Cache Isolation", () => {
     it("should isolate cache between different keys", async () => {
       const todosKey1: SWRKey<Todo> = {
+        data: { completed: false, id: 1, title: "" },
         id: "todos-isolated-1",
-        data: { id: 1, completed: false, title: "" },
       };
 
       const todosKey2: SWRKey<Todo> = {
+        data: { completed: false, id: 2, title: "" },
         id: "todos-isolated-2",
-        data: { id: 2, completed: false, title: "" },
       };
 
       const { result } = renderHookWithSWR(() => {
@@ -218,7 +219,7 @@ describe("Cache Consistency Scenarios - Integration Tests", () => {
         const swr2 = useSWR(todosKey2, fetchTodos);
         const create1 = useSWRCreate(todosKey1, createTodo);
 
-        return { swr1, swr2, create1 };
+        return { create1, swr1, swr2 };
       });
 
       await waitFor(() => {
@@ -230,9 +231,9 @@ describe("Cache Consistency Scenarios - Integration Tests", () => {
 
       await act(async () => {
         await result.current.create1.trigger({
+          completed: false,
           id: 1,
           title: "Isolated Create",
-          completed: false,
         });
       });
 
@@ -250,7 +251,7 @@ describe("Cache Consistency Scenarios - Integration Tests", () => {
         const swr = useSWR(todosKey, fetchTodos);
         const create = useSWRCreate(todosKey, failingCreate);
 
-        return { swr, create };
+        return { create, swr };
       });
 
       await waitFor(() => expect(result.current.swr.data).toBeDefined());
@@ -260,9 +261,9 @@ describe("Cache Consistency Scenarios - Integration Tests", () => {
       await act(async () => {
         try {
           await result.current.create.trigger({
+            completed: false,
             id: 1,
             title: "Will Fail",
-            completed: false,
           });
         } catch {
           // Expected

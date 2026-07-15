@@ -46,9 +46,9 @@ function tryCurrentFormat(key: string): SWRKey | null {
   const dataMatch = key.match(DATA_PATTERN);
 
   return {
-    id: unescapeString(idMatch[1]),
-    group: groupMatch ? unescapeString(groupMatch[1]) : undefined,
     data: dataMatch ? unescapeString(dataMatch[1]) : undefined,
+    group: groupMatch ? unescapeString(groupMatch[1]) : undefined,
+    id: unescapeString(idMatch[1]),
   };
 }
 

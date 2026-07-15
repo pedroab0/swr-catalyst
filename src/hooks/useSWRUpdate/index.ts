@@ -160,7 +160,7 @@ export function useSWRUpdate<TData = unknown, TCache = unknown, TError = Error>(
 
       if (optimisticUpdate) {
         originalData = await applyOptimisticUpdate(cache, mutate, stableKey, {
-          data: { id, data },
+          data: { data, id },
           optimisticUpdateFn: optimisticUpdate,
         });
       }
@@ -207,8 +207,8 @@ export function useSWRUpdate<TData = unknown, TCache = unknown, TError = Error>(
   );
 
   return {
-    trigger,
-    isMutating,
     error,
+    isMutating,
+    trigger,
   };
 }

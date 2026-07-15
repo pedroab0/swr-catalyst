@@ -7,15 +7,15 @@ import { useSWRCreate } from "./index";
 
 const mutate = vi.fn();
 const cacheGet = vi.fn();
-const cache = { get: cacheGet, set: vi.fn(), delete: vi.fn() };
+const cache = { delete: vi.fn(), get: cacheGet, set: vi.fn() };
 
 vi.mock("swr", async (importOriginal) => {
   const original = await importOriginal<typeof import("swr")>();
   return {
     ...original,
     useSWRConfig: () => ({
-      mutate,
       cache,
+      mutate,
     }),
   };
 });
@@ -34,7 +34,7 @@ describe("useSWRCreate", () => {
           resolvePromise = resolve;
         })
     );
-    const testKey: SWRKey = { id: "test-key", data: "/api/test" };
+    const testKey: SWRKey = { data: "/api/test", id: "test-key" };
     const { result } = renderHook(() => useSWRCreate(testKey, createFn));
 
     act(() => {
@@ -53,7 +53,7 @@ describe("useSWRCreate", () => {
   it("should set the error state on failure", async () => {
     const error = new Error("Failed");
     const createFn = vi.fn().mockRejectedValue(error);
-    const testKey: SWRKey = { id: "test-key", data: "/api/test" };
+    const testKey: SWRKey = { data: "/api/test", id: "test-key" };
     const { result } = renderHook(() => useSWRCreate(testKey, createFn));
 
     await act(async () => {
@@ -72,7 +72,7 @@ describe("useSWRCreate", () => {
 
   it("should apply optimistic update before API call", async () => {
     const createFn = vi.fn().mockResolvedValue({ id: 1, title: "New" });
-    const testKey: SWRKey = { id: "test-key", data: "/api/test" };
+    const testKey: SWRKey = { data: "/api/test", id: "test-key" };
     const optimisticUpdate = vi.fn((current, newData) => [
       ...(current || []),
       newData,
@@ -97,7 +97,7 @@ describe("useSWRCreate", () => {
   it("should rollback optimistic update on error", async () => {
     const error = new Error("API Error");
     const createFn = vi.fn().mockRejectedValue(error);
-    const testKey: SWRKey = { id: "test-key", data: "/api/test" };
+    const testKey: SWRKey = { data: "/api/test", id: "test-key" };
     const originalData = [{ id: 1, title: "Original" }];
 
     cacheGet.mockReturnValue({ data: originalData });
@@ -126,7 +126,7 @@ describe("useSWRCreate", () => {
   it("should not rollback when rollbackOnError is false", async () => {
     const error = new Error("API Error");
     const createFn = vi.fn().mockRejectedValue(error);
-    const testKey: SWRKey = { id: "test-key", data: "/api/test" };
+    const testKey: SWRKey = { data: "/api/test", id: "test-key" };
 
     cacheGet.mockReturnValue({ data: [] });
 
@@ -157,7 +157,7 @@ describe("useSWRCreate", () => {
       .mockRejectedValueOnce(new Error("First fail"))
       .mockResolvedValueOnce({ id: 1 });
 
-    const testKey: SWRKey = { id: "test-key", data: "/api/test" };
+    const testKey: SWRKey = { data: "/api/test", id: "test-key" };
     const { result } = renderHook(() => useSWRCreate(testKey, createFn));
 
     await act(async () => {
@@ -180,7 +180,7 @@ describe("useSWRCreate", () => {
   it("should return created data from trigger", async () => {
     const createdData = { id: 123, title: "Created" };
     const createFn = vi.fn().mockResolvedValue(createdData);
-    const testKey: SWRKey = { id: "test-key", data: "/api/test" };
+    const testKey: SWRKey = { data: "/api/test", id: "test-key" };
 
     const { result } = renderHook(() => useSWRCreate(testKey, createFn));
 
@@ -194,7 +194,7 @@ describe("useSWRCreate", () => {
 
   it("should not update state if component unmounts before trigger", async () => {
     const createFn = vi.fn().mockResolvedValue({ id: 1 });
-    const testKey: SWRKey = { id: "test-key", data: "/api/test" };
+    const testKey: SWRKey = { data: "/api/test", id: "test-key" };
 
     const { result, unmount } = renderHook(() =>
       useSWRCreate(testKey, createFn)
@@ -212,7 +212,7 @@ describe("useSWRCreate", () => {
   it("should return data even if component unmounts during mutation", async () => {
     const createdData = { id: 1, title: "Created" };
     const createFn = vi.fn().mockResolvedValue(createdData);
-    const testKey: SWRKey = { id: "test-key", data: "/api/test" };
+    const testKey: SWRKey = { data: "/api/test", id: "test-key" };
 
     const { result, unmount } = renderHook(() =>
       useSWRCreate(testKey, createFn)
@@ -231,7 +231,7 @@ describe("useSWRCreate", () => {
 
   it("should handle optimistic update with undefined cache", async () => {
     const createFn = vi.fn().mockResolvedValue({ id: 1 });
-    const testKey: SWRKey = { id: "test-key", data: "/api/test" };
+    const testKey: SWRKey = { data: "/api/test", id: "test-key" };
 
     cacheGet.mockReturnValue(undefined);
 
@@ -251,7 +251,7 @@ describe("useSWRCreate", () => {
   it("should not rollback if originalData is undefined", async () => {
     const error = new Error("API Error");
     const createFn = vi.fn().mockRejectedValue(error);
-    const testKey: SWRKey = { id: "test-key", data: "/api/test" };
+    const testKey: SWRKey = { data: "/api/test", id: "test-key" };
 
     cacheGet.mockReturnValue(undefined);
 
@@ -276,7 +276,7 @@ describe("useSWRCreate", () => {
   it("should handle error without optimistic update", async () => {
     const error = new Error("API Error");
     const createFn = vi.fn().mockRejectedValue(error);
-    const testKey: SWRKey = { id: "test-key", data: "/api/test" };
+    const testKey: SWRKey = { data: "/api/test", id: "test-key" };
 
     const { result } = renderHook(() => useSWRCreate(testKey, createFn));
 
@@ -295,7 +295,7 @@ describe("useSWRCreate", () => {
   it("should create without optimistic update", async () => {
     const createdData = { id: 1, title: "Created" };
     const createFn = vi.fn().mockResolvedValue(createdData);
-    const testKey: SWRKey = { id: "test-key", data: "/api/test" };
+    const testKey: SWRKey = { data: "/api/test", id: "test-key" };
 
     const { result } = renderHook(() => useSWRCreate(testKey, createFn));
 

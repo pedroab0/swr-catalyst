@@ -79,9 +79,9 @@ export async function mutateByGroup<T = unknown>(
         error instanceof Error ? error.message : String(error)
       }`,
       {
-        operation: "update",
-        key: null,
         data: newData,
+        key: null,
+        operation: "update",
         timestamp: Date.now(),
       } as MutationErrorContext,
       error

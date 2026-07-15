@@ -6,27 +6,27 @@ import { useStableKey } from ".";
 describe("useStableKey", () => {
   it("returns the same key reference when dependencies do not change", () => {
     const { result, rerender } = renderHook(
-      ({ id, group, data }) => useStableKey({ id, group, data }),
+      ({ id, group, data }) => useStableKey({ data, group, id }),
       {
-        initialProps: { id: "test", group: "test", data: "test" },
+        initialProps: { data: "test", group: "test", id: "test" },
       }
     );
 
     const firstResult = result.current;
-    rerender({ id: "test", group: "test", data: "test" });
+    rerender({ data: "test", group: "test", id: "test" });
     expect(result.current).toBe(firstResult);
   });
 
   it("returns a new key reference when dependencies change", () => {
     const { result, rerender } = renderHook(
-      ({ id, group, data }) => useStableKey({ id, group, data }),
+      ({ id, group, data }) => useStableKey({ data, group, id }),
       {
-        initialProps: { id: "test", group: "test", data: "test" },
+        initialProps: { data: "test", group: "test", id: "test" },
       }
     );
 
     const firstResult = result.current;
-    rerender({ id: "test", group: "test", data: "new-data" });
+    rerender({ data: "new-data", group: "test", id: "test" });
     expect(result.current).not.toBe(firstResult);
   });
 
@@ -37,42 +37,42 @@ describe("useStableKey", () => {
 
   it("returns null when id is missing", () => {
     const { result } = renderHook(() =>
-      useStableKey({ id: "", data: "test" } as any)
+      useStableKey({ data: "test", id: "" } as any)
     );
     expect(result.current).toBeNull();
   });
 
   it("returns null when data is missing", () => {
     const { result } = renderHook(() =>
-      useStableKey({ id: "test", data: "" } as any)
+      useStableKey({ data: "", id: "test" } as any)
     );
     expect(result.current).toBeNull();
   });
 
   it("maintains stable reference when group changes from undefined to undefined", () => {
     const { result, rerender } = renderHook(
-      ({ id, data }) => useStableKey({ id, data }),
+      ({ id, data }) => useStableKey({ data, id }),
       {
-        initialProps: { id: "test", data: "test" },
+        initialProps: { data: "test", id: "test" },
       }
     );
 
     const firstResult = result.current;
-    rerender({ id: "test", data: "test" });
+    rerender({ data: "test", id: "test" });
     expect(result.current).toBe(firstResult);
-    expect(result.current).toEqual({ id: "test", data: "test" });
+    expect(result.current).toEqual({ data: "test", id: "test" });
   });
 
   it("maintains stable reference when data object values are equal", () => {
     const { result, rerender } = renderHook(
-      ({ id, data }) => useStableKey({ id, data }),
+      ({ id, data }) => useStableKey({ data, id }),
       {
-        initialProps: { id: "test", data: { url: "/api/todos", userId: 1 } },
+        initialProps: { data: { url: "/api/todos", userId: 1 }, id: "test" },
       }
     );
 
     const firstResult = result.current;
-    rerender({ id: "test", data: { url: "/api/todos", userId: 1 } });
+    rerender({ data: { url: "/api/todos", userId: 1 }, id: "test" });
 
     expect(result.current).toBe(firstResult);
   });
@@ -81,32 +81,32 @@ describe("useStableKey", () => {
     const stableData = { url: "/api/todos", userId: 1 };
 
     const { result, rerender } = renderHook(
-      ({ id, data }) => useStableKey({ id, data }),
+      ({ id, data }) => useStableKey({ data, id }),
       {
-        initialProps: { id: "test", data: stableData },
+        initialProps: { data: stableData, id: "test" },
       }
     );
 
     const firstResult = result.current;
 
-    rerender({ id: "test", data: stableData });
+    rerender({ data: stableData, id: "test" });
 
     expect(result.current).toBe(firstResult);
   });
 
   it("handles deeply nested objects with same values", () => {
     const { result, rerender } = renderHook(
-      ({ id, data }) => useStableKey({ id, data }),
+      ({ id, data }) => useStableKey({ data, id }),
       {
         initialProps: {
-          id: "test",
           data: {
-            name: "Pedro",
             apiData: {
+              payload: { user: { age: 25, name: "Pedro" } },
               url: "apiUrl",
-              payload: { user: { name: "Pedro", age: 25 } },
             },
+            name: "Pedro",
           },
+          id: "test",
         },
       }
     );
@@ -114,14 +114,14 @@ describe("useStableKey", () => {
     const firstResult = result.current;
 
     rerender({
-      id: "test",
       data: {
-        name: "Pedro",
         apiData: {
+          payload: { user: { age: 25, name: "Pedro" } },
           url: "apiUrl",
-          payload: { user: { name: "Pedro", age: 25 } },
         },
+        name: "Pedro",
       },
+      id: "test",
     });
 
     expect(result.current).toBe(firstResult);
@@ -129,17 +129,17 @@ describe("useStableKey", () => {
 
   it("detects changes in deeply nested objects", () => {
     const { result, rerender } = renderHook(
-      ({ id, data }) => useStableKey({ id, data }),
+      ({ id, data }) => useStableKey({ data, id }),
       {
         initialProps: {
-          id: "test",
           data: {
-            name: "Pedro",
             apiData: {
+              payload: { user: { age: 30, name: "Pedro" } },
               url: "apiUrl",
-              payload: { user: { name: "Pedro", age: 30 } },
             },
+            name: "Pedro",
           },
+          id: "test",
         },
       }
     );
@@ -147,14 +147,14 @@ describe("useStableKey", () => {
     const firstResult = result.current;
 
     rerender({
-      id: "test",
       data: {
-        name: "Pedro",
         apiData: {
+          payload: { user: { age: 31, name: "Pedro" } },
           url: "apiUrl",
-          payload: { user: { name: "Pedro", age: 31 } },
         },
+        name: "Pedro",
       },
+      id: "test",
     });
 
     expect(result.current).not.toBe(firstResult);

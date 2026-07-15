@@ -7,21 +7,21 @@ import { useSWRDelete } from "./index";
 
 const mutate = vi.fn();
 const cacheGet = vi.fn();
-const cache = { get: cacheGet, set: vi.fn(), delete: vi.fn() };
+const cache = { delete: vi.fn(), get: cacheGet, set: vi.fn() };
 
 vi.mock("swr", async (importOriginal) => {
   const original = await importOriginal<typeof import("swr")>();
   return {
     ...original,
     useSWRConfig: () => ({
-      mutate,
       cache,
+      mutate,
     }),
   };
 });
 
 describe("useSWRDelete", () => {
-  const testKey: SWRKey = { id: "todos", data: "/api/todos" };
+  const testKey: SWRKey = { data: "/api/todos", id: "todos" };
 
   beforeEach(() => {
     mutate.mockClear();
@@ -130,7 +130,7 @@ describe("useSWRDelete", () => {
   });
 
   it("should return result from delete API", async () => {
-    const deleteResult = { success: true, deletedId: 1 };
+    const deleteResult = { deletedId: 1, success: true };
     const deleteFn = vi.fn().mockResolvedValue(deleteResult);
 
     const { result } = renderHook(() => useSWRDelete(testKey, deleteFn));

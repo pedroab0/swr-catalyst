@@ -2,37 +2,37 @@ import type { DemoScenario } from "@demo/types";
 
 export const scenarioPresets = [
   {
+    description: "No failures, no delay.",
     id: "happyPath",
     label: "Happy path",
-    description: "No failures, no delay.",
     scenario: {
-      failureMode: "none",
       delayMs: 0,
+      failureMode: "none",
     },
   },
   {
+    description: "Mutation endpoints return validation errors.",
     id: "validation",
     label: "Validation errors",
-    description: "Mutation endpoints return validation errors.",
     scenario: {
-      failureMode: "validation",
       delayMs: 0,
+      failureMode: "validation",
     },
   },
   {
+    description: "Successful responses with visible latency.",
     id: "networkSlow",
     label: "Network slow",
-    description: "Successful responses with visible latency.",
     scenario: {
-      failureMode: "none",
       delayMs: 1200,
+      failureMode: "none",
     },
   },
 ] as const;
 
 let currentScenario: DemoScenario = {
-  failureMode: "none",
   delayMs: 0,
+  failureMode: "none",
 };
 
 export function getScenario(): DemoScenario {

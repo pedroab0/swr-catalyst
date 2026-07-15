@@ -77,20 +77,20 @@ export const handlers = [
     if (shouldFailValidation()) {
       return HttpResponse.json(
         {
-          message: getValidationMessage(payload.title),
           code: "VALIDATION_ERROR",
+          message: getValidationMessage(payload.title),
         },
         {
-          status: 422,
           headers: DEFAULT_HEADERS,
+          status: 422,
         }
       );
     }
 
     const created = createTodo(payload);
     return HttpResponse.json(created, {
-      status: 201,
       headers: DEFAULT_HEADERS,
+      status: 201,
     });
   }),
   http.patch("/api/todos/:id", async ({ params, request }) => {
@@ -104,12 +104,12 @@ export const handlers = [
     if (shouldFailValidation()) {
       return HttpResponse.json(
         {
-          message: getValidationMessage(payload.title),
           code: "VALIDATION_ERROR",
+          message: getValidationMessage(payload.title),
         },
         {
-          status: 422,
           headers: DEFAULT_HEADERS,
+          status: 422,
         }
       );
     }
@@ -120,7 +120,7 @@ export const handlers = [
     if (!updated) {
       return HttpResponse.json(
         { message: `Todo ${todoId} not found.` },
-        { status: 404, headers: DEFAULT_HEADERS }
+        { headers: DEFAULT_HEADERS, status: 404 }
       );
     }
 
@@ -138,7 +138,7 @@ export const handlers = [
     if (!deleted) {
       return HttpResponse.json(
         { message: `Todo ${todoId} not found.` },
-        { status: 404, headers: DEFAULT_HEADERS }
+        { headers: DEFAULT_HEADERS, status: 404 }
       );
     }
 

@@ -78,9 +78,9 @@ export async function mutateById<T = unknown>(
         error instanceof Error ? error.message : String(error)
       }`,
       {
-        operation: "update",
-        key: null,
         data: newData,
+        key: null,
+        operation: "update",
         timestamp: Date.now(),
       },
       error

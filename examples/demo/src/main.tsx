@@ -15,9 +15,9 @@ root.render(
   <StrictMode>
     <SWRConfig
       value={{
+        dedupingInterval: 0,
         revalidateOnFocus: false,
         shouldRetryOnError: false,
-        dedupingInterval: 0,
       }}
     >
       <App />

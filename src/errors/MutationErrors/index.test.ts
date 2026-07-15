@@ -5,7 +5,7 @@ import type { SWRKey } from "@/types";
 import { MutationError } from "./index";
 
 describe("MutationError", () => {
-  const testKey: SWRKey = { id: "todos", data: "/api/todos" };
+  const testKey: SWRKey = { data: "/api/todos", id: "todos" };
   const timestamp = Date.now();
 
   beforeEach(() => {
@@ -16,9 +16,9 @@ describe("MutationError", () => {
     it("should create error with all properties", () => {
       const originalError = new Error("Network failed");
       const context = {
-        operation: "create" as const,
-        key: testKey,
         data: { title: "New todo" },
+        key: testKey,
+        operation: "create" as const,
         timestamp,
       };
 
@@ -37,8 +37,8 @@ describe("MutationError", () => {
 
     it("should handle non-Error originalError", () => {
       const context = {
-        operation: "update" as const,
         key: testKey,
+        operation: "update" as const,
         timestamp,
       };
 
@@ -50,7 +50,7 @@ describe("MutationError", () => {
     it("should capture stack trace when available", () => {
       const error = new MutationError(
         "Test error",
-        { operation: "delete", key: testKey, timestamp },
+        { key: testKey, operation: "delete", timestamp },
         new Error("Original")
       );
 
@@ -63,7 +63,7 @@ describe("MutationError", () => {
     it("should return user-friendly message for create operation", () => {
       const error = new MutationError(
         "Technical error",
-        { operation: "create", key: testKey, timestamp },
+        { key: testKey, operation: "create", timestamp },
         new Error("Test error")
       );
 
@@ -75,7 +75,7 @@ describe("MutationError", () => {
     it("should return user-friendly message for update operation", () => {
       const error = new MutationError(
         "Technical error",
-        { operation: "update", key: testKey, timestamp },
+        { key: testKey, operation: "update", timestamp },
         new Error("Test error")
       );
 
@@ -87,7 +87,7 @@ describe("MutationError", () => {
     it("should return user-friendly message for delete operation", () => {
       const error = new MutationError(
         "Technical error",
-        { operation: "delete", key: testKey, timestamp },
+        { key: testKey, operation: "delete", timestamp },
         new Error("Test error")
       );
 
@@ -99,7 +99,7 @@ describe("MutationError", () => {
     it("should handle missing key id", () => {
       const error = new MutationError(
         "Technical error",
-        { operation: "create", key: null, timestamp },
+        { key: null, operation: "create", timestamp },
         new Error("Test error")
       );
 
@@ -111,7 +111,7 @@ describe("MutationError", () => {
     it("should handle key without id", () => {
       const error = new MutationError(
         "Technical error",
-        { operation: "update", key: { id: "", data: "/api" }, timestamp },
+        { key: { data: "/api", id: "" }, operation: "update", timestamp },
         new Error("Test error")
       );
 
@@ -129,9 +129,9 @@ describe("MutationError", () => {
       const error = new MutationError(
         "Failed to create",
         {
-          operation: "create",
-          key: testKey,
           data: { title: "New" },
+          key: testKey,
+          operation: "create",
           timestamp,
         },
         originalError
@@ -140,17 +140,17 @@ describe("MutationError", () => {
       const json = error.toJSON();
 
       expect(json).toEqual({
-        name: "MutationError",
-        message: "Failed to create",
         context: {
-          operation: "create",
-          key: testKey,
           data: { title: "New" },
+          key: testKey,
+          operation: "create",
           timestamp,
         },
+        message: "Failed to create",
+        name: "MutationError",
         originalError: {
-          name: "Error",
           message: "Network failed",
+          name: "Error",
           stack: "Error stack trace",
         },
         stack: error.stack,
@@ -160,7 +160,7 @@ describe("MutationError", () => {
     it("should serialize error with non-Error originalError", () => {
       const error = new MutationError(
         "Failed to update",
-        { operation: "update", key: testKey, timestamp },
+        { key: testKey, operation: "update", timestamp },
         "string error"
       );
 
@@ -173,7 +173,7 @@ describe("MutationError", () => {
       const errorCode = 404;
       const error = new MutationError(
         "Failed",
-        { operation: "delete", key: testKey, timestamp },
+        { key: testKey, operation: "delete", timestamp },
         errorCode
       );
 
@@ -185,7 +185,7 @@ describe("MutationError", () => {
     it("should serialize error with object originalError", () => {
       const error = new MutationError(
         "Failed",
-        { operation: "create", key: testKey, timestamp },
+        { key: testKey, operation: "create", timestamp },
         { code: "ERR_001" }
       );
 
@@ -202,7 +202,7 @@ describe("MutationError", () => {
 
       const error = new MutationError(
         "Failed",
-        { operation: "create", key: testKey, timestamp },
+        { key: testKey, operation: "create", timestamp },
         originalError
       );
 
@@ -214,7 +214,7 @@ describe("MutationError", () => {
 
       const error = new MutationError(
         "Failed",
-        { operation: "create", key: testKey, timestamp },
+        { key: testKey, operation: "create", timestamp },
         originalError
       );
 
@@ -226,7 +226,7 @@ describe("MutationError", () => {
 
       const error = new MutationError(
         "Failed",
-        { operation: "create", key: testKey, timestamp },
+        { key: testKey, operation: "create", timestamp },
         originalError
       );
 
@@ -238,7 +238,7 @@ describe("MutationError", () => {
 
       const error = new MutationError(
         "Failed",
-        { operation: "create", key: testKey, timestamp },
+        { key: testKey, operation: "create", timestamp },
         originalError
       );
 
@@ -250,7 +250,7 @@ describe("MutationError", () => {
 
       const error = new MutationError(
         "Failed",
-        { operation: "create", key: testKey, timestamp },
+        { key: testKey, operation: "create", timestamp },
         originalError
       );
 
@@ -260,7 +260,7 @@ describe("MutationError", () => {
     it("should return false for non-Error originalError", () => {
       const error = new MutationError(
         "Failed",
-        { operation: "create", key: testKey, timestamp },
+        { key: testKey, operation: "create", timestamp },
         "string error"
       );
 
@@ -272,7 +272,7 @@ describe("MutationError", () => {
 
       const error = new MutationError(
         "Failed",
-        { operation: "create", key: testKey, timestamp },
+        { key: testKey, operation: "create", timestamp },
         originalError
       );
 
@@ -286,7 +286,7 @@ describe("MutationError", () => {
 
       const error = new MutationError(
         "Failed",
-        { operation: "create", key: testKey, timestamp },
+        { key: testKey, operation: "create", timestamp },
         originalError
       );
 
@@ -298,7 +298,7 @@ describe("MutationError", () => {
 
       const error = new MutationError(
         "Failed",
-        { operation: "create", key: testKey, timestamp },
+        { key: testKey, operation: "create", timestamp },
         originalError
       );
 
@@ -310,7 +310,7 @@ describe("MutationError", () => {
 
       const error = new MutationError(
         "Failed",
-        { operation: "create", key: testKey, timestamp },
+        { key: testKey, operation: "create", timestamp },
         originalError
       );
 
@@ -322,7 +322,7 @@ describe("MutationError", () => {
 
       const error = new MutationError(
         "Failed",
-        { operation: "create", key: testKey, timestamp },
+        { key: testKey, operation: "create", timestamp },
         originalError
       );
 
@@ -332,7 +332,7 @@ describe("MutationError", () => {
     it("should return false for non-Error originalError", () => {
       const error = new MutationError(
         "Failed",
-        { operation: "create", key: testKey, timestamp },
+        { key: testKey, operation: "create", timestamp },
         "string error"
       );
 
@@ -344,7 +344,7 @@ describe("MutationError", () => {
 
       const error = new MutationError(
         "Failed",
-        { operation: "create", key: testKey, timestamp },
+        { key: testKey, operation: "create", timestamp },
         originalError
       );
 
@@ -358,10 +358,10 @@ describe("MutationError", () => {
       const error = new MutationError(
         "Failed",
         {
-          operation: "update",
-          key: testKey,
           data: { title: "Updated" },
           id: testId,
+          key: testKey,
+          operation: "update",
           timestamp,
         },
         new Error("Original")
@@ -376,11 +376,11 @@ describe("MutationError", () => {
       const error = new MutationError(
         "Failed",
         {
-          operation: "update",
-          key: testKey,
-          timestamp,
-          id: testId,
           data: { title: "Updated" },
+          id: testId,
+          key: testKey,
+          operation: "update",
+          timestamp,
         },
         new Error("Update failed")
       );
@@ -392,7 +392,7 @@ describe("MutationError", () => {
     it("should handle error with minimal context", () => {
       const error = new MutationError(
         "Failed",
-        { operation: "delete", key: testKey, timestamp },
+        { key: testKey, operation: "delete", timestamp },
         new Error("Test error")
       );
 
@@ -403,7 +403,7 @@ describe("MutationError", () => {
     it("should handle null originalError", () => {
       const error = new MutationError(
         "Failed",
-        { operation: "create", key: testKey, timestamp },
+        { key: testKey, operation: "create", timestamp },
         null
       );
 
@@ -415,7 +415,7 @@ describe("MutationError", () => {
     it("should handle undefined originalError", () => {
       const error = new MutationError(
         "Failed",
-        { operation: "create", key: testKey, timestamp },
+        { key: testKey, operation: "create", timestamp },
         undefined
       );
 

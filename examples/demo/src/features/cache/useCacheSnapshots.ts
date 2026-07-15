@@ -12,7 +12,7 @@ export function useCacheSnapshots() {
   }
 
   return {
-    takeSnapshot,
     createDiff: createCacheDiff,
+    takeSnapshot,
   };
 }

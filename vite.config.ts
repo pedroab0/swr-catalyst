@@ -8,8 +8,8 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(import.meta.dirname, "src/index.ts"),
-      name: "swr-catalyst",
       fileName: "swr-catalyst",
+      name: "swr-catalyst",
     },
     rollupOptions: {
       external: ["react", "swr"],
@@ -22,16 +22,15 @@ export default defineConfig({
     },
   },
   plugins: [dts()],
+  resolve: {
+    alias: {
+      "@": resolve(import.meta.dirname, "./src"),
+      "@demo": resolve(import.meta.dirname, "./examples/demo/src"),
+      "swr-catalyst": resolve(import.meta.dirname, "./src/index.ts"),
+    },
+  },
   test: {
-    name: "root",
-    globals: true,
-    environment: "jsdom",
-    setupFiles: ["./src/__tests__/integration/setup/vitest.setup.ts"],
-    exclude: [...configDefaults.exclude, "**/e2e/**"],
     coverage: {
-      provider: "v8",
-      reporter: ["text", "json", "html", "lcov"],
-      include: ["src/**/*.{ts,tsx}"],
       exclude: [
         "src/**/*.test.{ts,tsx}",
         "src/**/*.spec.{ts,tsx}",
@@ -39,19 +38,20 @@ export default defineConfig({
         "src/index.ts",
         "examples/**",
       ],
+      include: ["src/**/*.{ts,tsx}"],
+      provider: "v8",
+      reporter: ["text", "json", "html", "lcov"],
       thresholds: {
-        lines: 80,
-        functions: 80,
         branches: 80,
+        functions: 80,
+        lines: 80,
         statements: 80,
       },
     },
-  },
-  resolve: {
-    alias: {
-      "@": resolve(import.meta.dirname, "./src"),
-      "@demo": resolve(import.meta.dirname, "./examples/demo/src"),
-      "swr-catalyst": resolve(import.meta.dirname, "./src/index.ts"),
-    },
+    environment: "jsdom",
+    exclude: [...configDefaults.exclude, "**/e2e/**"],
+    globals: true,
+    name: "root",
+    setupFiles: ["./src/__tests__/integration/setup/vitest.setup.ts"],
   },
 });

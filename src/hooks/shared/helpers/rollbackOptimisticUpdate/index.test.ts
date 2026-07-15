@@ -7,7 +7,7 @@ import { rollbackOptimisticUpdate } from "./index";
 const mutate = vi.fn();
 
 describe("rollbackOptimisticUpdate", () => {
-  const testKey: SWRKey = { id: "todos", data: "/api/todos" };
+  const testKey: SWRKey = { data: "/api/todos", id: "todos" };
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -45,7 +45,7 @@ describe("rollbackOptimisticUpdate", () => {
   });
 
   it("should handle object original data", async () => {
-    const originalData = { items: [], count: 0 };
+    const originalData = { count: 0, items: [] };
 
     await rollbackOptimisticUpdate(mutate, testKey, originalData);
 
@@ -53,7 +53,7 @@ describe("rollbackOptimisticUpdate", () => {
   });
 
   it("should handle string key", async () => {
-    const stringKey: SWRKey = { id: "users", data: "/api/users" };
+    const stringKey: SWRKey = { data: "/api/users", id: "users" };
     const originalData = [{ id: 1, name: "User 1" }];
 
     await rollbackOptimisticUpdate(mutate, stringKey, originalData);
@@ -79,8 +79,8 @@ describe("rollbackOptimisticUpdate", () => {
 
   it("should handle complex nested data structures", async () => {
     const originalData = {
-      todos: [{ id: 1, title: "Todo 1", subtasks: [{ id: 1, done: false }] }],
       meta: { count: 1, lastUpdated: Date.now() },
+      todos: [{ id: 1, subtasks: [{ done: false, id: 1 }], title: "Todo 1" }],
     };
 
     await rollbackOptimisticUpdate(mutate, testKey, originalData);

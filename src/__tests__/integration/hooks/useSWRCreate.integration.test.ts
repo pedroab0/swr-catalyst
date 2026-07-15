@@ -11,8 +11,8 @@ import { useSWRCreate } from "@/hooks";
 
 describe("useSWRCreate - Integration Tests", () => {
   const todosKey: SWRKey<Todo> = {
+    data: { completed: false, id: 1, title: "" },
     id: "todos",
-    data: { id: 1, completed: false, title: "" },
   };
 
   it("should create item and update real SWR cache", async () => {
@@ -21,7 +21,7 @@ describe("useSWRCreate - Integration Tests", () => {
 
       const create = useSWRCreate(todosKey, createTodo);
 
-      return { swr, create };
+      return { create, swr };
     });
 
     await waitFor(() => expect(result.current.swr.data).toBeDefined());
@@ -32,9 +32,9 @@ describe("useSWRCreate - Integration Tests", () => {
 
     await act(async () => {
       await result.current.create.trigger({
+        completed: false,
         id: 1,
         title: "New Integration Test Todo",
-        completed: false,
       });
     });
 
@@ -65,14 +65,14 @@ describe("useSWRCreate - Integration Tests", () => {
         optimisticUpdate: (current: Todo[] | undefined, newTodo: Todo) => [
           ...(current || []),
           {
+            completed: newTodo.completed,
             id: Date.now(),
             title: newTodo.title,
-            completed: newTodo.completed,
           },
         ],
       });
 
-      return { swr, create };
+      return { create, swr };
     });
 
     await waitFor(() => expect(result.current.swr.data).toBeDefined());
@@ -81,9 +81,9 @@ describe("useSWRCreate - Integration Tests", () => {
 
     await act(async () => {
       await result.current.create.trigger({
+        completed: false,
         id: 1,
         title: "Optimistic Todo",
-        completed: false,
       });
     });
 
@@ -114,9 +114,9 @@ describe("useSWRCreate - Integration Tests", () => {
     expect(result.current.isMutating).toBe(false);
 
     const createPromise = result.current.trigger({
+      completed: false,
       id: 1,
       title: "Test Todo",
-      completed: false,
     });
 
     await waitFor(() => expect(result.current.isMutating).toBe(true), {
@@ -143,9 +143,9 @@ describe("useSWRCreate - Integration Tests", () => {
     await act(async () => {
       try {
         await result.current.trigger({
+          completed: false,
           id: 1,
           title: "Will Fail",
-          completed: false,
         });
       } catch {
         // Expected to throw
@@ -165,7 +165,7 @@ describe("useSWRCreate - Integration Tests", () => {
 
       const create = useSWRCreate(todosKey, createTodo);
 
-      return { swr, create };
+      return { create, swr };
     });
 
     await waitFor(() => expect(result.current.swr.data).toBeDefined());
@@ -174,9 +174,9 @@ describe("useSWRCreate - Integration Tests", () => {
 
     await act(async () => {
       await result.current.create.trigger({
+        completed: false,
         id: 1,
         title: "First Todo",
-        completed: false,
       });
     });
 
@@ -186,9 +186,9 @@ describe("useSWRCreate - Integration Tests", () => {
 
     await act(async () => {
       await result.current.create.trigger({
+        completed: true,
         id: 2,
         title: "Second Todo",
-        completed: true,
       });
     });
 
@@ -216,7 +216,7 @@ describe("useSWRCreate - Integration Tests", () => {
 
       const create = useSWRCreate(todosKey, createTodo);
 
-      return { swr, create };
+      return { create, swr };
     });
 
     await waitFor(() => expect(result.current.swr.data).toBeDefined());
@@ -228,9 +228,9 @@ describe("useSWRCreate - Integration Tests", () => {
 
     await act(async () => {
       await result.current.create.trigger({
+        completed: false,
         id: 999,
         title: "New Todo with Pre-populated Cache",
-        completed: false,
       });
     });
 
