@@ -561,27 +561,25 @@ describe("Error Recovery Scenarios - Integration Tests", () => {
         name: "should default to revalidate when mutate is called without data",
         revalidate: undefined,
       },
-    ])("$name", async ({
-      mutateData,
-      revalidate,
-      expectedFetchCount,
-      expectedTitle,
-    }) => {
-      const { result, getCount } = await setupCountingHook();
+    ])(
+      "$name",
+      async ({ mutateData, revalidate, expectedFetchCount, expectedTitle }) => {
+        const { result, getCount } = await setupCountingHook();
 
-      await act(async () => {
-        await result.current.mutate(
-          mutateData,
-          revalidate === undefined ? undefined : { revalidate }
-        );
-      });
+        await act(async () => {
+          await result.current.mutate(
+            mutateData,
+            revalidate === undefined ? undefined : { revalidate }
+          );
+        });
 
-      await waitFor(() => expect(getCount()).toBe(expectedFetchCount));
+        await waitFor(() => expect(getCount()).toBe(expectedFetchCount));
 
-      if (expectedTitle) {
-        expect(result.current.data?.[0].title).toBe(expectedTitle);
+        if (expectedTitle) {
+          expect(result.current.data?.[0].title).toBe(expectedTitle);
+        }
       }
-    });
+    );
 
     it("should preserve local changes with revalidate: false on mutation hook", async () => {
       const { result } = renderHookWithSWR(() => {
