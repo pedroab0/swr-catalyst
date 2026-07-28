@@ -65,7 +65,7 @@
     "@types/react": "^19.2.17",
     "@typescript/typescript6": "^6.0.2",
     "@vitest/coverage-v8": "^4.1.10",
-    "jsdom": "^29.1.1",
+    "jsdom": "^30.0.0",
     "msw": "^2.15.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.8",
