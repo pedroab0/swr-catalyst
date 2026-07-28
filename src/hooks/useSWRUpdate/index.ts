@@ -4,11 +4,10 @@ import { useSWRConfig } from "swr";
 import type { MutateOptions, SWRKey } from "@/types";
 import type { UpdateFunction } from "./types";
 
-import { swrMutate } from "@/utils";
 import {
   applyOptimisticUpdate,
   createMutationError,
-  rollbackOptimisticUpdate,
+  executeMutation,
 } from "../shared/helpers";
 
 import { useStableKey } from "../useStableKey";
@@ -166,30 +165,28 @@ export function useSWRUpdate<TData = unknown, TCache = unknown, TError = Error>(
       }
 
       try {
-        const newData = await updateFunction(id, data);
-
-        if (!isMountedRef.current) {
-          return newData;
-        }
-
-        await swrMutate(mutate, stableKey);
+        const newData = await executeMutation(
+          async () => {
+            try {
+              return await updateFunction(id, data);
+            } catch (err) {
+              throw createMutationError("update", stableKey, err, { data, id });
+            }
+          },
+          {
+            mutate,
+            stableKey,
+            shouldRollback: rollbackOnError && !!optimisticUpdate,
+            originalData,
+            onError: (err) => {
+              if (isMountedRef.current) {
+                setError(err as unknown as TError);
+              }
+            },
+          }
+        );
 
         return newData;
-      } catch (err) {
-        if (rollbackOnError && optimisticUpdate) {
-          await rollbackOptimisticUpdate(mutate, stableKey, originalData);
-        }
-
-        const mutationError = createMutationError("update", stableKey, err, {
-          data,
-          id,
-        });
-
-        if (isMountedRef.current) {
-          setError(mutationError as TError);
-        }
-
-        throw mutationError;
       } finally {
         if (isMountedRef.current) {
           setIsMutating(false);
