@@ -159,15 +159,17 @@ export function useSWRDelete<TCache = unknown, TError = Error>(
             }
           },
           {
+            isMountedRef,
             mutate,
-            stableKey,
-            shouldRollback: rollbackOnError && !!optimisticUpdate,
-            originalData,
+            mutationType: "delete",
             onError: (err) => {
               if (isMountedRef.current) {
                 setError(err as unknown as TError);
               }
             },
+            originalData,
+            shouldRollback: rollbackOnError && !!optimisticUpdate,
+            stableKey,
           }
         );
 
