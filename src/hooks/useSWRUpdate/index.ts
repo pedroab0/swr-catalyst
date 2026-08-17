@@ -174,15 +174,17 @@ export function useSWRUpdate<TData = unknown, TCache = unknown, TError = Error>(
             }
           },
           {
+            isMountedRef,
             mutate,
-            stableKey,
-            shouldRollback: rollbackOnError && !!optimisticUpdate,
-            originalData,
+            mutationType: "update",
             onError: (err) => {
               if (isMountedRef.current) {
                 setError(err as unknown as TError);
               }
             },
+            originalData,
+            shouldRollback: rollbackOnError && !!optimisticUpdate,
+            stableKey,
           }
         );
 
