@@ -1,10 +1,12 @@
+import type { RefObject } from "react";
 import type { ScopedMutator } from "swr";
 
-import type { MutationError } from "@/errors";
 import type { SWRKey } from "@/types";
 
+import { MutationError, type MutationOperation } from "@/errors";
 import { swrMutate } from "@/utils";
 
+import { createMutationError } from "../createMutationError";
 import { rollbackOptimisticUpdate } from "../rollbackOptimisticUpdate";
 
 /**
@@ -12,7 +14,7 @@ import { rollbackOptimisticUpdate } from "../rollbackOptimisticUpdate";
  *
  * This helper function orchestrates the mutation execution flow:
  * 1. Executes the mutation function
- * 2. On success: Revalidates the cache
+ * 2. On success: Revalidates the cache (if component is still mounted)
  * 3. On error: Optionally rolls back optimistic updates, calls error handler, and re-throws
  *
  * @template TResult - The type of data returned by the mutation
@@ -24,29 +26,12 @@ import { rollbackOptimisticUpdate } from "../rollbackOptimisticUpdate";
  *   - `stableKey`: The stable SWR cache key
  *   - `shouldRollback`: Whether to rollback optimistic update on error
  *   - `originalData`: The original cache data to restore on rollback
+ *   - `mutationType`: Optional mutation type name ('create' | 'update' | 'delete')
+ *   - `isMountedRef`: Optional ref indicating if host component is mounted
  *   - `onError`: Callback function to handle errors (typically sets error state)
  *
  * @returns The result from the mutation function
  * @throws Re-throws the MutationError after handling rollback and error callback
- *
- * @example
- * // Used internally by mutation hooks
- * const result = await executeMutation(
- *   () => api.post('/todos', newTodo),
- *   {
- *     mutate,
- *     stableKey,
- *     shouldRollback: rollbackOnError && !!optimisticUpdate,
- *     originalData,
- *     onError: (err) => setError(err)
- *   }
- * );
- *
- * @remarks
- * - This function is used internally by mutation hooks to reduce code duplication
- * - Automatically revalidates cache on success
- * - Handles rollback only if both shouldRollback is true and originalData exists
- * - Always calls onError callback before re-throwing to allow state updates
  */
 export async function executeMutation<TResult, TCache>(
   mutationFn: () => Promise<TResult>,
@@ -55,17 +40,23 @@ export async function executeMutation<TResult, TCache>(
     stableKey: SWRKey;
     shouldRollback: boolean;
     originalData?: TCache;
+    mutationType?: MutationOperation;
+    isMountedRef?: RefObject<boolean>;
     onError: (error: MutationError) => void;
   }
 ): Promise<TResult> {
   try {
     const result = await mutationFn();
 
+    if (options.isMountedRef && !options.isMountedRef.current) {
+      return result;
+    }
+
     await swrMutate(options.mutate, options.stableKey);
 
     return result;
   } catch (err) {
-    if (options.shouldRollback && options.originalData !== undefined) {
+    if (options.shouldRollback) {
       await rollbackOptimisticUpdate(
         options.mutate,
         options.stableKey,
@@ -73,7 +64,14 @@ export async function executeMutation<TResult, TCache>(
       );
     }
 
-    const mutationError = err as MutationError;
+    const mutationError =
+      err instanceof MutationError
+        ? err
+        : createMutationError(
+            options.mutationType ?? "create",
+            options.stableKey,
+            err
+          );
 
     options.onError(mutationError);
 

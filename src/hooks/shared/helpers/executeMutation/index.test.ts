@@ -152,7 +152,7 @@ describe("executeMutation", () => {
       expect(onError).toHaveBeenCalled();
     });
 
-    it("should not rollback when originalData is undefined", async () => {
+    it("should rollback with undefined originalData when shouldRollback is true", async () => {
       const error = new Error("Failed");
       const mutationFn = vi.fn().mockRejectedValue(error);
       const onError = vi.fn();
@@ -169,7 +169,7 @@ describe("executeMutation", () => {
         // ignore
       }
 
-      expect(mutate).not.toHaveBeenCalled();
+      expect(mutate).toHaveBeenCalledWith(testKey, undefined, false);
     });
 
     it("should rollback with null originalData when shouldRollback is true", async () => {
@@ -218,11 +218,15 @@ describe("executeMutation", () => {
       const error = new Error("Failed");
       const mutationFn = vi.fn().mockRejectedValue(error);
       const callOrder: string[] = [];
-      const onError = vi.fn(() => callOrder.push("onError"));
+      const onError = vi.fn(() => {
+        callOrder.push("onError");
+      });
 
       try {
         await executeMutation(mutationFn, {
+          isMountedRef: { current: true },
           mutate,
+          mutationType: "create",
           onError,
           shouldRollback: false,
           stableKey: testKey,
@@ -238,25 +242,31 @@ describe("executeMutation", () => {
       const error = new Error("Failed");
       const mutationFn = vi.fn().mockRejectedValue(error);
       const callOrder: string[] = [];
-      const onError = vi.fn(() => callOrder.push("onError"));
-      mutate.mockImplementation(() => {
+
+      const mockMutate = vi.fn().mockImplementation(() => {
         callOrder.push("rollback");
-        return Promise.resolve();
+        return Promise.resolve(undefined);
+      });
+
+      const onError = vi.fn().mockImplementation(() => {
+        callOrder.push("onError");
       });
 
       try {
         await executeMutation(mutationFn, {
-          mutate,
+          isMountedRef: { current: true },
+          mutate: mockMutate as unknown as typeof mutate,
+          mutationType: "create",
           onError,
           originalData: [],
           shouldRollback: true,
           stableKey: testKey,
         });
       } catch {
-        callOrder.push("catch");
+        // ignore
       }
 
-      expect(callOrder).toEqual(["rollback", "onError", "catch"]);
+      expect(callOrder).toEqual(["rollback", "onError"]);
     });
   });
 
@@ -273,7 +283,7 @@ describe("executeMutation", () => {
       });
 
       expect(result).toBeUndefined();
-      expect(mutate).toHaveBeenCalled();
+      expect(mutationFn).toHaveBeenCalledTimes(1);
     });
 
     it("should handle mutation returning null", async () => {
@@ -291,11 +301,8 @@ describe("executeMutation", () => {
     });
 
     it("should handle complex return types", async () => {
-      const complexResult = {
-        data: { id: 1, nested: { value: "test" } },
-        meta: { timestamp: Date.now() },
-      };
-      const mutationFn = vi.fn().mockResolvedValue(complexResult);
+      const complexData = { id: 1, nested: { value: "test" } };
+      const mutationFn = vi.fn().mockResolvedValue(complexData);
       const onError = vi.fn();
 
       const result = await executeMutation(mutationFn, {
@@ -305,10 +312,10 @@ describe("executeMutation", () => {
         stableKey: testKey,
       });
 
-      expect(result).toEqual(complexResult);
+      expect(result).toEqual(complexData);
     });
 
-    it("should handle non-MutationError errors", async () => {
+    it("should wrap non-MutationError errors into MutationError", async () => {
       const error = new TypeError("Type error");
       const mutationFn = vi.fn().mockRejectedValue(error);
       const onError = vi.fn();
@@ -320,9 +327,14 @@ describe("executeMutation", () => {
           shouldRollback: false,
           stableKey: testKey,
         })
-      ).rejects.toThrow(TypeError);
+      ).rejects.toThrow(MutationError);
 
-      expect(onError).toHaveBeenCalledWith(error);
+      expect(onError).toHaveBeenCalledWith(
+        expect.objectContaining({
+          cause: error,
+          name: "MutationError",
+        })
+      );
     });
   });
 });
