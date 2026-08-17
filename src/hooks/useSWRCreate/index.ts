@@ -8,7 +8,8 @@ import {
   applyOptimisticUpdate,
   createMutationError,
   executeMutation,
-} from "../shared";
+} from "../shared/helpers";
+
 import { useStableKey } from "../useStableKey";
 
 /**
@@ -145,15 +146,17 @@ export function useSWRCreate<TData = unknown, TCache = unknown, TError = Error>(
             }
           },
           {
+            isMountedRef,
             mutate,
-            stableKey,
-            shouldRollback: rollbackOnError && !!optimisticUpdate,
-            originalData,
+            mutationType: "create",
             onError: (err) => {
               if (isMountedRef.current) {
                 setError(err as unknown as TError);
               }
             },
+            originalData,
+            shouldRollback: rollbackOnError && !!optimisticUpdate,
+            stableKey,
           }
         );
 
