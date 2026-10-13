@@ -107,7 +107,7 @@ export function useSWRCreate<TData = unknown, TCache = unknown, TError = Error>(
   const [isMutating, setIsMutating] = useState(false);
   const [error, setError] = useState<TError | null>(null);
 
-  const isMountedRef = useRef(true);
+  const isMountedRef = useRef<boolean>(true);
 
   const stableKey = useStableKey(key);
 
