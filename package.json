@@ -2,12 +2,6 @@
   "name": "swr-catalyst",
   "version": "0.3.1",
   "description": "A lightweight, declarative library to simplify data mutations with SWR.",
-  "author": "Pedro Barbosa (https://github.com/pedroab0)",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/pedroab0/swr-catalyst.git"
-  },
   "keywords": [
     "swr",
     "react",
@@ -17,43 +11,42 @@
     "cache",
     "stale-while-revalidate"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pedroab0/swr-catalyst.git"
+  },
+  "license": "MIT",
+  "author": "Pedro Barbosa (https://github.com/pedroab0)",
   "type": "module",
-  "main": "./dist/swr-catalyst.umd.cjs",
-  "module": "./dist/swr-catalyst.js",
-  "types": "./dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
   "exports": {
     ".": {
       "import": "./dist/swr-catalyst.js",
       "require": "./dist/swr-catalyst.umd.cjs"
     }
   },
+  "main": "./dist/swr-catalyst.umd.cjs",
+  "module": "./dist/swr-catalyst.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "vite build",
-    "test": "vitest",
-    "test:unit": "vitest run --exclude 'src/__tests__/**'",
-    "test:integration": "vitest run src/__tests__/integration",
-    "test:coverage": "vitest run --coverage",
-    "lint": "biome check .",
-    "lint:fix": "biome check --write .",
-    "typecheck": "tsc --noEmit",
-    "size": "size-limit",
-    "demo:dev": "vite --config examples/demo/vite.config.ts",
     "demo:build": "vite build --config examples/demo/vite.config.ts",
+    "demo:dev": "vite --config examples/demo/vite.config.ts",
     "demo:preview": "vite preview --config examples/demo/vite.config.ts",
     "demo:test": "playwright test",
     "demo:test:ui": "playwright test --ui",
     "demo:test:update": "playwright test --update-snapshots",
-    "prepublishOnly": "npm run build"
-  },
-  "engines": {
-    "node": ">=22.0.0"
-  },
-  "peerDependencies": {
-    "react": "^18.0.0 || ^19.0.0",
-    "swr": "^2.0.0"
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "prepublishOnly": "npm run build",
+    "size": "size-limit",
+    "test": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:integration": "vitest run src/__tests__/integration",
+    "test:unit": "vitest run --exclude 'src/__tests__/**'",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
@@ -76,5 +69,12 @@
     "vite": "^8.3.0",
     "vite-plugin-dts": "^5.1.0",
     "vitest": "^4.0.7"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "swr": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=22.0.0"
   }
 }
