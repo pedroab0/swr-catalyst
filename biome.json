@@ -133,6 +133,9 @@
       "includes": ["examples/demo/**/*"],
       "linter": {
         "rules": {
+          "correctness": {
+            "noUndeclaredDependencies": "off"
+          },
           "performance": {
             "noJsxPropsBind": "off"
           },
