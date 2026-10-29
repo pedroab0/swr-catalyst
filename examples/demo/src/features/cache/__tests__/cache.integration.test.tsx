@@ -4,11 +4,11 @@ import { SWRConfig } from "swr";
 import { describe, expect, it } from "vitest";
 
 const NO_SNAPSHOT_YET =
-  /No snapshot yet\. Click refresh to inspect current SWR cache\./i;
-const ENTRY_1 = /Entry 1/i;
-const TEST_KEY = /"test-key"/i;
-const TEXT_CACHE_DATA = /"text": "Cache data"/i;
-const REFRESH_CACHE_SNAPSHOT = /Refresh cache snapshot/i;
+  /No snapshot yet\. Click refresh to inspect current SWR cache\./iu;
+const ENTRY_1 = /Entry 1/iu;
+const TEST_KEY = /"test-key"/iu;
+const TEXT_CACHE_DATA = /"text": "Cache data"/iu;
+const REFRESH_CACHE_SNAPSHOT = /Refresh cache snapshot/iu;
 
 describe("CacheViewer component", () => {
   it("should display a placeholder message when no snapshot has been taken", () => {

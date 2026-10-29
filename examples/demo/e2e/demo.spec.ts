@@ -1,10 +1,10 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
-const TITLE_MUST_HAVE_3_CHARS = /Title must have at least 3 characters/;
-const RE_RENDER_ONLY = /Re-render only/;
-const TOGGLE_FILTER = /Toggle filter/;
-const MUTATE_BY_GROUP_REVALIDATED = /mutateByGroup revalidated/;
+const TITLE_MUST_HAVE_3_CHARS = /Title must have at least 3 characters/u;
+const RE_RENDER_ONLY = /Re-render only/u;
+const TOGGLE_FILTER = /Toggle filter/u;
+const MUTATE_BY_GROUP_REVALIDATED = /mutateByGroup revalidated/u;
 
 test.describe("swr-catalyst demo app", () => {
   test.beforeEach(async ({ page }) => {

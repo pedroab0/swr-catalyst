@@ -42,6 +42,6 @@ updates:
           - "swr"
     ignore:
       - dependency-name: "react"
-        update-types: ["version-update:semver-major"]
+        update-types: [ "version-update:semver-major" ]
       - dependency-name: "swr"
-        update-types: ["version-update:semver-major"]
+        update-types: [ "version-update:semver-major" ]

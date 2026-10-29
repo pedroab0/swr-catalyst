@@ -2,9 +2,9 @@ import App from "@demo/App";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-const VALIDATION_ERRORS = /Validation errors/;
-const VALIDATION_MODE_ENABLED = /Validation mode enabled/i;
-const MUTATION_ERROR_INSPECTOR = /MutationError Inspector/i;
+const VALIDATION_ERRORS = /Validation errors/u;
+const VALIDATION_MODE_ENABLED = /Validation mode enabled/iu;
+const MUTATION_ERROR_INSPECTOR = /MutationError Inspector/iu;
 
 async function createTodo(title: string) {
   const input = screen.getByPlaceholderText("Create a todo");

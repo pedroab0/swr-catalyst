@@ -2,7 +2,7 @@ name: Publish Package
 
 on:
   release:
-    types: [created]
+    types: [ created ]
 
 jobs:
   test-and-build:
@@ -12,8 +12,8 @@ jobs:
       - uses: actions/checkout@v7.0.1
       - uses: actions/setup-node@v7.1.0
         with:
-          node-version: '22.x'
-          cache: 'npm'
+          node-version: "22.x"
+          cache: "npm"
       - run: npm ci
       - run: npm run test:coverage
       - run: npm run build
@@ -36,9 +36,9 @@ jobs:
       - uses: actions/checkout@v7.0.1
       - uses: actions/setup-node@v7.1.0
         with:
-          node-version: '22.x'
-          registry-url: 'https://registry.npmjs.org'
-          cache: 'npm'
+          node-version: "22.x"
+          registry-url: "https://registry.npmjs.org"
+          cache: "npm"
       - run: npm ci
       - name: Download build artifacts
         uses: actions/download-artifact@v8.0.2
@@ -61,10 +61,10 @@ jobs:
       - uses: actions/checkout@v7.0.1
       - uses: actions/setup-node@v7.1.0
         with:
-          node-version: '22.x'
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@pedroab0'
-          cache: 'npm'
+          node-version: "22.x"
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@pedroab0"
+          cache: "npm"
       - run: npm ci
       - name: Download build artifacts
         uses: actions/download-artifact@v8.0.2
