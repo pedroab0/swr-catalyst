@@ -100,7 +100,6 @@ describe("Error Recovery Scenarios - Integration Tests", () => {
       let shouldFail = true;
 
       const unreliableFetcher = async () => {
-        // biome-ignore lint/suspicious/noUnnecessaryConditions: modified dynamically in test
         if (shouldFail) {
           throw new Error("Network error");
         }

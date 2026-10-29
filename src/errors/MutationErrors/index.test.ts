@@ -371,7 +371,7 @@ describe("MutationError", () => {
       expect(error.context.data).toEqual({ title: "Updated" });
     });
 
-    it("should handle error with minimal context", () => {
+    it("should handle error with update context", () => {
       const testId = 123;
       const error = new MutationError(
         "Failed",

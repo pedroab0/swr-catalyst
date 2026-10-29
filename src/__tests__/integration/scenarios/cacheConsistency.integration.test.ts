@@ -167,7 +167,6 @@ describe("Cache Consistency Scenarios - Integration Tests", () => {
       let isSlowFetch = false;
 
       const variableSpeedFetcher = async () => {
-        // biome-ignore lint/suspicious/noUnnecessaryConditions: modified dynamically in test
         if (isSlowFetch) {
           await new Promise((resolve) => setTimeout(resolve, 100));
         }
