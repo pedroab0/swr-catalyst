@@ -97,7 +97,8 @@
             "strictCase": false
           }
         },
-        "useErrorCause": "off"
+        "useErrorCause": "off",
+        "useNamedCaptureGroup": "off"
       }
     }
   },

@@ -2,9 +2,9 @@ import type { Arguments } from "swr";
 
 import type { SWRKey } from "@/types";
 
-const ID_PATTERN = /#id:"((?:[^"\\]|\\.)*)"/;
-const GROUP_PATTERN = /group:"((?:[^"\\]|\\.)*)"/;
-const DATA_PATTERN = /data:"((?:[^"\\]|\\.)*)"/;
+const ID_PATTERN = /#id:"((?:[^"\\]|\\.)*)"/u;
+const GROUP_PATTERN = /group:"((?:[^"\\]|\\.)*)"/u;
+const DATA_PATTERN = /data:"((?:[^"\\]|\\.)*)"/u;
 
 /**
  * Unescapes a string by removing backslash escape sequences.
@@ -18,7 +18,7 @@ const DATA_PATTERN = /data:"((?:[^"\\]|\\.)*)"/;
  * unescapeString('multi\\nline') // Returns: multi\nline
  */
 function unescapeString(str: string): string {
-  return str.replace(/\\(.)/g, "$1");
+  return str.replace(/\\(.)/gu, "$1");
 }
 
 /**

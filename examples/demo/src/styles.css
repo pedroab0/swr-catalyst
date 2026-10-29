@@ -43,7 +43,12 @@ body {
 button,
 input,
 select {
+  padding: 0.5rem 0.7rem;
   font: inherit;
+  color: #e2e8f0;
+  background: var(--controlBg);
+  border: 1px solid var(--controlBorder);
+  border-radius: 10px;
 }
 
 code {
@@ -65,7 +70,12 @@ code {
   background: var(--panelBg);
   border: 1px solid var(--panelBorder);
   border-radius: 14px;
-  backdrop-filter: blur(7px);
+}
+
+@supports (backdrop-filter: blur(7px)) {
+  .panel {
+    backdrop-filter: blur(7px);
+  }
 }
 
 .panelHeader {
@@ -103,16 +113,6 @@ label {
   display: grid;
   gap: 0.25rem;
   font-size: 0.92rem;
-}
-
-input,
-select,
-button {
-  padding: 0.5rem 0.7rem;
-  color: #e2e8f0;
-  background: var(--controlBg);
-  border: 1px solid var(--controlBorder);
-  border-radius: 10px;
 }
 
 input,
@@ -297,7 +297,7 @@ pre {
   margin: 0.35rem 0 0;
   overflow-x: auto;
   color: #e2e8f0;
-  word-break: break-word;
+  overflow-wrap: break-word;
   white-space: pre-wrap;
   background: var(--preBg);
   border: 1px solid var(--preBorder);

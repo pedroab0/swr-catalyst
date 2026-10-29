@@ -2,7 +2,7 @@ import App from "@demo/App";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-const EVENT_TITLE_PATTERN = /Event #/;
+const EVENT_TITLE_PATTERN = /Event #/u;
 
 describe("timeline feature", () => {
   it("should create timeline entries and cache diff from utilities actions", async () => {
