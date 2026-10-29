@@ -50,7 +50,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",
-    "@biomejs/biome": "^2.6.2",
+    "@biomejs/biome": "^2.6.3",
     "@playwright/test": "^1.64.1",
     "@size-limit/preset-small-lib": "^14.3.0",
     "@testing-library/react": "^16.3.3",
