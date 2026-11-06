@@ -50,11 +50,11 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",
-    "@biomejs/biome": "^2.6.3",
+    "@biomejs/biome": "^2.6.4",
     "@playwright/test": "^1.64.1",
     "@size-limit/preset-small-lib": "^14.3.0",
     "@testing-library/react": "^16.3.3",
-    "@types/node": "^26.6.5",
+    "@types/node": "^26.6.6",
     "@types/react": "^19.3.0",
     "@typescript/typescript6": "^6.0.2",
     "@vitest/coverage-v8": "^5.0.5",
